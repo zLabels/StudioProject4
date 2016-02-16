@@ -10,7 +10,9 @@
         android:layout_height="42dp"
         android:background="@drawable/backbutton"
         android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_marginLeft="7dp"
         android:layout_marginStart="7dp"
         android:layout_marginTop="7dp" />
 
@@ -43,6 +45,7 @@
         android:progress="1"
         android:progressDrawable="@android:color/black"
         android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/sb_backgroundMusicSeekbar"
         android:layout_alignStart="@+id/sb_backgroundMusicSeekbar"
         android:layout_marginBottom="85dp" />
 
@@ -54,6 +57,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_alignBottom="@+id/sb_sfxSoundSeekbar"
+        android:layout_alignLeft="@+id/tv_backgroundMusic"
         android:layout_alignStart="@+id/tv_backgroundMusic" />
 
 </RelativeLayout>

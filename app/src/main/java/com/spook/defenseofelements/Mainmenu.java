@@ -47,7 +47,7 @@ public class Mainmenu extends Activity implements OnClickListener{
         if(!soundManager.IsInited())
         {
             soundManager.InitSoundPool(context, appPrefs);
-            soundManager.PlayBGM();
+            //soundManager.PlayBGM();
         }
 
         //Initializing buttons
