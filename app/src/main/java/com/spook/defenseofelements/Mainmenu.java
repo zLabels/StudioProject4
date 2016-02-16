@@ -51,14 +51,14 @@ public class Mainmenu extends Activity implements OnClickListener{
         }
 
         //Initializing buttons
-        btn_play = (Button)findViewById(R.id.btn_play);
-        btn_play.setOnClickListener(this);
+        //btn_play = (Button)findViewById(R.id.btn_play);
+        //btn_play.setOnClickListener(this);
 
-        btn_options = (Button)findViewById(R.id.btn_options);
-        btn_options.setOnClickListener(this);
+        //btn_options = (Button)findViewById(R.id.btn_options);
+        //btn_options.setOnClickListener(this);
 
-        btn_highscore = (Button)findViewById(R.id.btn_highscore);
-        btn_highscore.setOnClickListener(this);
+        //btn_highscore = (Button)findViewById(R.id.btn_highscore);
+        //btn_highscore.setOnClickListener(this);
     }
 
     //On tapping one of the mainmenu buttons
@@ -68,7 +68,7 @@ public class Mainmenu extends Activity implements OnClickListener{
         soundManager.PlaySFX();
 
         //Setting intent based on button input
-        if(v == btn_play)
+        /*if(v == btn_play)
         {
             intent.setClass(this,Playpage.class);
         }
@@ -79,7 +79,7 @@ public class Mainmenu extends Activity implements OnClickListener{
         else if( v == btn_highscore)
         {
             intent.setClass(this,Highscorepage.class);
-        }
+        }*/
 
         //Start the new activity
         startActivity(intent);
