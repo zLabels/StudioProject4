@@ -33,14 +33,14 @@ public class Playpage extends Activity implements OnClickListener{
         btn_playback = (Button)findViewById(R.id.btn_playback);
         btn_playback.setOnClickListener(this);
 
-        btn_adventure = (Button)findViewById(R.id.btn_adventure);
+        /*btn_adventure = (Button)findViewById(R.id.btn_adventure);
         btn_adventure.setOnClickListener(this);
 
         btn_endless = (Button)findViewById(R.id.btn_endless);
         btn_endless.setOnClickListener(this);
 
         btn_tutorial = (Button)findViewById(R.id.btn_tutorial);
-        btn_tutorial.setOnClickListener(this);
+        btn_tutorial.setOnClickListener(this);*/
 
         soundManager = new SoundManager();
     }
@@ -51,11 +51,11 @@ public class Playpage extends Activity implements OnClickListener{
 
         soundManager.PlaySFX();
 
-        if(v == btn_playback)
+       if(v == btn_playback)
         {
             intent.setClass(this,Mainmenu.class);
         }
-        if(v == btn_adventure)
+         /* if(v == btn_adventure)
         {
             intent.setClass(this,GameAdventure.class);
         }
@@ -66,7 +66,7 @@ public class Playpage extends Activity implements OnClickListener{
         if(v == btn_tutorial)
         {
             intent.setClass(this,Tutorialpage.class);
-        }
+        }*/
 
         startActivity(intent);
     }
