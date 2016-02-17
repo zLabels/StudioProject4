@@ -17,13 +17,94 @@ public class Tower {
 
     int level;
     float damage;
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public float getDamage() {
+        return damage;
+    }
+
+    public void setDamage(float damage) {
+        this.damage = damage;
+    }
+
+    public float getFirerate() {
+        return firerate;
+    }
+
+    public void setFirerate(float firerate) {
+        this.firerate = firerate;
+    }
+
+    public float getElaspedtime() {
+        return elaspedtime;
+    }
+
+    public void setElaspedtime(float elaspedtime) {
+        this.elaspedtime = elaspedtime;
+    }
+
+    public float getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(float rotation) {
+        this.rotation = rotation;
+    }
+
+    public boolean isFire() {
+        return fire;
+    }
+
+    public void setFire(boolean fire) {
+        this.fire = fire;
+    }
+
+    public Vector2 getPosition() {
+        return Position;
+    }
+
+    public void setPosition(Vector2 position) {
+        Position = position;
+    }
+
+    public Vector2 getDirection() {
+        return Direction;
+    }
+
+    public void setDirection(Vector2 direction) {
+        Direction = direction;
+    }
+
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
+
+    public TOWER_TYPE getType() {
+        return type;
+    }
+
+    public void setType(TOWER_TYPE type) {
+        this.type = type;
+    }
+
     float firerate;
     float elaspedtime;
     float rotation;
     boolean fire;
     Vector2 Position;
     Vector2 Direction;
-    private Bitmap image;    //Image of button
+    private Bitmap image;
     TOWER_TYPE type;
 
     public Tower(Vector2 Pos, Bitmap mesh, TOWER_TYPE tower_type) {
@@ -96,5 +177,4 @@ public class Tower {
 
         return fire;
     }
-
 }

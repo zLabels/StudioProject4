@@ -69,6 +69,11 @@ public class Vector2 {
         y -= rhs.y;
     }
 
+    Vector2 operatorTimes(float value)
+    {
+        return new Vector2(x * value, y * value);
+    }
+
     float Length()
     {
         return (float)Math.sqrt(x*x + y*y);
