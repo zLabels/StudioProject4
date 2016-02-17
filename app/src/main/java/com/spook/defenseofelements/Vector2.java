@@ -5,7 +5,8 @@ package com.spook.defenseofelements;
  */
 public class Vector2 {
 
-    float x,y;
+    public float x;
+    public float y;
 
     Vector2(float a, float b)
     {
