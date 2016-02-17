@@ -13,6 +13,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.media.MediaPlayer;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Vector;
 
@@ -57,6 +58,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     float timer = 0.f;  //Timer to increase speed
     int score = 0;  //Play score
 
+    //Grids
+    Grid[] TowerGrid = new Grid[10];
     boolean UpdateHighscore = true; //Highscore update
 
     AppPrefs appPrefs;  //Shared prefs
@@ -71,11 +74,12 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             BitmapFactory.decodeResource(getResources(),R.drawable.mainmenu_ingamebutton),false);
     private InGameButton Pause_button = new InGameButton(1700,30,
             BitmapFactory.decodeResource(getResources(),R.drawable.pauseicon),false);
-    private InGameButton Unpause_button = new InGameButton(825,650,
-            BitmapFactory.decodeResource(getResources(),R.drawable.unpause_ingamebutton),false);
 
     private InGameScreens Pause_screen = new InGameScreens(400,200,
             BitmapFactory.decodeResource(getResources(),R.drawable.pause_screen));
+
+    private InGameScreens GridTest = new InGameScreens(0,0,
+            BitmapFactory.decodeResource(getResources(),R.drawable.gridtest));
 
     //constructor for this GamePanelSurfaceView class
     public GamePanelSurfaceView(Context context,int Mode) {
@@ -96,6 +100,22 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         //Media Players
         soundManager = new SoundManager();
+
+        for(int i = 0;i < 10; ++i)
+        {
+            TowerGrid[i] = new Grid(12);
+        }
+
+        Vector2 midPoints = new Vector2(10.0f,10.0f);
+        for(int i = 0; i < 10; ++i)
+        {
+            for (int j = 0; j < TowerGrid[i].getArrayNumber(); ++j)
+            {
+                TowerGrid[i].getRowList()[j].SetAllData(midPoints,10.0f);
+                midPoints.x += 10.0f;
+            }
+            midPoints.y += 10.0f;
+        }
 
         //Text rendering values
         paint.setARGB(255, 0, 0, 0);
@@ -155,8 +175,16 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         
         if(GameActive)
         {
-            //Score
-            //stickman_anim.draw(canvas);
+            //Rendering Grids
+            for(int i = 0; i < 10; ++i)
+            {
+                for (int j = 0; j < 12; ++j)
+                {
+                    canvas.drawBitmap(GridTest.getImage(),
+                            TowerGrid[i].getRowList()[j].getTopLeft().x,
+                            TowerGrid[i].getRowList()[j].getTopLeft().y,null);
+                }
+            }
 
             //Pause button
             canvas.drawBitmap(Pause_button.getImage(), Pause_button.getPosX(), Pause_button.getPosY(), null);
@@ -166,7 +194,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         if (GamePaused) {
             //Paused Game
             canvas.drawBitmap(Pause_screen.getImage(), Pause_screen.getPosX(), Pause_screen.getPosY(), null);
-            canvas.drawBitmap(Unpause_button.getImage(), Unpause_button.getPosX(), Unpause_button.getPosY(), null);
         }
 
         //Game is lost

@@ -8,6 +8,7 @@ public class AABB2D {
     float size; //Size of box
     public Vector2 Minimum;
     public Vector2 Maximum;
+    public Vector2 TopLeft;
 
     public AABB2D(Vector2 centerPoint, float size) {
         CenterPoint = centerPoint;
@@ -15,6 +16,25 @@ public class AABB2D {
         float dividedSize = size * 0.5f;
         Minimum.Set(centerPoint.x - dividedSize, centerPoint.y - dividedSize);
         Maximum.Set(centerPoint.x + dividedSize, centerPoint.y + dividedSize);
+        TopLeft.Set(centerPoint.x - dividedSize,centerPoint.y + dividedSize);
+    }
+
+    public void SetAllData(Vector2 centerPoint, float size)
+    {
+        CenterPoint = centerPoint;
+        this.size = size;
+        float dividedSize = size * 0.5f;
+        Minimum.Set(centerPoint.x - dividedSize, centerPoint.y - dividedSize);
+        Maximum.Set(centerPoint.x + dividedSize, centerPoint.y + dividedSize);
+        TopLeft.Set(centerPoint.x - dividedSize,centerPoint.y + dividedSize);
+    }
+
+    public Vector2 getTopLeft() {
+        return TopLeft;
+    }
+
+    public void setTopLeft(Vector2 topLeft) {
+        TopLeft = topLeft;
     }
 
     public Vector2 getCenterPoint() {
