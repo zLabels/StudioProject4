@@ -74,7 +74,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private InGameButton Unpause_button = new InGameButton(825,650,
             BitmapFactory.decodeResource(getResources(),R.drawable.unpause_ingamebutton),false);
 
-
     private InGameScreens Pause_screen = new InGameScreens(400,200,
             BitmapFactory.decodeResource(getResources(),R.drawable.pause_screen));
 
