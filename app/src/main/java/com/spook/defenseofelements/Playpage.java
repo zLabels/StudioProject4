@@ -13,7 +13,7 @@ import android.media.MediaPlayer;
 public class Playpage extends Activity implements OnClickListener{
 
     //Buttons
-    private Button btn_playback;
+    private Button btn_start;
     private Button btn_adventure;
     private Button btn_endless;
     private Button btn_tutorial;
@@ -30,8 +30,8 @@ public class Playpage extends Activity implements OnClickListener{
 
         setContentView(R.layout.playpage);
 
-        btn_playback = (Button)findViewById(R.id.btn_playback);
-        btn_playback.setOnClickListener(this);
+        btn_start = (Button)findViewById(R.id.btn_start);
+        btn_start.setOnClickListener(this);
 
         /*btn_adventure = (Button)findViewById(R.id.btn_adventure);
         btn_adventure.setOnClickListener(this);
@@ -51,9 +51,9 @@ public class Playpage extends Activity implements OnClickListener{
 
         soundManager.PlaySFX();
 
-       if(v == btn_playback)
+       if(v == btn_start)
         {
-            intent.setClass(this,Mainmenu.class);
+            intent.setClass(this,GamePage.class);
         }
          /* if(v == btn_adventure)
         {
