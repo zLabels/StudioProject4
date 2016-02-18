@@ -26,6 +26,19 @@ public class Tower {
     private Bitmap image;
     TOWER_TYPE type;
 
+    public Tower() {
+        this.Position = new Vector2(0.f,0.0f);
+        this.Direction.Set(0, 1);
+        this.image = null;
+        this.type = TOWER_TYPE.TOWER_NORMAL;
+        this.fire = false;
+        this.level = 1;
+        this.elaspedtime = 0;
+        this.rotation = 0;
+
+        AssignTowerType(type);
+    }
+
     public Tower(Vector2 Pos, Bitmap mesh, TOWER_TYPE tower_type) {
         this.Position = Pos;
         this.Direction.Set(0, 1);
