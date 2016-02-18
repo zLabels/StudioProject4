@@ -5,28 +5,33 @@ package com.spook.defenseofelements;
  */
 public class AABB2D {
     public Vector2 CenterPoint;    //Center point of the box
-    float size; //Size of box
+    float width; //width of box
+    float height; // height of box
     public Vector2 Minimum = new Vector2(0.0f,0.0f);
     public Vector2 Maximum = new Vector2(0.0f,0.0f);
     public Vector2 TopLeft = new Vector2(0.0f,0.0f);
 
-    public AABB2D(Vector2 centerPoint, float size) {
+    public AABB2D(Vector2 centerPoint, float width, float height) {
         CenterPoint = centerPoint;
-        this.size = size;
-        float dividedSize = size * 0.5f;
-        Minimum.Set(centerPoint.x - dividedSize, centerPoint.y - dividedSize);
-        Maximum.Set(centerPoint.x + dividedSize, centerPoint.y + dividedSize);
-        TopLeft.Set(centerPoint.x - dividedSize,centerPoint.y + dividedSize);
+        this.width = width;
+        this.height = height;
+        float dividedSizeX = width * 0.5f;
+        float dividedSizeY = width * 0.5f;
+        Minimum.Set(centerPoint.x - dividedSizeX, centerPoint.y - dividedSizeY);
+        Maximum.Set(centerPoint.x + dividedSizeX, centerPoint.y + dividedSizeY);
+        TopLeft.Set(centerPoint.x - dividedSizeX,centerPoint.y + dividedSizeY);
     }
 
-    public void SetAllData(Vector2 centerPoint, float size)
+    public void SetAllData(Vector2 centerPoint, float width,float height)
     {
         CenterPoint = centerPoint;
-        this.size = size;
-        float dividedSize = size * 0.5f;
-        Minimum.Set(centerPoint.x - dividedSize, centerPoint.y - dividedSize);
-        Maximum.Set(centerPoint.x + dividedSize, centerPoint.y + dividedSize);
-        TopLeft.Set(centerPoint.x - dividedSize,centerPoint.y + dividedSize);
+        this.width = width;
+        this.height = height;
+        float dividedSizeX = width * 0.5f;
+        float dividedSizeY = width * 0.5f;
+        Minimum.Set(centerPoint.x - dividedSizeX, centerPoint.y - dividedSizeY);
+        Maximum.Set(centerPoint.x + dividedSizeX, centerPoint.y + dividedSizeY);
+        TopLeft.Set(centerPoint.x - dividedSizeX,centerPoint.y + dividedSizeY);
     }
 
     public Vector2 getTopLeft() {
@@ -45,12 +50,17 @@ public class AABB2D {
         CenterPoint = centerPoint;
     }
 
-    public float getSize() {
-        return size;
+    public float getWidth() {
+        return width;
     }
 
-    public void setSize(float size) {
-        this.size = size;
+    public float getHeight() {
+        return height;
+    }
+
+    public void setSize(float width,float height) {
+        this.width = width;
+        this.height = height;
     }
 
     public boolean CheckIntersect(AABB2D box)
