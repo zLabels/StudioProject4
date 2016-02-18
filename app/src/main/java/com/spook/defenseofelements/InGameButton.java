@@ -31,15 +31,6 @@ public class InGameButton {
         return active;
     }
 
-
-    public int getImgHeight() {
-        return imgHeight;
-    }
-
-    public int getImgWidth() {
-        return imgWidth;
-    }
-
     public Bitmap getImage() {
         return image;
     }
@@ -62,5 +53,10 @@ public class InGameButton {
 
     public void setPosY(float posY) {
         this.posY = posY;
+    }
+
+    public AABB2D getBoundingBox()
+    {
+        return this.BoundingBox;
     }
 }
