@@ -88,6 +88,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private InGameScreens GridTest = new InGameScreens(0,0,
             BitmapFactory.decodeResource(getResources(),R.drawable.gridtest));
 
+    private Bitmap TileMap =  BitmapFactory.decodeResource(getResources(), R.drawable.grass_floor_tileset);
 
     //constructor for this GamePanelSurfaceView class
     public GamePanelSurfaceView(Context context,int Mode){
@@ -123,7 +124,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         {
             for (int j = 0; j < 12; ++j)
             {
-                TowerGrid[i][j] = new GridNode(new AABB2D(midPoints,64.0f,64.0f),  BitmapFactory.decodeResource(getResources(), R.drawable.grass_floor_tileset), 10, CSVInfo[i][j], GridNode.GRID_TYPE.GT_FREE);
+                TowerGrid[i][j] = new GridNode(new AABB2D(midPoints,64.0f,64.0f), TileMap, 10, CSVInfo[i][j], GridNode.GRID_TYPE.GT_FREE);
                 midPoints.x += 64.0f;
             }
             midPoints.x = 48.0f;
@@ -144,8 +145,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         //Shared prefs
         appPrefs = new AppPrefs(context);
     }
-
-
+    
     //must implement inherited abstract methods
     public void surfaceCreated(SurfaceHolder holder) {
         // Create the thread
@@ -190,7 +190,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             {
                 for (int j = 0; j < 12; ++j)
                 {
-                    canvas.drawBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.grass_floor_tileset),
+                    canvas.drawBitmap(TileMap,
                             TowerGrid[i][j].getSourceRect(),
                             TowerGrid[i][j].getDestRect(),
                             null);
@@ -209,7 +209,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         //Game is lost
         if(GameActive == false){
-
             canvas.drawBitmap(Restart_button.getImage(),Restart_button.getPosX(),Restart_button.getPosY(),null);
             canvas.drawBitmap(Mainmenu_button.getImage(), Mainmenu_button.getPosX(), Mainmenu_button.getPosY(),null);
         }
