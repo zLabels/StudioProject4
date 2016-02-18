@@ -15,125 +15,20 @@ public class AI {
         AI_NORMAL,
         AI_FAST,
         AI_SLOWBUTTANKY,
-    }
+    };
 
     public enum AI_STATE{
         IDLE_STATE,
         WALK_STATE,
-    }
+    };
 
     float health;
     float movespeed;
     float rotation;
-    Vector2 Position;
-    Vector2 Direction;
-
-    public float getHealth() {
-        return health;
-    }
-
-    public void setHealth(float health) {
-        this.health = health;
-    }
-
-    public float getMovespeed() {
-        return movespeed;
-    }
-
-    public void setMovespeed(float movespeed) {
-        this.movespeed = movespeed;
-    }
-
-    public float getRotation() {
-        return rotation;
-    }
-
-    public void setRotation(float rotation) {
-        this.rotation = rotation;
-    }
-
-    public Vector2 getPosition() {
-        return Position;
-    }
-
-    public void setPosition(Vector2 position) {
-        Position = position;
-    }
-
-    public Vector2 getDirection() {
-        return Direction;
-    }
-
-    public void setDirection(Vector2 direction) {
-        Direction = direction;
-    }
-
-    public Vector2 getNextPosition() {
-        return NextPosition;
-    }
-
-    public void setNextPosition(Vector2 nextPosition) {
-        NextPosition = nextPosition;
-    }
-
-    public Vector<Vector2> getWaypoints() {
-        return Waypoints;
-    }
-
-    public void setWaypoints(Vector<Vector2> waypoints) {
-        Waypoints = waypoints;
-    }
-
-    public int getWaypointIndex() {
-        return waypointIndex;
-    }
-
-    public void setWaypointIndex(int waypointIndex) {
-        this.waypointIndex = waypointIndex;
-    }
-
-    public Bitmap getImage() {
-        return image;
-    }
-
-    public void setImage(Bitmap image) {
-        this.image = image;
-    }
-
-    public AI_TYPE getType() {
-        return type;
-    }
-
-    public void setType(AI_TYPE type) {
-        this.type = type;
-    }
-
-    public AI_STATE getCurrentstate() {
-        return currentstate;
-    }
-
-    public void setCurrentstate(AI_STATE currentstate) {
-        this.currentstate = currentstate;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public boolean isEndofwaypoint() {
-        return endofwaypoint;
-    }
-
-    public void setEndofwaypoint(boolean endofwaypoint) {
-        this.endofwaypoint = endofwaypoint;
-    }
-
-    Vector2 NextPosition;
-    Vector<Vector2> Waypoints;
+    Vector2 Position = new Vector2(0,0);
+    Vector2 Direction = new Vector2(0,0);
+    Vector2 NextPosition = new Vector2(0, 0);
+    Vector<Vector2> Waypoints = new Vector<Vector2>();
     int waypointIndex;
     Bitmap image;
     AI_TYPE type;
@@ -247,4 +142,109 @@ public class AI {
             canvas.drawBitmap(image, matrix, null);
         }
     }
+
+    public float getHealth() {
+        return health;
+    }
+
+    public void setHealth(float health) {
+        this.health = health;
+    }
+
+    public float getMovespeed() {
+        return movespeed;
+    }
+
+    public void setMovespeed(float movespeed) {
+        this.movespeed = movespeed;
+    }
+
+    public float getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(float rotation) {
+        this.rotation = rotation;
+    }
+
+    public Vector2 getPosition() {
+        return Position;
+    }
+
+    public void setPosition(Vector2 position) {
+        Position = position;
+    }
+
+    public Vector2 getDirection() {
+        return Direction;
+    }
+
+    public void setDirection(Vector2 direction) {
+        Direction = direction;
+    }
+
+    public Vector2 getNextPosition() {
+        return NextPosition;
+    }
+
+    public void setNextPosition(Vector2 nextPosition) {
+        NextPosition = nextPosition;
+    }
+
+    public Vector<Vector2> getWaypoints() {
+        return Waypoints;
+    }
+
+    public void setWaypoints(Vector<Vector2> waypoints) {
+        Waypoints = waypoints;
+    }
+
+    public int getWaypointIndex() {
+        return waypointIndex;
+    }
+
+    public void setWaypointIndex(int waypointIndex) {
+        this.waypointIndex = waypointIndex;
+    }
+
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
+
+    public AI_TYPE getType() {
+        return type;
+    }
+
+    public void setType(AI_TYPE type) {
+        this.type = type;
+    }
+
+    public AI_STATE getCurrentstate() {
+        return currentstate;
+    }
+
+    public void setCurrentstate(AI_STATE currentstate) {
+        this.currentstate = currentstate;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean isEndofwaypoint() {
+        return endofwaypoint;
+    }
+
+    public void setEndofwaypoint(boolean endofwaypoint) {
+        this.endofwaypoint = endofwaypoint;
+    }
+
 }
