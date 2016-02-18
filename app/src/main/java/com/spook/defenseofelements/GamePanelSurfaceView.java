@@ -88,7 +88,9 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private InGameScreens GridTest = new InGameScreens(0,0,
             BitmapFactory.decodeResource(getResources(),R.drawable.gridtest));
 
+    //Images
     private Bitmap TileMap =  BitmapFactory.decodeResource(getResources(), R.drawable.grass_floor_tileset);
+    private Bitmap TD_Grid_Frame = BitmapFactory.decodeResource(getResources(), R.drawable.td_grid_frame);
 
     //constructor for this GamePanelSurfaceView class
     public GamePanelSurfaceView(Context context,int Mode){
@@ -105,7 +107,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         //Loading images when created
         bg = BitmapFactory.decodeResource(getResources(), R.drawable.game_background);
         scaledbg = Bitmap.createScaledBitmap(bg, ScreenWidth, ScreenHeight, true);
-
         //Media Players
         soundManager = new SoundManager();
 
@@ -119,7 +120,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
         scanner.close();
 
-        Vector2 midPoints = new Vector2(48.0f,2.0f);
+        Vector2 midPoints = new Vector2(48.0f,0.0f);
         for(int i = 0; i < 9; ++i)
         {
             for (int j = 0; j < 12; ++j)
@@ -145,7 +146,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         //Shared prefs
         appPrefs = new AppPrefs(context);
     }
-    
+
     //must implement inherited abstract methods
     public void surfaceCreated(SurfaceHolder holder) {
         // Create the thread
@@ -197,8 +198,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                 }
             }
 
-            //Pause button
-            canvas.drawBitmap(Pause_button.getImage(), Pause_button.getPosX(), Pause_button.getPosY(), null);
+            //Grid Frame
+            canvas.drawBitmap(TD_Grid_Frame, 0, 0, null);
         }
 
         //Game is paused
