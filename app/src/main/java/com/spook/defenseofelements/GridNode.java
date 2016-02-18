@@ -1,6 +1,7 @@
 package com.spook.defenseofelements;
 
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 
 /**
  * Created by Princeton on 18/2/2016.
@@ -14,19 +15,29 @@ public class GridNode
         GT_OCCUPIED,
     };
     public AABB2D BoundingBox;
-    private Bitmap Image;
+    private Rect sourceRect;
     private GRID_TYPE type;
+    int ID;
 
     public GridNode() {
         BoundingBox = new AABB2D(new Vector2(0.0f,10.0f), 10.0f,10.0f);
-        Image = null;
+        sourceRect = null;
         type = GRID_TYPE.GT_FREE;
     }
 
-    public GridNode(AABB2D boundingBox, Bitmap image, GRID_TYPE type) {
+    public GridNode(AABB2D boundingBox, Bitmap image, int col, int tileID, GRID_TYPE type) {
         BoundingBox = boundingBox;
-        Image = image;
-        //Bitmap.createScaledBitmap(Image,1,1,false);
+
+        ID = tileID;
+
+        int spriteWidth = image.getWidth() / col;
+        int spriteHeight = image.getHeight();
+
+        sourceRect = new Rect(0, 0, spriteWidth, spriteHeight);
+
+        sourceRect.left = ID * spriteWidth;
+        sourceRect.right = sourceRect.left + spriteWidth;
+
         this.type = type;
     }
 
@@ -38,14 +49,6 @@ public class GridNode
         this.type = type;
     }
 
-    public Bitmap getImage() {
-        return Image;
-    }
-
-    public void setImage(Bitmap image) {
-        Image = image;
-    }
-
     public AABB2D getBoundingBox() {
         return BoundingBox;
     }
@@ -54,4 +57,19 @@ public class GridNode
         BoundingBox = boundingBox;
     }
 
+    public Rect getSourceRect() {
+        return sourceRect;
+    }
+
+    public void setSourceRect(Rect sourceRect) {
+        this.sourceRect = sourceRect;
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
 }

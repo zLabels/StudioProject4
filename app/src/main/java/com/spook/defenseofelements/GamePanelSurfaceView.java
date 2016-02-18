@@ -106,7 +106,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         {
             for (int j = 0; j < 12; ++j)
             {
-                TowerGrid[i][j] = new GridNode(new AABB2D(midPoints,64.0f,64.0f), GridTest.getImage(), GridNode.GRID_TYPE.GT_FREE);
+                //TowerGrid[i][j] = new GridNode(new AABB2D(midPoints,64.0f,64.0f), GridTest.getImage(), 6, 9, GridNode.GRID_TYPE.GT_FREE);
                 midPoints.x += 64.0f;
             }
             midPoints.x = 48.0f;
@@ -176,10 +176,10 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             {
                 for (int j = 0; j < 12; ++j)
                 {
-                    canvas.drawBitmap(TowerGrid[i][j].getImage(),
-                            TowerGrid[i][j].getBoundingBox().getTopLeft().x,
-                            TowerGrid[i][j].getBoundingBox().getTopLeft().y,
-                            null);
+                    //canvas.drawBitmap(TowerGrid[i][j].getImage(),
+                           // TowerGrid[i][j].getBoundingBox().getTopLeft().x,
+                            //TowerGrid[i][j].getBoundingBox().getTopLeft().y,
+                           // null);
                 }
             }
 
