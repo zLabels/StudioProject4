@@ -108,18 +108,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         //Media Players
         soundManager = new SoundManager();
 
-        Vector2 midPoints = new Vector2(48.0f,2.0f);
-        for(int i = 0; i < 9; ++i)
-        {
-            for (int j = 0; j < 12; ++j)
-            {
-                //TowerGrid[i][j] = new GridNode(new AABB2D(midPoints,64.0f,64.0f), GridTest.getImage(), 6, 9, GridNode.GRID_TYPE.GT_FREE);
-                midPoints.x += 64.0f;
-            }
-            midPoints.x = 48.0f;
-            midPoints.y += 64.0f;
-        }
-
         Scanner scanner = new Scanner(getResources().openRawResource(R.raw.level1_td_grid));
         for (int i = 0; i < 9; ++i) {
             String temp = scanner.next();
@@ -130,13 +118,22 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
         scanner.close();
 
+        Vector2 midPoints = new Vector2(48.0f,2.0f);
+        for(int i = 0; i < 9; ++i)
+        {
+            for (int j = 0; j < 12; ++j)
+            {
+                TowerGrid[i][j] = new GridNode(new AABB2D(midPoints,64.0f,64.0f), GridTest.getImage(), 10, CSVInfo[i][j], GridNode.GRID_TYPE.GT_FREE);
+                midPoints.x += 64.0f;
+            }
+            midPoints.x = 48.0f;
+            midPoints.y += 64.0f;
+        }
+
         //Text rendering values
         paint.setARGB(255, 0, 0, 0);
         paint.setStrokeWidth(100);
         paint.setTextSize(30);
-
-        //Sprite animation init
-        //stickman_anim = new SpriteAnimation(BitmapFactory.decodeResource(getResources(),R.drawable.stickman_sprite),50,480,32,32);
 
         // Create the game loop thread
         myThread = new GameThread(getHolder(), this);
