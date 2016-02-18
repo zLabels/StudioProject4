@@ -59,7 +59,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     int score = 0;  //Play score
 
     //Grids
-    Grid[] TowerGrid = new Grid[10];
+    GridNode[][] TowerGrid = new GridNode[9][12];
     boolean UpdateHighscore = true; //Highscore update
 
     AppPrefs appPrefs;  //Shared prefs
@@ -101,20 +101,16 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         //Media Players
         soundManager = new SoundManager();
 
-        for(int i = 0;i < 10; ++i)
+        Vector2 midPoints = new Vector2(48.0f,2.0f);
+        for(int i = 0; i < 9; ++i)
         {
-            TowerGrid[i] = new Grid(12);
-        }
-
-        Vector2 midPoints = new Vector2(10.0f,10.0f);
-        for(int i = 0; i < 10; ++i)
-        {
-            for (int j = 0; j < TowerGrid[i].getArrayNumber(); ++j)
+            for (int j = 0; j < 12; ++j)
             {
-                TowerGrid[i].getRowList()[j].SetAllData(midPoints,10.0f);
-                midPoints.x += 10.0f;
+                TowerGrid[i][j] = new GridNode(new AABB2D(midPoints,64.0f), GridTest.getImage(), GridNode.GRID_TYPE.GT_FREE);
+                midPoints.x += 64.0f;
             }
-            midPoints.y += 10.0f;
+            midPoints.x = 48.0f;
+            midPoints.y += 64.0f;
         }
 
         //Text rendering values
@@ -180,9 +176,10 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             {
                 for (int j = 0; j < 12; ++j)
                 {
-                    canvas.drawBitmap(GridTest.getImage(),
-                            TowerGrid[i].getRowList()[j].getTopLeft().x,
-                            TowerGrid[i].getRowList()[j].getTopLeft().y,null);
+                    canvas.drawBitmap(TowerGrid[i][j].getImage(),
+                            TowerGrid[i][j].getBoundingBox().getTopLeft().x,
+                            TowerGrid[i][j].getBoundingBox().getTopLeft().y,
+                            null);
                 }
             }
 

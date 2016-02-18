@@ -9,10 +9,10 @@ public class Grid {
 
     public Grid(int RowNumber) {
         this.RowList = new AABB2D[RowNumber];
-        /*for(int i = 0; i < RowNumber; ++i)
+        for(int i = 0; i < RowNumber; ++i)
         {
             RowList[i] = new AABB2D(new Vector2(10.0f,10.0f),10.0f);
-        }*/
+        }
         this.ArrayNumber = RowNumber;
     }
 

@@ -6,9 +6,9 @@ package com.spook.defenseofelements;
 public class AABB2D {
     public Vector2 CenterPoint;    //Center point of the box
     float size; //Size of box
-    public Vector2 Minimum;
-    public Vector2 Maximum;
-    public Vector2 TopLeft;
+    public Vector2 Minimum = new Vector2(0.0f,0.0f);
+    public Vector2 Maximum = new Vector2(0.0f,0.0f);
+    public Vector2 TopLeft = new Vector2(0.0f,0.0f);
 
     public AABB2D(Vector2 centerPoint, float size) {
         CenterPoint = centerPoint;
