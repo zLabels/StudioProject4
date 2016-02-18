@@ -14,9 +14,9 @@ public class Playpage extends Activity implements OnClickListener{
 
     //Buttons
     private Button btn_start;
-    private Button btn_adventure;
-    private Button btn_endless;
-    private Button btn_tutorial;
+    private Button btn_levelback;
+    //private Button btn_endless;
+    //private Button btn_tutorial;
     //Media Player
     SoundManager soundManager;
 
@@ -33,10 +33,10 @@ public class Playpage extends Activity implements OnClickListener{
         btn_start = (Button)findViewById(R.id.btn_start);
         btn_start.setOnClickListener(this);
 
-        /*btn_adventure = (Button)findViewById(R.id.btn_adventure);
-        btn_adventure.setOnClickListener(this);
+        btn_levelback = (Button)findViewById(R.id.btn_levelback);
+        btn_levelback.setOnClickListener(this);
 
-        btn_endless = (Button)findViewById(R.id.btn_endless);
+        /*btn_endless = (Button)findViewById(R.id.btn_endless);
         btn_endless.setOnClickListener(this);
 
         btn_tutorial = (Button)findViewById(R.id.btn_tutorial);
@@ -55,11 +55,12 @@ public class Playpage extends Activity implements OnClickListener{
         {
             intent.setClass(this,GamePage.class);
         }
-         /* if(v == btn_adventure)
+         if(v == btn_levelback)
         {
-            intent.setClass(this,GameAdventure.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.setClass(this,Mainmenu.class);
         }
-        if(v == btn_endless)
+         /*if(v == btn_endless)
         {
             intent.setClass(this,GamePage.class);
         }
