@@ -13,6 +13,11 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.media.MediaPlayer;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.List;
+import java.util.Scanner;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Vector;
@@ -62,6 +67,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     GridNode[][] TowerGrid = new GridNode[9][12];
     boolean UpdateHighscore = true; //Highscore update
 
+    int [][] CSVInfo = new int[9][12];
+
     AppPrefs appPrefs;  //Shared prefs
 
     private boolean GameActive = true;  //Status of game
@@ -81,8 +88,9 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private InGameScreens GridTest = new InGameScreens(0,0,
             BitmapFactory.decodeResource(getResources(),R.drawable.gridtest));
 
+
     //constructor for this GamePanelSurfaceView class
-    public GamePanelSurfaceView(Context context,int Mode) {
+    public GamePanelSurfaceView(Context context,int Mode){
 
         // Context is the current state of the application/object
         super(context);
@@ -94,8 +102,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         ScreenHeight = metrics.heightPixels;
 
         //Loading images when created
-        bg = BitmapFactory.decodeResource(getResources(),
-                R.drawable.game_background);
+        bg = BitmapFactory.decodeResource(getResources(), R.drawable.game_background);
         scaledbg = Bitmap.createScaledBitmap(bg, ScreenWidth, ScreenHeight, true);
 
         //Media Players
@@ -112,6 +119,16 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             midPoints.x = 48.0f;
             midPoints.y += 64.0f;
         }
+
+        Scanner scanner = new Scanner(getResources().openRawResource(R.raw.level1_td_grid));
+        for (int i = 0; i < 9; ++i) {
+            String temp = scanner.next();
+            String[] parts = temp.split(",");
+            for (int j = 0; j < 12; ++j) {
+                CSVInfo[i][j] = Integer.parseInt(parts[j]);
+            }
+        }
+        scanner.close();
 
         //Text rendering values
         paint.setARGB(255, 0, 0, 0);
