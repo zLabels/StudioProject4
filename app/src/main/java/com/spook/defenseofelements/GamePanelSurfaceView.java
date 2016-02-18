@@ -123,7 +123,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         {
             for (int j = 0; j < 12; ++j)
             {
-                TowerGrid[i][j] = new GridNode(new AABB2D(midPoints,64.0f,64.0f), GridTest.getImage(), 10, CSVInfo[i][j], GridNode.GRID_TYPE.GT_FREE);
+                TowerGrid[i][j] = new GridNode(new AABB2D(midPoints,64.0f,64.0f),  BitmapFactory.decodeResource(getResources(), R.drawable.grass_floor_tileset), 10, CSVInfo[i][j], GridNode.GRID_TYPE.GT_FREE);
                 midPoints.x += 64.0f;
             }
             midPoints.x = 48.0f;
@@ -181,7 +181,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         canvas.drawBitmap(scaledbg, bgX + ScreenWidth, bgY, null);
 
         //FPS
-        canvas.drawText("FPS:" + FPS, 50, 75, paint);
+        canvas.drawText("FPS:" + FPS, 50, 800, paint);
         
         if(GameActive)
         {
@@ -190,10 +190,10 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             {
                 for (int j = 0; j < 12; ++j)
                 {
-                    //canvas.drawBitmap(TowerGrid[i][j].getImage(),
-                           // TowerGrid[i][j].getBoundingBox().getTopLeft().x,
-                            //TowerGrid[i][j].getBoundingBox().getTopLeft().y,
-                           // null);
+                    canvas.drawBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.grass_floor_tileset),
+                            TowerGrid[i][j].getSourceRect(),
+                            TowerGrid[i][j].getDestRect(),
+                            null);
                 }
             }
 
@@ -256,41 +256,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                 RenderGameplay(canvas);
                 break;
         }
-    }
-
-    //Collision check AABB
-    public boolean CheckCollision(int x1,int y1,int w1,int h1, int x2, int y2, int w2, int h2)
-    {
-        if(x2>=x1 && x2<=x1 + w1){  //Top left
-            if(y2>= y1 & y2<= y1 + h1){
-                return true;
-            }
-        }
-        if(x2+w2>=x1 && x2+w2<=x1+w1){  //Top right
-            if(y2>=y1 && y2<=y1+h1){
-                return true;
-            }
-        }
-        if(x2>=x1 && x2<= x1+w1){  //Btm Left
-            if(y2+h2>=y1 && y2+h2<=y1+h1){
-                return true;
-            }
-        }
-        if(x2+w2>=x1 && x2+w2<=x1+w1){  //Btm Right
-            if(y2+h2>=y1 && y2+h2<=y1+h1){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //Checking if touch location is within area
-    public boolean CheckTouch(float touch_x,float touch_y, float min_x,float min_y, int max_x,int max_y)
-    {
-        if(touch_x >= min_x && touch_x <= max_x && touch_y >= min_y && touch_y <= max_y){
-            return true;
-        }
-        return false;
     }
 
     @Override

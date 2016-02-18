@@ -16,6 +16,7 @@ public class GridNode
     };
     public AABB2D BoundingBox;
     private Rect sourceRect;
+    private Rect destRect;
     private GRID_TYPE type;
     int ID;
 
@@ -37,6 +38,9 @@ public class GridNode
 
         sourceRect.left = ID * spriteWidth;
         sourceRect.right = sourceRect.left + spriteWidth;
+
+        destRect = new Rect((int)BoundingBox.getTopLeft().x,(int)BoundingBox.getTopLeft().y,
+                (int)BoundingBox.getTopLeft().x + spriteWidth,(int)BoundingBox.getTopLeft().y + spriteHeight);
 
         this.type = type;
     }
@@ -63,6 +67,14 @@ public class GridNode
 
     public void setSourceRect(Rect sourceRect) {
         this.sourceRect = sourceRect;
+    }
+
+    public Rect getDestRect() {
+        return destRect;
+    }
+
+    public void setDestRect(Rect destRect) {
+        this.destRect = destRect;
     }
 
     public int getID() {
