@@ -106,7 +106,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         {
             for (int j = 0; j < 12; ++j)
             {
-                TowerGrid[i][j] = new GridNode(new AABB2D(midPoints,64.0f), GridTest.getImage(), GridNode.GRID_TYPE.GT_FREE);
+                TowerGrid[i][j] = new GridNode(new AABB2D(midPoints,64.0f,64.0f), GridTest.getImage(), GridNode.GRID_TYPE.GT_FREE);
                 midPoints.x += 64.0f;
             }
             midPoints.x = 48.0f;

@@ -18,7 +18,7 @@ public class GridNode
     private GRID_TYPE type;
 
     public GridNode() {
-        BoundingBox = new AABB2D(new Vector2(0.0f,10.0f), 10.0f);
+        BoundingBox = new AABB2D(new Vector2(0.0f,10.0f), 10.0f,10.0f);
         Image = null;
         type = GRID_TYPE.GT_FREE;
     }
