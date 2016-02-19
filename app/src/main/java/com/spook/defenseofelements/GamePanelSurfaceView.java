@@ -91,6 +91,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     //Images
     private Bitmap TileMap =  BitmapFactory.decodeResource(getResources(), R.drawable.grass_floor_tileset);
     private Bitmap TD_Grid_Frame = BitmapFactory.decodeResource(getResources(), R.drawable.td_grid_frame);
+    private Bitmap T_selection_bar = BitmapFactory.decodeResource(getResources(), R.drawable.tower_select_bar);
 
     //constructor for this GamePanelSurfaceView class
     public GamePanelSurfaceView(Context context,int Mode){
@@ -200,6 +201,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
             //Grid Frame
             canvas.drawBitmap(TD_Grid_Frame, 0, 0, null);
+            canvas.drawBitmap(T_selection_bar,0 ,650, null);
+
         }
 
         //Game is paused
