@@ -90,6 +90,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
     private Bitmap TileMap =  BitmapFactory.decodeResource(getResources(), R.drawable.grass_floor_tileset);
 
+    private Bitmap TileFrame = BitmapFactory.decodeResource(getResources(), R.drawable.towerdefenseframe);
+
     //constructor for this GamePanelSurfaceView class
     public GamePanelSurfaceView(Context context,int Mode){
 
@@ -196,6 +198,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                             null);
                 }
             }
+
+            canvas.drawBitmap(TileFrame, 0, 0, null);
 
             //Pause button
             canvas.drawBitmap(Pause_button.getImage(), Pause_button.getPosX(), Pause_button.getPosY(), null);
