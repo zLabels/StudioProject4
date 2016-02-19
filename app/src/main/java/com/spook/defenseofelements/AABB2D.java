@@ -16,10 +16,10 @@ public class AABB2D {
         this.width = width;
         this.height = height;
         float dividedSizeX = width * 0.5f;
-        float dividedSizeY = width * 0.5f;
+        float dividedSizeY = height * 0.5f;
         Minimum.Set(centerPoint.x - dividedSizeX, centerPoint.y - dividedSizeY);
         Maximum.Set(centerPoint.x + dividedSizeX, centerPoint.y + dividedSizeY);
-        TopLeft.Set(centerPoint.x - dividedSizeX,centerPoint.y + dividedSizeY);
+        TopLeft.Set(centerPoint.x - dividedSizeX,centerPoint.y - dividedSizeY);
     }
 
     public void SetAllData(Vector2 centerPoint, float width,float height)
@@ -28,10 +28,10 @@ public class AABB2D {
         this.width = width;
         this.height = height;
         float dividedSizeX = width * 0.5f;
-        float dividedSizeY = width * 0.5f;
+        float dividedSizeY = height * 0.5f;
         Minimum.Set(centerPoint.x - dividedSizeX, centerPoint.y - dividedSizeY);
         Maximum.Set(centerPoint.x + dividedSizeX, centerPoint.y + dividedSizeY);
-        TopLeft.Set(centerPoint.x - dividedSizeX,centerPoint.y + dividedSizeY);
+        TopLeft.Set(centerPoint.x - dividedSizeX,centerPoint.y - dividedSizeY);
     }
 
     public Vector2 getTopLeft() {
@@ -65,9 +65,9 @@ public class AABB2D {
 
     public boolean CheckIntersect(AABB2D box)
     {
-        if (this.Maximum.x > box.Minimum.x ||
-                this.Maximum.y > box.Minimum.y ||
-                this.Minimum.x < box.Maximum.x ||
+        if (this.Maximum.x > box.Minimum.x &&
+                this.Maximum.y > box.Minimum.y &&
+                this.Minimum.x < box.Maximum.x &&
                 this.Minimum.y < box.Maximum.y)
         {
             return true;
@@ -77,8 +77,8 @@ public class AABB2D {
 
     public boolean CheckIntersect(Vector2 pos)
     {
-        if(pos.x > this.Minimum.x && pos.x < this.Maximum.x ||
-                pos.y > this.Minimum.y && pos.y < this.Minimum.y)
+        if(pos.x > this.Minimum.x && pos.x < this.Maximum.x &&
+                pos.y > this.Minimum.y && pos.y < this.Maximum.y)
         {
             return true;
         }

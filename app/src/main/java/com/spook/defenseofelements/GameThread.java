@@ -54,17 +54,19 @@ public class GameThread extends Thread {
 
     public void calculateFPS()
     {
-        frameCount++;
+        ++frameCount;
 
         long currentTime = System.currentTimeMillis();
         dt = (currentTime - lastTime) / 1000.f;
         lastTime = currentTime;
-
-        if(currentTime - lastFPSTime > 1000)
+        if(lastFPSTime <= 0) lastFPSTime = currentTime;
+        long elapsedtime = currentTime - lastFPSTime;
+        //(currentTime - lastFPSTime)
+        if( elapsedtime > 1000)
         {
-            fps = (frameCount * 1000.f) / (currentTime - lastFPSTime);
-            lastFPSTime = currentTime;
+            fps = (frameCount) / (float)elapsedtime * 1000;
             frameCount = 0;
+            lastFPSTime = currentTime;
         }
     }
 
@@ -73,6 +75,8 @@ public class GameThread extends Thread {
         while (isRun){
             //Update game state and render state to the screen
             Canvas c = null;
+            calculateFPS();
+
             try {
                 c = this.holder.lockCanvas();
                 synchronized(holder){
@@ -99,7 +103,6 @@ public class GameThread extends Thread {
                     holder.unlockCanvasAndPost(c);
                 }
             }
-            calculateFPS();
         }
 
     }

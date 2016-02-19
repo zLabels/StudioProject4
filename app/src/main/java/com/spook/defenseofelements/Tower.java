@@ -21,8 +21,9 @@ public class Tower {
     float elaspedtime;
     float rotation;
     boolean fire;
-    Vector2 Position;
-    Vector2 Direction;
+    Vector2 Position = new Vector2(0.0f,0.0f);
+    Vector2 TopLeft = new Vector2(0.0f,0.0f);
+    Vector2 Direction = new Vector2(0.0f,0.0f);
     private Bitmap image;
     TOWER_TYPE type;
 
@@ -48,6 +49,11 @@ public class Tower {
         this.level = 1;
         this.elaspedtime = 0;
         this.rotation = 0;
+
+        float halfWidth = image.getWidth() * 0.5f;
+        float halfHeight = image.getHeight() * 0.5f;
+
+        TopLeft.Set(Pos.x - halfWidth, Pos.y + halfHeight);
 
         AssignTowerType(type);
     }
@@ -89,6 +95,7 @@ public class Tower {
     public void Draw(Canvas canvas)
     {
         Matrix matrix = new Matrix();
+        matrix.postTranslate(TopLeft.x,TopLeft.y);
         matrix.postRotate(rotation, image.getWidth() / 2, image.getHeight() / 2);
         canvas.drawBitmap(image, matrix, null);
     }
@@ -188,5 +195,13 @@ public class Tower {
 
     public void setType(TOWER_TYPE type) {
         this.type = type;
+    }
+
+    public Vector2 getTopLeft() {
+        return TopLeft;
+    }
+
+    public void setTopLeft(Vector2 topLeft) {
+        TopLeft = topLeft;
     }
 }
