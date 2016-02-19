@@ -75,6 +75,8 @@ public class GameThread extends Thread {
         while (isRun){
             //Update game state and render state to the screen
             Canvas c = null;
+            calculateFPS();
+
             try {
                 c = this.holder.lockCanvas();
                 synchronized(holder){
@@ -101,7 +103,6 @@ public class GameThread extends Thread {
                     holder.unlockCanvasAndPost(c);
                 }
             }
-            calculateFPS();
         }
 
     }

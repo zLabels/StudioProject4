@@ -181,9 +181,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
         canvas.drawBitmap(scaledbg, bgX, bgY, null);
         canvas.drawBitmap(scaledbg, bgX + ScreenWidth, bgY, null);
-
-        //FPS
-        canvas.drawText("FPS:" + FPS, 50, 800, paint);
         
         if(GameActive)
         {
@@ -216,6 +213,9 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             canvas.drawBitmap(Restart_button.getImage(),Restart_button.getPosX(),Restart_button.getPosY(),null);
             canvas.drawBitmap(Mainmenu_button.getImage(), Mainmenu_button.getPosX(), Mainmenu_button.getPosY(),null);
         }
+
+        //FPS
+        canvas.drawText("FPS:" + FPS, 50, 800, paint);
     }
 
     //Update method to update the game play
@@ -243,7 +243,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                         //} else {
                         //    startVibrate();
                         //}
-
                     }
                 }
             }
