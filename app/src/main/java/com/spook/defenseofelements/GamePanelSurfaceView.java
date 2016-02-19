@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.media.MediaPlayer;
+import android.widget.Button;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -40,9 +41,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     float vibrateTime = 0.f;
     float MaxVibrateTime = 0.5f;
 
-    //Stick man animation
-    private SpriteAnimation stickman_anim;
-
     //Random
     Random r = new Random();
 
@@ -63,6 +61,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     float timer = 0.f;  //Timer to increase speed
     int score = 0;  //Play score
 
+    Tower selectedTower;    //Currently selected Tower
+
     //Grids
     GridNode[][] TowerGrid = new GridNode[9][12];
     boolean UpdateHighscore = true; //Highscore update
@@ -75,12 +75,18 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private boolean GamePaused = false; //Paused status of game
 
     //In game buttons
-    private InGameButton Restart_button = new InGameButton(500,650,
+    /*private InGameButton Restart_button = new InGameButton(500,650,
             BitmapFactory.decodeResource(getResources(),R.drawable.restart_ingamebutton),false,"Restart");
     private InGameButton Mainmenu_button = new InGameButton(1150,650,
             BitmapFactory.decodeResource(getResources(),R.drawable.mainmenu_ingamebutton),false,"MainMenu");
     private InGameButton Pause_button = new InGameButton(1700,30,
-            BitmapFactory.decodeResource(getResources(),R.drawable.pauseicon),false,"Pause");
+            BitmapFactory.decodeResource(getResources(),R.drawable.pauseicon),false,"Pause");*/
+
+    //List containing All In Game Buttons
+    Vector<InGameButton> ButtonList = new Vector<InGameButton>();
+
+    //List containing All Towers
+    Vector<Tower> TowerList = new Vector<Tower>();
 
     private InGameScreens Pause_screen = new InGameScreens(400,200,
             BitmapFactory.decodeResource(getResources(),R.drawable.pause_screen));
@@ -92,6 +98,9 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private Bitmap TileMap =  BitmapFactory.decodeResource(getResources(), R.drawable.grass_floor_tileset);
     private Bitmap TD_Grid_Frame = BitmapFactory.decodeResource(getResources(), R.drawable.td_grid_frame);
     private Bitmap T_selection_bar = BitmapFactory.decodeResource(getResources(), R.drawable.tower_select_bar);
+
+    //Towers
+    private Bitmap NormalTower = BitmapFactory.decodeResource(getResources(),R.drawable.gridtest);
 
     //constructor for this GamePanelSurfaceView class
     public GamePanelSurfaceView(Context context,int Mode){
@@ -111,6 +120,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         //Media Players
         soundManager = new SoundManager();
 
+        //Reading Values from CSV files
         Scanner scanner = new Scanner(getResources().openRawResource(R.raw.level1_td_grid));
         for (int i = 0; i < 9; ++i) {
             String temp = scanner.next();
@@ -121,17 +131,22 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
         scanner.close();
 
+        //Initializing Tower Grids
         Vector2 midPoints = new Vector2(48.0f,0.0f);
         for(int i = 0; i < 9; ++i)
         {
             for (int j = 0; j < 12; ++j)
             {
-                TowerGrid[i][j] = new GridNode(new AABB2D(midPoints,64.0f,64.0f), TileMap, 10, CSVInfo[i][j], GridNode.GRID_TYPE.GT_FREE);
+                TowerGrid[i][j] = new GridNode(new AABB2D(new Vector2(midPoints.x, midPoints.y),64.0f,64.0f), TileMap, 10, CSVInfo[i][j], GridNode.GRID_TYPE.GT_FREE);
                 midPoints.x += 64.0f;
             }
             midPoints.x = 48.0f;
             midPoints.y += 64.0f;
         }
+
+        //InGameButton List
+        ButtonList.addElement(new InGameButton(50, 800,
+                BitmapFactory.decodeResource(getResources(), R.drawable.gridtest), false, InGameButton.BUTTON_TYPE.UI_NORMAL_TOWER));
 
         //Text rendering values
         paint.setARGB(255, 0, 0, 0);
@@ -140,6 +155,9 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         // Create the game loop thread
         myThread = new GameThread(getHolder(), this);
+
+        //Set Current Selected Tower to null
+        selectedTower = null;
 
         // Make the GamePanel focusable so it can handle events
         setFocusable(true);
@@ -196,9 +214,26 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                 }
             }
 
-            //Grid Frame
-            canvas.drawBitmap(TD_Grid_Frame, 0, 0, null);
+            //Rendering Towers
+            for(int i = 0; i < TowerList.size(); ++i)
+            {
+                TowerList.elementAt(i).Draw(canvas);
+            }
+
+            //Rendering Buttons
+            for(int i = 0; i < ButtonList.size(); ++i)
+            {
+                canvas.drawBitmap(ButtonList.elementAt(i).getImage(),
+                        ButtonList.elementAt(i).getBoundingBox().getTopLeft().x,
+                        ButtonList.elementAt(i).getBoundingBox().getTopLeft().y,
+                        null);
+            }
+
+            //Selection Bar
             canvas.drawBitmap(T_selection_bar,0 ,650, null);
+
+            //Grid Frame
+            //canvas.drawBitmap(TD_Grid_Frame, 0, 0, null);
 
         }
 
@@ -210,12 +245,12 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         //Game is lost
         if(GameActive == false){
-            canvas.drawBitmap(Restart_button.getImage(),Restart_button.getPosX(),Restart_button.getPosY(),null);
-            canvas.drawBitmap(Mainmenu_button.getImage(), Mainmenu_button.getPosX(), Mainmenu_button.getPosY(),null);
+           // canvas.drawBitmap(Restart_button.getImage(),Restart_button.getPosX(),Restart_button.getPosY(),null);
+            //canvas.drawBitmap(Mainmenu_button.getImage(), Mainmenu_button.getPosX(), Mainmenu_button.getPosY(),null);
         }
 
         //FPS
-        canvas.drawText("FPS:" + FPS, 50, 800, paint);
+        canvas.drawText("FPS:" + FPS, 50, 50, paint);
     }
 
     //Update method to update the game play
@@ -262,12 +297,75 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
     @Override
     public boolean onTouchEvent(MotionEvent event){
-        //Only process if game is active
+        //To process if game is active and NOT paused
         if(GameActive && !GamePaused)
         {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                {
+                    //Loop to iterate through all buttons
+                    for(int i =0; i < ButtonList.size();++i)
+                    {
+                        if(ButtonList.elementAt(i).getBoundingBox().CheckIntersect(new Vector2(event.getX(),event.getY())))
+                        {
+                            switch(ButtonList.elementAt(i).buttonID)
+                            {
+                                case UI_NORMAL_TOWER:
+
+                                    if(selectedTower != null) {
+                                        if (selectedTower.getType() != Tower.TOWER_TYPE.TOWER_NORMAL) {
+                                            selectedTower = new Tower(new Vector2(0, 0), NormalTower, Tower.TOWER_TYPE.TOWER_NORMAL);
+                                        } else {
+                                            //If currently selected tower is the same, deselect it
+                                            selectedTower = null;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        //there is no selected tower
+                                        selectedTower = new Tower(new Vector2(0, 0), NormalTower, Tower.TOWER_TYPE.TOWER_NORMAL);
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+
+                    //Loop to iterate through the grids
+                    if(selectedTower != null) {
+                        Boolean GridSelected = false;
+                        //Loop to iterate through the grids
+                        for (int i = 0; i < 9; ++i)
+                        {
+                            for (int j = 0; j < 12; ++j)
+                            {
+                                //Grid needs to be free first
+                                if(TowerGrid[i][j].getType() == GridNode.GRID_TYPE.GT_FREE) {
+                                    //if Tap on this grid
+                                    if (TowerGrid[i][j].getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY()))) {
+                                        TowerList.addElement(new Tower(TowerGrid[i][j].getBoundingBox().getCenterPoint(),
+                                                selectedTower.getImage(), selectedTower.getType()));
+
+                                        //Set Grid to Occupied
+                                        TowerGrid[i][j].setType(GridNode.GRID_TYPE.GT_OCCUPIED);
+
+                                        selectedTower = null;
+                                        GridSelected = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if(GridSelected)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+                break;
+            }
             return true;
         }
-
+        //To process if game is active BUT paused
         else if(GameActive && GamePaused)
         {
             return true;
@@ -361,8 +459,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         ScrollSpeed = 500;
         timer = 0.f;
         score = 0;
-        Restart_button.setActive(false);
-        Mainmenu_button.setActive(false);
+        //Restart_button.setActive(false);
+        //Mainmenu_button.setActive(false);
         Tapped = false;
         FingerDown = false;
         vibrateTime = 0.f;

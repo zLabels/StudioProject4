@@ -6,15 +6,20 @@ import android.graphics.Bitmap;
  * Created by Princeton on 8/12/2015.
  */
 public class InGameButton {
+
+    public enum BUTTON_TYPE
+    {
+        UI_NORMAL_TOWER,
+    }
     float posX = 0, posY = 0;   //Coordinates of button
     private Bitmap image;    //Image of button
     int imgWidth;   //Width of image
     int imgHeight;  //Height of image
     boolean active; //active status of button
     private AABB2D BoundingBox = new AABB2D(new Vector2(0,0),10.0f,10.0f);
-    public String buttonID;
+    public BUTTON_TYPE buttonID;
 
-    public InGameButton(float posX, float posY, Bitmap image,boolean active, String ID) {
+    public InGameButton(float posX, float posY, Bitmap image,boolean active, BUTTON_TYPE ID) {
         this.posX = posX;
         this.posY = posY;
         this.image = image;
@@ -22,7 +27,7 @@ public class InGameButton {
         this.imgHeight = image.getHeight();
         this.active = active;
         this.buttonID = ID;
-        BoundingBox.SetAllData(new Vector2(posX + (imgWidth * 0.5f),posY + (imgHeight * 0.5f)),imgWidth,imgHeight);
+        BoundingBox.SetAllData(new Vector2(posX ,posY),imgWidth,imgHeight);
     }
 
     public void setActive(boolean active) {
