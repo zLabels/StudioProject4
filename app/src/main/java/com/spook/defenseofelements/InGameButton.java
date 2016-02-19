@@ -12,14 +12,16 @@ public class InGameButton {
     int imgHeight;  //Height of image
     boolean active; //active status of button
     private AABB2D BoundingBox = new AABB2D(new Vector2(0,0),10.0f,10.0f);
+    public String buttonID;
 
-    public InGameButton(float posX, float posY, Bitmap image,boolean active) {
+    public InGameButton(float posX, float posY, Bitmap image,boolean active, String ID) {
         this.posX = posX;
         this.posY = posY;
         this.image = image;
         this.imgWidth = image.getWidth();
         this.imgHeight = image.getHeight();
         this.active = active;
+        this.buttonID = ID;
         BoundingBox.SetAllData(new Vector2(posX + (imgWidth * 0.5f),posY + (imgHeight * 0.5f)),imgWidth,imgHeight);
     }
 

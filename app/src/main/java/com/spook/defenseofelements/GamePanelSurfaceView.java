@@ -76,11 +76,11 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
     //In game buttons
     private InGameButton Restart_button = new InGameButton(500,650,
-            BitmapFactory.decodeResource(getResources(),R.drawable.restart_ingamebutton),false);
+            BitmapFactory.decodeResource(getResources(),R.drawable.restart_ingamebutton),false,"Restart");
     private InGameButton Mainmenu_button = new InGameButton(1150,650,
-            BitmapFactory.decodeResource(getResources(),R.drawable.mainmenu_ingamebutton),false);
+            BitmapFactory.decodeResource(getResources(),R.drawable.mainmenu_ingamebutton),false,"MainMenu");
     private InGameButton Pause_button = new InGameButton(1700,30,
-            BitmapFactory.decodeResource(getResources(),R.drawable.pauseicon),false);
+            BitmapFactory.decodeResource(getResources(),R.drawable.pauseicon),false,"Pause");
 
     private InGameScreens Pause_screen = new InGameScreens(400,200,
             BitmapFactory.decodeResource(getResources(),R.drawable.pause_screen));
