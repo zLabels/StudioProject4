@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Vibrator;
+import android.text.method.Touch;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -51,7 +52,12 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     Vector2 LastPos = new Vector2(0,0);
     Vector2 DirectionVector = new Vector2(0,0);
     boolean Tapped = false;
-    boolean FingerDown = false;
+
+    //Dragging Variables
+    boolean ActionDown = false;
+    boolean ActionUp = false;
+    Vector2 FirstTouch = new Vector2(0.0f,0.0f);
+    Vector2 TouchPos = new Vector2(0.0f,0.0f);
 
     //Game elements
     float SpawnRate = 0.5f; //Rate for each obstacle to spawn
@@ -67,7 +73,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     GridNode[][] TowerGrid = new GridNode[9][12];
     boolean UpdateHighscore = true; //Highscore update
 
-    int [][] CSVInfo = new int[9][12];
+    int[][] CSVInfo = new int[9][12];
 
     AppPrefs appPrefs;  //Shared prefs
 
@@ -100,7 +106,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private Bitmap T_selection_bar = BitmapFactory.decodeResource(getResources(), R.drawable.tower_select_bar);
 
     //Towers
-    private Bitmap NormalTower = BitmapFactory.decodeResource(getResources(),R.drawable.gridtest);
+    private Bitmap NormalTowerImage = BitmapFactory.decodeResource(getResources(), R.drawable.tower_normal);
+    private Bitmap NormalTowerImageDrag = BitmapFactory.decodeResource(getResources(), R.drawable.tower_normal_drag);
 
     //constructor for this GamePanelSurfaceView class
     public GamePanelSurfaceView(Context context,int Mode){
@@ -132,12 +139,21 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         scanner.close();
 
         //Initializing Tower Grids
-        Vector2 midPoints = new Vector2(48.0f,0.0f);
+        Vector2 midPoints = new Vector2(48.0f,42.0f);
         for(int i = 0; i < 9; ++i)
         {
             for (int j = 0; j < 12; ++j)
             {
-                TowerGrid[i][j] = new GridNode(new AABB2D(new Vector2(midPoints.x, midPoints.y),64.0f,64.0f), TileMap, 10, CSVInfo[i][j], GridNode.GRID_TYPE.GT_FREE);
+                //Check if its a path
+                if(CSVInfo[i][j] > 0) {
+                    TowerGrid[i][j] = new GridNode(new AABB2D(new Vector2(midPoints.x, midPoints.y), 64.0f, 64.0f),
+                            TileMap, 7, CSVInfo[i][j], GridNode.GRID_TYPE.GT_PATH);
+                }
+                else
+                {
+                    TowerGrid[i][j] = new GridNode(new AABB2D(new Vector2(midPoints.x, midPoints.y), 64.0f, 64.0f),
+                            TileMap, 7, CSVInfo[i][j], GridNode.GRID_TYPE.GT_FREE);
+                }
                 midPoints.x += 64.0f;
             }
             midPoints.x = 48.0f;
@@ -145,8 +161,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
 
         //InGameButton List
-        ButtonList.addElement(new InGameButton(50, 800,
-                BitmapFactory.decodeResource(getResources(), R.drawable.gridtest), false, InGameButton.BUTTON_TYPE.UI_NORMAL_TOWER));
+        ButtonList.addElement(new InGameButton(50, 667,
+                NormalTowerImage, false, InGameButton.BUTTON_TYPE.UI_NORMAL_TOWER));
 
         //Text rendering values
         paint.setARGB(255, 0, 0, 0);
@@ -220,6 +236,9 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                 TowerList.elementAt(i).Draw(canvas);
             }
 
+            //Selection Bar
+            canvas.drawBitmap(T_selection_bar,0 ,630, null);
+
             //Rendering Buttons
             for(int i = 0; i < ButtonList.size(); ++i)
             {
@@ -229,11 +248,21 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                         null);
             }
 
-            //Selection Bar
-            canvas.drawBitmap(T_selection_bar,0 ,650, null);
-
             //Grid Frame
-            //canvas.drawBitmap(TD_Grid_Frame, 0, 0, null);
+            canvas.drawBitmap(TD_Grid_Frame, 0, -20, null);
+
+            //Drag Tower
+            if(ActionDown)
+            {
+                if(selectedTower != null) {
+                    switch (selectedTower.getType()) {
+                        case TOWER_NORMAL: {
+                            canvas.drawBitmap(NormalTowerImageDrag, TouchPos.x, TouchPos.y, null);
+                        }
+                        break;
+                    }
+                }
+            }
 
         }
 
@@ -264,13 +293,10 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                 {
                     //Only when game is active we update the following
                     if (GameActive) {
-
                         //stickman_anim.update(System.currentTimeMillis());
-
                     }
                     //Feedback for game over
                     if (GameActive == false) {
-
                         //Vibration feedback
                         //vibrateTime += dt;
                         //if (vibrateTime > MaxVibrateTime) {
@@ -300,46 +326,52 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         //To process if game is active and NOT paused
         if(GameActive && !GamePaused)
         {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                {
-                    //Loop to iterate through all buttons
-                    for(int i =0; i < ButtonList.size();++i)
-                    {
-                        if(ButtonList.elementAt(i).getBoundingBox().CheckIntersect(new Vector2(event.getX(),event.getY())))
-                        {
-                            switch(ButtonList.elementAt(i).buttonID)
-                            {
-                                case UI_NORMAL_TOWER:
-
-                                    if(selectedTower != null) {
-                                        if (selectedTower.getType() != Tower.TOWER_TYPE.TOWER_NORMAL) {
-                                            selectedTower = new Tower(new Vector2(0, 0), NormalTower, Tower.TOWER_TYPE.TOWER_NORMAL);
+            switch (event.getAction())
+            {
+                case MotionEvent.ACTION_DOWN: {
+                    //If its the first time tapping down
+                    if(!ActionDown) {
+                        FirstTouch.x = event.getX();
+                        FirstTouch.y = event.getY();
+                        //Loop to iterate through all buttons
+                        for (int i = 0; i < ButtonList.size(); ++i) {
+                            if (ButtonList.elementAt(i).getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY()))) {
+                                switch (ButtonList.elementAt(i).buttonID) {
+                                    case UI_NORMAL_TOWER:
+                                        //Check if there is a selected tower
+                                        if (selectedTower != null) {
+                                            //Check if the selected tower is different from the one currently being selected
+                                            if (selectedTower.getType() != Tower.TOWER_TYPE.TOWER_NORMAL) {
+                                                //If different, change selected tower to this
+                                                selectedTower = new Tower(new Vector2(0, 0), NormalTowerImage, Tower.TOWER_TYPE.TOWER_NORMAL);
+                                            } else {
+                                                //If currently selected tower is the same, deselect it
+                                                selectedTower = null;
+                                            }
                                         } else {
-                                            //If currently selected tower is the same, deselect it
-                                            selectedTower = null;
+                                            //there is no selected tower
+                                            selectedTower = new Tower(new Vector2(0, 0), NormalTowerImage, Tower.TOWER_TYPE.TOWER_NORMAL);
                                         }
-                                    }
-                                    else
-                                    {
-                                        //there is no selected tower
-                                        selectedTower = new Tower(new Vector2(0, 0), NormalTower, Tower.TOWER_TYPE.TOWER_NORMAL);
-                                    }
-                                    break;
+                                        break;
+                                }
                             }
                         }
+                        ActionDown = true;
+                        ActionUp = false;
                     }
+                }
+                break;
 
-                    //Loop to iterate through the grids
-                    if(selectedTower != null) {
+                case MotionEvent.ACTION_UP:
+                {
+                    //Only if a Tower is selected to be built
+                    if (selectedTower != null) {
                         Boolean GridSelected = false;
                         //Loop to iterate through the grids
-                        for (int i = 0; i < 9; ++i)
-                        {
-                            for (int j = 0; j < 12; ++j)
-                            {
+                        for (int i = 0; i < 9; ++i) {
+                            for (int j = 0; j < 12; ++j) {
                                 //Grid needs to be free first
-                                if(TowerGrid[i][j].getType() == GridNode.GRID_TYPE.GT_FREE) {
+                                if (TowerGrid[i][j].getType() == GridNode.GRID_TYPE.GT_FREE) {
                                     //if Tap on this grid
                                     if (TowerGrid[i][j].getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY()))) {
                                         TowerList.addElement(new Tower(TowerGrid[i][j].getBoundingBox().getCenterPoint(),
@@ -348,21 +380,31 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                         //Set Grid to Occupied
                                         TowerGrid[i][j].setType(GridNode.GRID_TYPE.GT_OCCUPIED);
 
-                                        selectedTower = null;
                                         GridSelected = true;
                                         break;
                                     }
                                 }
                             }
-                            if(GridSelected)
-                            {
+                            //If a grid has been selected
+                            if (GridSelected) {
+                                //Stop loop
                                 break;
                             }
                         }
                     }
+                    ActionDown = false;
+                    ActionUp = true;
+                    selectedTower = null;
                 }
                 break;
             }
+
+            if(ActionDown)
+            {
+                TouchPos.x = event.getX() - 32.0f;
+                TouchPos.y = event.getY() - 32.0f;
+            }
+
             return true;
         }
         //To process if game is active BUT paused
@@ -462,7 +504,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         //Restart_button.setActive(false);
         //Mainmenu_button.setActive(false);
         Tapped = false;
-        FingerDown = false;
         vibrateTime = 0.f;
         UpdateHighscore = true;
         //Reset everything first before we set game active back to true

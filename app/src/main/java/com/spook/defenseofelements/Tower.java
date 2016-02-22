@@ -53,7 +53,7 @@ public class Tower {
         float halfWidth = image.getWidth() * 0.5f;
         float halfHeight = image.getHeight() * 0.5f;
 
-        TopLeft.Set(Pos.x - halfWidth, Pos.y + halfHeight);
+        TopLeft.Set(Pos.x - halfWidth, Pos.y - halfHeight);
 
         AssignTowerType(type);
     }
