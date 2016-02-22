@@ -115,6 +115,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private Bitmap FastTowerImage = BitmapFactory.decodeResource(getResources(), R.drawable.tower_fast);
     private Bitmap FastTowerImageDrag = BitmapFactory.decodeResource(getResources(), R.drawable.tower_fast_drag);
 
+    //Ais
     private Bitmap NormalAIImage = BitmapFactory.decodeResource(getResources(), R.drawable.ghost_round);
     private Bitmap FastAIImage = BitmapFactory.decodeResource(getResources(), R.drawable.ghost_spirit);
     private Bitmap SlowAIImage = BitmapFactory.decodeResource(getResources(), R.drawable.ghost_head);
@@ -338,7 +339,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                         //stickman_anim.update(System.currentTimeMillis());
                         for(int i = 0; i < AIList.size(); ++i)
                         {
-                            if(AIList.elementAt(i).active)
+                            if(AIList.elementAt(i).isActive())
                             {
                                 AIList.elementAt(i).Update(dt);
                             }
