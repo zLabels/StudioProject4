@@ -16,7 +16,7 @@
         android:layout_width="350dp"
         android:layout_height="257dp"
         android:background="@drawable/play_button"
-        android:layout_marginTop="300dp"
+        android:layout_marginTop="190dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
@@ -25,18 +25,22 @@
         android:layout_width="350dp"
         android:layout_height="171dp"
         android:background="@drawable/options_button"
-        android:layout_below="@+id/btn_play"
-        android:layout_marginTop="100dp"
-        android:layout_alignLeft="@+id/btn_play"
-        android:layout_alignStart="@+id/btn_play" />
+        android:layout_marginTop="490dp"
+        android:layout_marginLeft="210dp"/>
 
     <Button
         android:id = "@+id/btn_credits"
         android:layout_width="350dp"
         android:layout_height="182dp"
         android:background="@drawable/credits_button"
-        android:layout_below="@+id/btn_options"
-        android:layout_marginTop="100dp"
-        android:layout_alignLeft="@+id/btn_options"
-        android:layout_alignStart="@+id/btn_options" />
+        android:layout_marginTop="700dp"
+        android:layout_marginLeft="200dp"/>
+
+    <Button
+        android:id = "@+id/btn_highscore"
+        android:layout_width="350dp"
+        android:layout_height="182dp"
+        android:background="@drawable/highscore_button"
+        android:layout_marginTop="910dp"
+        android:layout_marginLeft="210dp"/>
 </RelativeLayout>

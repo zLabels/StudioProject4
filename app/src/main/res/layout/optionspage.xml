@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@drawable/optionscreen"
+    android:background="@drawable/options_page"
     android:orientation="vertical">
 
     <Button
         android:id = "@+id/btn_optionsback"
-        android:layout_width="100dp"
-        android:layout_height="42dp"
-        android:background="@drawable/play_button"
+        android:layout_width="180dp"
+        android:layout_height="80dp"
+        android:background="@drawable/levelback_button"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -23,19 +23,19 @@
         android:max="100"
         android:progress="1"
         android:progressDrawable="@android:color/black"
-        android:layout_marginTop="32dp"
-        android:layout_below="@+id/btn_optionsback"
+        android:layout_below="@+id/tv_backgroundMusic"
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:layout_width="200dp"
+        android:layout_width="500dp"
         android:layout_height="50dp"
         android:id="@+id/tv_backgroundMusic"
-        android:layout_below="@+id/btn_optionsback"
-        android:layout_centerHorizontal="true"
         android:textAlignment="center"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginTop="174dp"
+        android:layout_below="@+id/btn_optionsback"
+        android:layout_centerHorizontal="true" />
 
     <SeekBar
         android:id="@+id/sb_sfxSoundSeekbar"
@@ -44,10 +44,9 @@
         android:max="100"
         android:progress="1"
         android:progressDrawable="@android:color/black"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/tv_sfxSound"
         android:layout_alignLeft="@+id/sb_backgroundMusicSeekbar"
-        android:layout_alignStart="@+id/sb_backgroundMusicSeekbar"
-        android:layout_marginBottom="85dp" />
+        android:layout_alignStart="@+id/sb_backgroundMusicSeekbar" />
 
     <TextView
         android:layout_width="200dp"
@@ -56,8 +55,9 @@
         android:textAlignment="center"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:layout_alignBottom="@+id/sb_sfxSoundSeekbar"
+        android:layout_below="@+id/sb_backgroundMusicSeekbar"
         android:layout_alignLeft="@+id/tv_backgroundMusic"
-        android:layout_alignStart="@+id/tv_backgroundMusic" />
+        android:layout_alignStart="@+id/tv_backgroundMusic"
+        android:layout_marginTop="78dp" />
 
 </RelativeLayout>
