@@ -22,6 +22,7 @@ public class AI {
         WALK_STATE,
     };
 
+    AABB2D boundingbox;
     float health;
     float movespeed;
     float rotation;
@@ -49,6 +50,7 @@ public class AI {
         this.waypointIndex = 0;
         this.active = true;
         this.endofwaypoint = false;
+        this.boundingbox = new AABB2D(new Vector2(Position.x, Position.y), image.getWidth(), image.getHeight());
 
         AssignAIType(type);
     }
@@ -66,6 +68,8 @@ public class AI {
         this.waypointIndex = 0;
         this.active = true;
         this.endofwaypoint = false;
+
+        this.boundingbox.SetAllData(new Vector2(Position.x, Position.y), image.getWidth(), image.getHeight());
 
         AssignAIType(type);
     }
@@ -100,6 +104,7 @@ public class AI {
 
             if(currentstate == AI_STATE.IDLE_STATE) {
                 Position = NextPosition;
+                boundingbox.setCenterPoint(Position);
 
                 if(waypointIndex + 1 != Waypoints.size()) {
                     NextPosition = Waypoints.get(++waypointIndex);
@@ -116,7 +121,15 @@ public class AI {
                 double theta = Math.atan2(Direction.y, Direction.x);
                 rotation = (float) Math.toDegrees(theta);
 
-                Position.operatorPlusEqual(Direction.operatorTimes(movespeed).operatorTimes(dt));
+                Vector2 velocity = Direction.operatorTimes(movespeed);
+
+                velocity = velocity.operatorTimes(0.015f);
+
+                //velocity = velocity.operatorTimes(dt);
+
+                Position.operatorPlusEqual(velocity);
+
+                boundingbox.setCenterPoint(Position);
             }
 
             UpdateFSM();
@@ -138,7 +151,8 @@ public class AI {
     {
         if(active) {
             Matrix matrix = new Matrix();
-            matrix.postRotate(rotation, image.getWidth() / 2, image.getHeight() / 2);
+            matrix.postTranslate(boundingbox.getTopLeft().x, boundingbox.getTopLeft().y);
+            matrix.preRotate(rotation, image.getWidth() / 2, image.getHeight() / 2);
             canvas.drawBitmap(image, matrix, null);
         }
     }

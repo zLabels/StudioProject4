@@ -15,7 +15,7 @@ public class GameThread extends Thread {
     private boolean isPause;
 
     // get actual fps
-    int frameCount;
+    int frameCount = 0;
     long lastTime = 0;
     long lastFPSTime = 0;
     float fps = 0.f;

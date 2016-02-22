@@ -48,6 +48,11 @@ public class AABB2D {
 
     public void setCenterPoint(Vector2 centerPoint) {
         CenterPoint = centerPoint;
+        float dividedSizeX = width * 0.5f;
+        float dividedSizeY = height * 0.5f;
+        Minimum.Set(centerPoint.x - dividedSizeX, centerPoint.y - dividedSizeY);
+        Maximum.Set(centerPoint.x + dividedSizeX, centerPoint.y + dividedSizeY);
+        TopLeft.Set(centerPoint.x - dividedSizeX,centerPoint.y - dividedSizeY);
     }
 
     public float getWidth() {

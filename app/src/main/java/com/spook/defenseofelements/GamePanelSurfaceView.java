@@ -183,7 +183,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
         scanner.close();
 
-        Vector2 position = new Vector2(0,0);
+        Vector2 position = new Vector2(90,0);
         //InGameButton List
         ButtonList.addElement(new InGameButton(48, 667,
                 NormalTowerImage, false, InGameButton.BUTTON_TYPE.UI_NORMAL_TOWER));
