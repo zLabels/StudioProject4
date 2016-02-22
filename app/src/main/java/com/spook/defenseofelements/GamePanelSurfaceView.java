@@ -110,6 +110,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     //Towers
     private Bitmap NormalTowerImage = BitmapFactory.decodeResource(getResources(), R.drawable.tower_normal);
     private Bitmap NormalTowerImageDrag = BitmapFactory.decodeResource(getResources(), R.drawable.tower_normal_drag);
+    private Bitmap FastTowerImage = BitmapFactory.decodeResource(getResources(), R.drawable.tower_fast);
+    private Bitmap FastTowerImageDrag = BitmapFactory.decodeResource(getResources(), R.drawable.tower_fast_drag);
 
     //constructor for this GamePanelSurfaceView class
     public GamePanelSurfaceView(Context context,int Mode){
@@ -175,8 +177,10 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         scanner.close();
 
         //InGameButton List
-        ButtonList.addElement(new InGameButton(50, 667,
+        ButtonList.addElement(new InGameButton(48, 667,
                 NormalTowerImage, false, InGameButton.BUTTON_TYPE.UI_NORMAL_TOWER));
+        ButtonList.addElement(new InGameButton(120, 667,
+                FastTowerImage, false, InGameButton.BUTTON_TYPE.UI_FAST_TOWER));
 
         //Text rendering values
         paint.setARGB(255, 0, 0, 0);
@@ -274,6 +278,14 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                             canvas.drawBitmap(NormalTowerImageDrag, TouchPos.x, TouchPos.y, null);
                         }
                         break;
+                        case TOWER_HIGHFIRERATE:{
+                            canvas.drawBitmap(FastTowerImageDrag, TouchPos.x, TouchPos.y, null);
+                        }
+                        break;
+                        case TOWER_SLOW:{
+
+                        }
+                        break;
                     }
                 }
             }
@@ -365,6 +377,22 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                         } else {
                                             //there is no selected tower
                                             selectedTower = new Tower(new Vector2(0, 0), NormalTowerImage, Tower.TOWER_TYPE.TOWER_NORMAL);
+                                        }
+                                        break;
+                                    case UI_FAST_TOWER:
+                                        //Check if there is a selected tower
+                                        if (selectedTower != null) {
+                                            //Check if the selected tower is different from the one currently being selected
+                                            if (selectedTower.getType() != Tower.TOWER_TYPE.TOWER_HIGHFIRERATE) {
+                                                //If different, change selected tower to this
+                                                selectedTower = new Tower(new Vector2(0, 0), FastTowerImage, Tower.TOWER_TYPE.TOWER_HIGHFIRERATE);
+                                            } else {
+                                                //If currently selected tower is the same, deselect it
+                                                selectedTower = null;
+                                            }
+                                        } else {
+                                            //there is no selected tower
+                                            selectedTower = new Tower(new Vector2(0, 0), FastTowerImage, Tower.TOWER_TYPE.TOWER_HIGHFIRERATE);
                                         }
                                         break;
                                 }
