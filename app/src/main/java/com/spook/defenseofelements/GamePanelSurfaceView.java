@@ -104,11 +104,10 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private Bitmap TileMap =  BitmapFactory.decodeResource(getResources(), R.drawable.grass_floor_tileset);
     private Bitmap TD_Grid_Frame = BitmapFactory.decodeResource(getResources(), R.drawable.td_grid_frame);
     private Bitmap T_selection_bar = BitmapFactory.decodeResource(getResources(), R.drawable.tower_select_bar);
-    private Bitmap NormalTowerImage = BitmapFactory.decodeResource(getResources(), R.drawable.tower_normal);
-    private Bitmap NormalTowerImageDrag = BitmapFactory.decodeResource(getResources(), R.drawable.tower_normal_drag);
 
     //Towers
-    private Bitmap NormalTower = BitmapFactory.decodeResource(getResources(),R.drawable.gridtest);
+    private Bitmap NormalTowerImage = BitmapFactory.decodeResource(getResources(), R.drawable.tower_normal);
+    private Bitmap NormalTowerImageDrag = BitmapFactory.decodeResource(getResources(), R.drawable.tower_normal_drag);
 
     //constructor for this GamePanelSurfaceView class
     public GamePanelSurfaceView(Context context,int Mode){
@@ -162,7 +161,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
 
         //InGameButton List
-        ButtonList.addElement(new InGameButton(50, 650,
+        ButtonList.addElement(new InGameButton(50, 667,
                 NormalTowerImage, false, InGameButton.BUTTON_TYPE.UI_NORMAL_TOWER));
 
         //Text rendering values
@@ -344,14 +343,14 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                             //Check if the selected tower is different from the one currently being selected
                                             if (selectedTower.getType() != Tower.TOWER_TYPE.TOWER_NORMAL) {
                                                 //If different, change selected tower to this
-                                                selectedTower = new Tower(new Vector2(0, 0), NormalTower, Tower.TOWER_TYPE.TOWER_NORMAL);
+                                                selectedTower = new Tower(new Vector2(0, 0), NormalTowerImage, Tower.TOWER_TYPE.TOWER_NORMAL);
                                             } else {
                                                 //If currently selected tower is the same, deselect it
                                                 selectedTower = null;
                                             }
                                         } else {
                                             //there is no selected tower
-                                            selectedTower = new Tower(new Vector2(0, 0), NormalTower, Tower.TOWER_TYPE.TOWER_NORMAL);
+                                            selectedTower = new Tower(new Vector2(0, 0), NormalTowerImage, Tower.TOWER_TYPE.TOWER_NORMAL);
                                         }
                                         break;
                                 }
