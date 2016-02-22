@@ -10,6 +10,7 @@ public class InGameButton {
     public enum BUTTON_TYPE
     {
         UI_NORMAL_TOWER,
+        UI_FAST_TOWER,
     }
     float posX = 0, posY = 0;   //Coordinates of button
     private Bitmap image;    //Image of button
