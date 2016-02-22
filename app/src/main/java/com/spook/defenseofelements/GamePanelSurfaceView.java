@@ -30,7 +30,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
     private Bitmap bg, scaledbg;    //Used for background
     int ScreenWidth, ScreenHeight;  //Define Screen width and Screen height
-    private short bgX = 0, bgY = 0;  //Variables for defining background start and end point
+    private short bgX = 0, bgY = -20;  //Variables for defining background start and end point
 
     // Variables for FPS
     public float FPS = 0.f;
@@ -243,31 +243,30 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         if (canvas == null) {
             return;
         }
-        canvas.drawBitmap(scaledbg, bgX, bgY, null);
-        canvas.drawBitmap(scaledbg, bgX + ScreenWidth, bgY, null);
+
+        canvas.drawBitmap(bg, bgX, bgY, null);
+        //canvas.drawBitmap(scaledbg, bgX + ScreenWidth, bgY, null);
+
+        //Rendering Grids
+        for(int i = 0; i < 9; ++i)
+        {
+            for (int j = 0; j < 12; ++j)
+            {
+                canvas.drawBitmap(TileMap,
+                        TowerGrid[i][j].getSourceRect(),
+                        TowerGrid[i][j].getDestRect(),
+                        null);
+            }
+        }
         
         if(GameActive)
         {
-            //Rendering Grids
-            for(int i = 0; i < 9; ++i)
-            {
-                for (int j = 0; j < 12; ++j)
-                {
-                    canvas.drawBitmap(TileMap,
-                            TowerGrid[i][j].getSourceRect(),
-                            TowerGrid[i][j].getDestRect(),
-                            null);
-                }
-            }
 
             //Rendering Towers
             for(int i = 0; i < TowerList.size(); ++i)
             {
                 TowerList.elementAt(i).Draw(canvas);
             }
-
-            //Selection Bar
-            canvas.drawBitmap(T_selection_bar,0 ,630, null);
 
             //Rendering Buttons
             for(int i = 0; i < ButtonList.size(); ++i)
