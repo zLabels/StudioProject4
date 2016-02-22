@@ -69,6 +69,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
     Tower selectedTower;    //Currently selected Tower
 
+    Vector<Vector2> Waypoints = new Vector<Vector2>();
+
     //Grids
     GridNode[][] TowerGrid = new GridNode[9][12];
     boolean UpdateHighscore = true; //Highscore update
@@ -159,6 +161,18 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             midPoints.x = 48.0f;
             midPoints.y += 64.0f;
         }
+
+        scanner = new Scanner(getResources().openRawResource(R.raw.waypointlevel1));
+        while(scanner.hasNext())
+        {
+            String temp = scanner.next();
+            String[] values = temp.split(",");
+
+            Vector2 point = new Vector2(Float.parseFloat(values[0]), Float.parseFloat(values[1]));
+
+            Waypoints.addElement(point);
+        }
+        scanner.close();
 
         //InGameButton List
         ButtonList.addElement(new InGameButton(50, 667,
