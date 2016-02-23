@@ -67,6 +67,13 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     float timer = 0.f;  //Timer to increase speed
     int score = 0;  //Play score
 
+    //Sp4 Game elements
+    int currentWave = 0;
+    int currentSpawnIndex = 0;
+    float aiSpawnrate = 1.f;
+    float spawnTimer = 0.f;
+    boolean waveStarted = false;
+
     Tower selectedTower;    //Currently selected Tower
 
     Vector<Vector2> Waypoints = new Vector<Vector2>();
@@ -96,7 +103,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     //List containing All Towers
     Vector<Tower> TowerList = new Vector<Tower>();
 
-    Vector<AI> AIList = new Vector<AI>();
+    Vector<Vector<AI>> WaveList = new Vector<Vector<AI>>();
 
     private InGameScreens Pause_screen = new InGameScreens(400,200,
             BitmapFactory.decodeResource(getResources(),R.drawable.pause_screen));
@@ -183,7 +190,60 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
         scanner.close();
 
-        Vector2 position = new Vector2(90,0);
+        int waveIndex = 0;
+
+        scanner = new Scanner(getResources().openRawResource(R.raw.wavelevel1));
+        while(scanner.hasNext())
+        {
+            String temp = scanner.next();
+            String[] parts = temp.split(",");
+
+            if(parts[0].equals("Wave")) {
+                waveIndex = Integer.parseInt(parts[1]);
+
+                if (waveIndex > WaveList.size()) {
+                    WaveList.addElement(new Vector<AI>());
+                }
+            }
+
+           /* String spawnlist = scanner.next();
+            String[] spawnpart = spawnlist.split(",");*/
+
+            else if(parts[0].equals("Normal"))
+            {
+                int loopNum = Integer.parseInt(parts[1]);
+
+                 for(int i = 0; i < loopNum; ++i)
+                 {
+                     Vector2 position = new Vector2(90,0);
+                     WaveList.get(waveIndex - 1).addElement(new AI(position,Waypoints, NormalAIImage, AI.AI_TYPE.AI_NORMAL));
+                 }
+            }
+
+            else if(parts[0].equals("Fast"))
+            {
+                int loopNum = Integer.parseInt(parts[1]);
+
+                for(int i = 0; i < loopNum; ++i)
+                {
+                    Vector2 position = new Vector2(90,0);
+                    WaveList.get(waveIndex - 1).addElement(new AI(position,Waypoints, FastAIImage, AI.AI_TYPE.AI_FAST));
+                }
+            }
+
+            else if(parts[0].equals("Tank"))
+            {
+                int loopNum = Integer.parseInt(parts[1]);
+
+                for(int i = 0; i < loopNum; ++i)
+                {
+                    Vector2 position = new Vector2(90,0);
+                    WaveList.get(waveIndex - 1).addElement(new AI(position,Waypoints, SlowAIImage, AI.AI_TYPE.AI_SLOWBUTTANKY));
+                }
+            }
+        }
+        scanner.close();
+
         //InGameButton List
         ButtonList.addElement(new InGameButton(48, 667,
                 NormalTowerImage, false, InGameButton.BUTTON_TYPE.UI_NORMAL_TOWER));
@@ -191,7 +251,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         ButtonList.addElement(new InGameButton(120, 667,
                 FastTowerImage, false, InGameButton.BUTTON_TYPE.UI_FAST_TOWER));
 
-        AIList.addElement(new AI(position,Waypoints, NormalAIImage, AI.AI_TYPE.AI_NORMAL));
+        //AIList.addElement(new AI(position,Waypoints, NormalAIImage, AI.AI_TYPE.AI_NORMAL));
 
 
         //Text rendering values
@@ -277,11 +337,13 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                         null);
             }
 
-            for(int i = 0; i < AIList.size(); ++i)
-            {
-                AIList.elementAt(i).Draw(canvas);
+            if(currentWave < WaveList.size()) {
+                for (int i = 0; i < WaveList.get(currentWave).size(); ++i) {
+                    if (WaveList.get(currentWave).get(i).isActive()) {
+                        WaveList.get(currentWave).get(i).Draw(canvas);
+                    }
+                }
             }
-
             //Grid Frame
             canvas.drawBitmap(TD_Grid_Frame, 0, -20, null);
 
@@ -335,15 +397,56 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                 {
                     //Only when game is active we update the following
                     if (GameActive) {
-                        //stickman_anim.update(System.currentTimeMillis());
-                        for(int i = 0; i < AIList.size(); ++i)
-                        {
-                            if(AIList.elementAt(i).isActive())
+
+                        if (currentWave < WaveList.size()) {
+                            spawnTimer += dt;
+
+                            if (spawnTimer >= aiSpawnrate)
                             {
-                                AIList.elementAt(i).Update(dt);
+                                if (currentSpawnIndex < WaveList.get(currentWave).size())
+                                {
+                                    spawnTimer = 0;
+                                    WaveList.get(currentWave).get(currentSpawnIndex).setActive(true);
+                                    waveStarted = true;
+                                    ++currentSpawnIndex;
+                                }
                             }
                         }
 
+                        if (currentWave < WaveList.size())
+                        {
+                            for (int i = 0; i < WaveList.get(currentWave).size(); ++i)
+                            {
+                                if (WaveList.get(currentWave).get(i).isActive())
+                                {
+                                    WaveList.get(currentWave).get(i).Update(dt);
+                                }
+                            }
+                        }
+
+                        if(waveStarted)
+                        {
+                            boolean wavecleared = false;
+
+                            for (int i = 0; i < WaveList.get(currentWave).size(); ++i)
+                            {
+                                if (WaveList.get(currentWave).get(i).isActive())
+                                {
+                                    wavecleared = false;
+                                    break;
+                                }
+                                else
+                                {
+                                    wavecleared = true;
+                                }
+                            }
+
+                            if (currentWave < WaveList.size() && wavecleared) {
+                                waveStarted = false;
+                                currentSpawnIndex = 0;
+                                ++currentWave;
+                            }
+                        }
                     }
                     //Feedback for game over
                     if (GameActive == false) {

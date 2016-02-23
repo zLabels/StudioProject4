@@ -48,7 +48,7 @@ public class AI {
         this.currentstate = AI_STATE.WALK_STATE;
         this.rotation = 0;
         this.waypointIndex = 0;
-        this.active = true;
+        this.active = false;
         this.endofwaypoint = false;
         this.boundingbox = new AABB2D(new Vector2(Position.x, Position.y), image.getWidth(), image.getHeight());
 
@@ -66,7 +66,7 @@ public class AI {
         this.currentstate = AI_STATE.WALK_STATE;
         this.rotation = 0;
         this.waypointIndex = 0;
-        this.active = true;
+        this.active = false;
         this.endofwaypoint = false;
 
         this.boundingbox.SetAllData(new Vector2(Position.x, Position.y), image.getWidth(), image.getHeight());
@@ -80,19 +80,19 @@ public class AI {
             case AI_NORMAL:
             {
                 health = 100;
-                movespeed = 50;
+                movespeed = 150;
             }
             break;
             case AI_FAST:
             {
                 health = 75;
-                movespeed = 75;
+                movespeed = 175;
             }
             break;
             case AI_SLOWBUTTANKY:
             {
                 health = 125;
-                movespeed = 25;
+                movespeed = 125;
             }
             break;
         }
@@ -103,7 +103,8 @@ public class AI {
         if(active) {
 
             if(currentstate == AI_STATE.IDLE_STATE) {
-                Position = NextPosition;
+                Position.x = NextPosition.x;
+                Position.y = NextPosition.y;
                 boundingbox.setCenterPoint(Position);
 
                 if(waypointIndex + 1 != Waypoints.size()) {
@@ -124,8 +125,6 @@ public class AI {
                 Vector2 velocity = Direction.operatorTimes(movespeed);
 
                 velocity = velocity.operatorTimes(0.015f);
-
-                //velocity = velocity.operatorTimes(dt);
 
                 Position.operatorPlusEqual(velocity);
 
