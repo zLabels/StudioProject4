@@ -17,6 +17,7 @@ public class Mainmenu extends Activity implements OnClickListener{
     private Button btn_play;
     private Button btn_options;
     private Button btn_credits;
+    private Button btn_highscore;
 
     //Sound manager
     SoundManager soundManager;
@@ -59,6 +60,9 @@ public class Mainmenu extends Activity implements OnClickListener{
 
         btn_credits = (Button)findViewById(R.id.btn_credits);
         btn_credits.setOnClickListener(this);
+
+        btn_highscore = (Button)findViewById(R.id.btn_highscore);
+        btn_highscore.setOnClickListener(this);
     }
 
     //On tapping one of the mainmenu buttons
@@ -77,6 +81,10 @@ public class Mainmenu extends Activity implements OnClickListener{
             intent.setClass(this,Optionspage.class);
         }
         else if( v == btn_credits)
+        {
+            intent.setClass(this,Creditpage.class);
+        }
+        else if( v == btn_highscore)
         {
             intent.setClass(this,Highscorepage.class);
         }

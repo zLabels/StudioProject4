@@ -43,6 +43,13 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".Creditpage"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.default" />
+            </intent-filter>
+        </activity>
         <activity android:name=".Playpage"
             android:screenOrientation="portrait">
             <intent-filter>

@@ -46,7 +46,7 @@ public class Highscorepage extends Activity implements OnClickListener{
 
         scores = appPrefs.getHighscore();
 
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/LoveSweets.ttf");
+        //Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/LoveSweets.ttf");
 
         tv_scoreTexts = new Vector<TextView>();
 
@@ -67,7 +67,7 @@ public class Highscorepage extends Activity implements OnClickListener{
             Paint textPaint = tv_scoreTexts.get(i).getPaint();
             textPaint.getTextBounds(scoreStrings.get(i), 0, scoreStrings.get(i).length(), bounds);
             tv_scoreTexts.get(i).setWidth(bounds.width());
-            tv_scoreTexts.get(i).setTypeface(typeface);
+            //tv_scoreTexts.get(i).setTypeface(typeface);
         }
 
         btn_highscoreback = (Button)findViewById(R.id.btn_highscoreback);
@@ -84,6 +84,7 @@ public class Highscorepage extends Activity implements OnClickListener{
 
         if(v == btn_highscoreback)
         {
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.setClass(this,Mainmenu.class);
         }
 
