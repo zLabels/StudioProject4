@@ -215,7 +215,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
                  for(int i = 0; i < loopNum; ++i)
                  {
-                     Vector2 position = new Vector2(90,0);
+                     Vector2 position = new Vector2(0,100);
                      WaveList.get(waveIndex - 1).addElement(new AI(position,Waypoints, NormalAIImage, AI.AI_TYPE.AI_NORMAL));
                  }
             }
@@ -226,7 +226,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
                 for(int i = 0; i < loopNum; ++i)
                 {
-                    Vector2 position = new Vector2(90,0);
+                    Vector2 position = new Vector2(0,100);
                     WaveList.get(waveIndex - 1).addElement(new AI(position,Waypoints, FastAIImage, AI.AI_TYPE.AI_FAST));
                 }
             }
@@ -237,7 +237,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
                 for(int i = 0; i < loopNum; ++i)
                 {
-                    Vector2 position = new Vector2(90,0);
+                    Vector2 position = new Vector2(0,100);
                     WaveList.get(waveIndex - 1).addElement(new AI(position,Waypoints, SlowAIImage, AI.AI_TYPE.AI_SLOWBUTTANKY));
                 }
             }
