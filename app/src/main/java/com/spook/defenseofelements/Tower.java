@@ -20,6 +20,7 @@ public class Tower {
     float firerate;
     float elaspedtime;
     float rotation;
+    float range;
     boolean fire;
     Vector2 Position = new Vector2(0.0f,0.0f);
     Vector2 TopLeft = new Vector2(0.0f,0.0f);
@@ -36,6 +37,7 @@ public class Tower {
         this.level = 1;
         this.elaspedtime = 0;
         this.rotation = 0;
+        this.range = 0;
 
         AssignTowerType(type);
     }
@@ -63,40 +65,42 @@ public class Tower {
         switch(type) {
             case TOWER_NORMAL:
             {
-                damage = 1;
-                firerate = 1;
+                damage = 10.0f;
+                firerate = 2;
+                this.range = 150.0f;
             }
                 break;
             case TOWER_HIGHFIRERATE:
             {
-                damage = 0.5f;
-                firerate = 1.5f;
+                damage = 5.0f;
+                firerate = 1.0f;
+                this.range = 100.0f;
             }
                 break;
             case TOWER_SLOW:
             {
-                damage = 0.5f;
-                firerate = 1;
+                damage = 5.0f;
+                firerate = 1.0f;
+                this.range = 200.0f;
             }
                 break;
         }
     }
 
-    public boolean Update(Vector2 target, float dt)
+    public void Update(Vector2 target, float dt)
     {
         // Update Tower direction
         Direction = (target.operatorMinus(Position).Normailzed());
         double theta = Math.atan2(Direction.y, Direction.x);
         rotation = (float) Math.toDegrees(theta);
 
-        return Fire(dt);
     }
 
     public void Draw(Canvas canvas)
     {
         Matrix matrix = new Matrix();
-        matrix.postTranslate(TopLeft.x,TopLeft.y);
-        matrix.postRotate(rotation, image.getWidth() / 2, image.getHeight() / 2);
+        matrix.postTranslate(TopLeft.x, TopLeft.y);
+        //matrix.postRotate(rotation, image.getWidth() / 2, image.getHeight() / 2);
         canvas.drawBitmap(image, matrix, null);
     }
 
@@ -106,15 +110,13 @@ public class Tower {
 
         if(elaspedtime >= firerate)
         {
-            fire = true;
             elaspedtime = 0;
+            return true;
         }
         else
         {
-            fire = false;
+            return false;
         }
-
-        return fire;
     }
 
     public int getLevel() {
@@ -203,5 +205,13 @@ public class Tower {
 
     public void setTopLeft(Vector2 topLeft) {
         TopLeft = topLeft;
+    }
+
+    public float getRange() {
+        return range;
+    }
+
+    public void setRange(float range) {
+        this.range = range;
     }
 }

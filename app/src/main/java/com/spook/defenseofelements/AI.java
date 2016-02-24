@@ -260,4 +260,13 @@ public class AI {
         this.endofwaypoint = endofwaypoint;
     }
 
+    public AABB2D getBoundingbox() {
+        return boundingbox;
+    }
+
+    public void setBoundingbox(AABB2D boundingbox) {
+        this.boundingbox = boundingbox;
+    }
+
+
 }
