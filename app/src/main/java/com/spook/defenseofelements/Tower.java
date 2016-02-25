@@ -13,6 +13,7 @@ public class Tower {
         TOWER_NORMAL,
         TOWER_HIGHFIRERATE,
         TOWER_SLOW,
+        TOWER_OP,
     };
 
     int level;
@@ -117,6 +118,17 @@ public class Tower {
                 this.earthcost = 1;
             }
                 break;
+            case TOWER_OP:
+            {
+                damage = 10.0f;
+                firerate = 0.5f;
+                this.range = 200.0f;
+                this.firecost = 1;
+                this.watercost = 1;
+                this.windcost = 1;
+                this.earthcost = 1;
+            }
+            break;
         }
     }
 

@@ -12,6 +12,9 @@ public class InGameButton {
         UI_NORMAL_TOWER,
         UI_FAST_TOWER,
         UI_WORKER,
+        UI_SLOW_TOWER,
+        UI_OP_TOWER,
+
     }
     float posX = 0, posY = 0;   //Coordinates of button
     private Bitmap image;    //Image of button

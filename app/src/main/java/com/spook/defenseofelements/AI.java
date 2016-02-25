@@ -36,6 +36,7 @@ public class AI {
     AI_STATE currentstate;
     boolean active;
     boolean endofwaypoint;
+    boolean slowed;
 
     public AI(Vector2 Pos, Vector<Vector2> waypoints, Bitmap mesh, AI_TYPE ai_type)
     {
@@ -50,6 +51,7 @@ public class AI {
         this.waypointIndex = 0;
         this.active = false;
         this.endofwaypoint = false;
+        this.slowed = false;
         this.boundingbox = new AABB2D(new Vector2(Position.x, Position.y), image.getWidth(), image.getHeight());
 
         AssignAIType(type);
@@ -129,6 +131,16 @@ public class AI {
                 Position.operatorPlusEqual(velocity);
 
                 boundingbox.setCenterPoint(Position);
+
+                if(slowed)
+                {
+                    float Timer = 10.f;
+                    Timer -= dt;
+                    if(Timer <= 0)
+                    {
+                        slowed = false;
+                    }
+                }
             }
 
             UpdateFSM();
@@ -258,6 +270,14 @@ public class AI {
 
     public void setEndofwaypoint(boolean endofwaypoint) {
         this.endofwaypoint = endofwaypoint;
+    }
+
+    public boolean isSlowed() {
+        return slowed;
+    }
+
+    public void setSlowed(boolean slowed) {
+        this.slowed = slowed;
     }
 
     public AABB2D getBoundingbox() {
