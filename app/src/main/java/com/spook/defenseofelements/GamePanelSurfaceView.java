@@ -736,7 +736,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                                 //If different, change selected tower to this
                                                 selectedTower = new Tower(new Vector2(0, 0), NormalTowerImage, Tower.TOWER_TYPE.TOWER_NORMAL);
 
-                                                if(player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
+                                                if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
                                                 {
                                                     selectedTower = null;
                                                 }
@@ -747,6 +747,11 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                         } else {
                                             //there is no selected tower
                                             selectedTower = new Tower(new Vector2(0, 0), NormalTowerImage, Tower.TOWER_TYPE.TOWER_NORMAL);
+
+                                            if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
+                                            {
+                                                selectedTower = null;
+                                            }
                                         }
                                         break;
 
@@ -758,7 +763,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                                 //If different, change selected tower to this
                                                 selectedTower = new Tower(new Vector2(0, 0), FastTowerImage, Tower.TOWER_TYPE.TOWER_HIGHFIRERATE);
 
-                                                if(player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
+                                                if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
                                                 {
                                                     selectedTower = null;
                                                 }
@@ -769,6 +774,11 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                         } else {
                                             //there is no selected tower
                                             selectedTower = new Tower(new Vector2(0, 0), FastTowerImage, Tower.TOWER_TYPE.TOWER_HIGHFIRERATE);
+
+                                            if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
+                                            {
+                                                selectedTower = null;
+                                            }
                                         }
                                         break;
 
@@ -779,7 +789,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                                 //If different, change selected tower to this
                                                 selectedTower = new Tower(new Vector2(0, 0), SlowTowerImage, Tower.TOWER_TYPE.TOWER_SLOW);
 
-                                                if(player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
+                                                if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
                                                 {
                                                     selectedTower = null;
                                                 }
@@ -790,6 +800,11 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                         } else {
                                             //there is no selected tower
                                             selectedTower = new Tower(new Vector2(0, 0), SlowTowerImage, Tower.TOWER_TYPE.TOWER_SLOW);
+
+                                            if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
+                                            {
+                                                selectedTower = null;
+                                            }
                                         }
                                         break;
 
@@ -800,7 +815,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                                 //If different, change selected tower to this
                                                 selectedTower = new Tower(new Vector2(0, 0), OpTowerImage, Tower.TOWER_TYPE.TOWER_OP);
 
-                                                if(player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
+                                                if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
                                                 {
                                                     selectedTower = null;
                                                 }
@@ -811,6 +826,11 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                         } else {
                                             //there is no selected tower
                                             selectedTower = new Tower(new Vector2(0, 0), OpTowerImage, Tower.TOWER_TYPE.TOWER_OP);
+
+                                            if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
+                                            {
+                                                selectedTower = null;
+                                            }
                                         }
                                         break;
 
