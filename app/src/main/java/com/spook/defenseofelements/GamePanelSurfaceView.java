@@ -75,6 +75,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     float spawnTimer = 0.f;
     boolean waveStarted = false;
 
+    Player player;
+
     Tower selectedTower;    //Currently selected Tower
 
     Vector<Vector2> Waypoints = new Vector<Vector2>();
@@ -157,6 +159,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         scaledbg = Bitmap.createScaledBitmap(bg, ScreenWidth, ScreenHeight, true);
         //Media Players
         soundManager = new SoundManager();
+
+        player = new Player();
 
         //Reading Values from CSV files
         Scanner scanner = new Scanner(getResources().openRawResource(R.raw.level1_td_grid));
@@ -761,12 +765,14 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                 //Grid needs to be free first
                                 if (TowerGrid[i][j].getType() == GridNode.GRID_TYPE.GT_FREE) {
                                     //if Tap on this grid
-                                    if (TowerGrid[i][j].getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY()))) {
+                                    if (TowerGrid[i][j].getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())) && player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost())) {
                                         TowerList.addElement(new Tower(TowerGrid[i][j].getBoundingBox().getCenterPoint(),
                                                 selectedTower.getImage(), selectedTower.getType()));
 
                                         //Set Grid to Occupied
                                         TowerGrid[i][j].setType(GridNode.GRID_TYPE.GT_OCCUPIED);
+
+                                        player.MinusfromElements(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost());
 
                                         GridSelected = true;
                                         break;

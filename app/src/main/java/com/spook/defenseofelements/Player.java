@@ -19,7 +19,7 @@ public class Player {
 
     public Player()
     {
-        fireElement = 0;
+        fireElement = 1;
         waterElement = 0;
         windElement = 0;
         earthElement = 0;
@@ -53,6 +53,22 @@ public class Player {
             case EARTH_TYPE: earthElement -= value;
                 break;
         }
+    }
+
+    public void AddtoElements(int fire, int water, int wind, int earth)
+    {
+        fireElement += fire;
+        waterElement += water;
+        windElement += wind;
+        earthElement += earth;
+    }
+
+    public void MinusfromElements(int firecost, int watercost, int windcost, int earthcost)
+    {
+        fireElement -= firecost;
+        waterElement -= watercost;
+        windElement -= windcost;
+        earthElement -= earthcost;
     }
 
     public boolean CheckCanBuild(int firecost, int watercost, int windcost, int earthcost)

@@ -16,6 +16,27 @@ public class Tower {
     };
 
     int level;
+    int firecost;
+
+    public int getFirecost() {
+        return firecost;
+    }
+
+    public int getWatercost() {
+        return watercost;
+    }
+
+    public int getWindcost() {
+        return windcost;
+    }
+
+    public int getEarthcost() {
+        return earthcost;
+    }
+
+    int watercost;
+    int windcost;
+    int earthcost;
     float damage;
     float firerate;
     float elaspedtime;
@@ -68,6 +89,10 @@ public class Tower {
                 damage = 10.0f;
                 firerate = 2;
                 this.range = 150.0f;
+                this.firecost  = 1;
+                this.watercost = 0;
+                this.windcost = 0;
+                this.earthcost = 0;
             }
                 break;
             case TOWER_HIGHFIRERATE:
@@ -75,6 +100,10 @@ public class Tower {
                 damage = 5.0f;
                 firerate = 1.0f;
                 this.range = 100.0f;
+                this.firecost = 1;
+                this.watercost = 0;
+                this.windcost = 1;
+                this.earthcost = 0;
             }
                 break;
             case TOWER_SLOW:
@@ -82,6 +111,10 @@ public class Tower {
                 damage = 5.0f;
                 firerate = 1.0f;
                 this.range = 200.0f;
+                this.firecost = 0;
+                this.watercost = 1;
+                this.windcost = 0;
+                this.earthcost = 1;
             }
                 break;
         }
@@ -100,7 +133,7 @@ public class Tower {
     {
         Matrix matrix = new Matrix();
         matrix.postTranslate(TopLeft.x, TopLeft.y);
-        //matrix.postRotate(rotation, image.getWidth() / 2, image.getHeight() / 2);
+        matrix.preRotate(rotation, image.getWidth() / 2, image.getHeight() / 2);
         canvas.drawBitmap(image, matrix, null);
     }
 
