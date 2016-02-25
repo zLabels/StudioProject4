@@ -60,6 +60,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     Vector2 TouchPos = new Vector2(0.0f,0.0f);
 
     //Game elements
+    Player player;
     float SpawnRate = 0.5f; //Rate for each obstacle to spawn
     float SpawnTimer = 0.f; //track time to spawn
     short ScrollSpeed = 500;    //Speed of background scrolling
@@ -244,15 +245,14 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
         scanner.close();
 
+        player = new Player();
+
         //InGameButton List
         ButtonList.addElement(new InGameButton(48, 667,
                 NormalTowerImage, false, InGameButton.BUTTON_TYPE.UI_NORMAL_TOWER));
 
         ButtonList.addElement(new InGameButton(120, 667,
                 FastTowerImage, false, InGameButton.BUTTON_TYPE.UI_FAST_TOWER));
-
-        //AIList.addElement(new AI(position,Waypoints, NormalAIImage, AI.AI_TYPE.AI_NORMAL));
-
 
         //Text rendering values
         paint.setARGB(255, 0, 0, 0);
