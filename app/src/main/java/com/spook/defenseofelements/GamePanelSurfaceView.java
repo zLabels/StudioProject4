@@ -60,13 +60,13 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     Vector2 TouchPos = new Vector2(0.0f,0.0f);
 
     //Game elements
-    Player player;
     float SpawnRate = 0.5f; //Rate for each obstacle to spawn
     float SpawnTimer = 0.f; //track time to spawn
     short ScrollSpeed = 500;    //Speed of background scrolling
     short BarSpeed = 35;    //Speed of bar scrolling
     float timer = 0.f;  //Timer to increase speed
     int score = 0;  //Play score
+    boolean UpdateHighscore = true; //Highscore update
 
     //Sp4 Game elements
     int currentWave = 0;
@@ -81,7 +81,10 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
     //Grids
     GridNode[][] TowerGrid = new GridNode[9][12];
-    boolean UpdateHighscore = true; //Highscore update
+    GridNode[][] DarkGrid = new GridNode[3][3];
+    GridNode[][] WaterGrid = new GridNode[3][3];
+    GridNode[][] FireGrid = new GridNode[3][3];
+    GridNode[][] NatureGrid = new GridNode[3][3];
 
     int[][] CSVInfo = new int[9][12];
 
@@ -104,18 +107,24 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     //List containing All Towers
     Vector<Tower> TowerList = new Vector<Tower>();
 
+    //List containing All the Waves
     Vector<Vector<AI>> WaveList = new Vector<Vector<AI>>();
 
+    //List containing All the Projectiles
+    Vector<Projectiles> ProjectileList = new Vector<Projectiles>();
+
+    //In Game Screens
     private InGameScreens Pause_screen = new InGameScreens(400,200,
             BitmapFactory.decodeResource(getResources(),R.drawable.pause_screen));
 
-    private InGameScreens GridTest = new InGameScreens(0,0,
-            BitmapFactory.decodeResource(getResources(),R.drawable.gridtest));
+
+    //Test
+    private Bitmap GridTest = BitmapFactory.decodeResource(getResources(),R.drawable.gridtest);
 
     //Images
     private Bitmap TileMap =  BitmapFactory.decodeResource(getResources(), R.drawable.grass_floor_tileset);
     private Bitmap TD_Grid_Frame = BitmapFactory.decodeResource(getResources(), R.drawable.td_grid_frame);
-    private Bitmap T_selection_bar = BitmapFactory.decodeResource(getResources(), R.drawable.tower_select_bar);
+    private Bitmap WorkerImage = BitmapFactory.decodeResource(getResources(), R.drawable.worker);
 
     //Towers
     private Bitmap NormalTowerImage = BitmapFactory.decodeResource(getResources(), R.drawable.tower_normal);
@@ -127,6 +136,9 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private Bitmap NormalAIImage = BitmapFactory.decodeResource(getResources(), R.drawable.ghost_round);
     private Bitmap FastAIImage = BitmapFactory.decodeResource(getResources(), R.drawable.ghost_spirit);
     private Bitmap SlowAIImage = BitmapFactory.decodeResource(getResources(), R.drawable.ghost_head);
+
+    //Projectiles
+    private Bitmap BubbleProjectileImage = BitmapFactory.decodeResource(getResources(), R.drawable.bubble_bullet);
 
     //constructor for this GamePanelSurfaceView class
     public GamePanelSurfaceView(Context context,int Mode){
@@ -179,6 +191,65 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             midPoints.y += 64.0f;
         }
 
+        //Initialize Element Grids
+        midPoints.Set(204,780);
+        for(int i = 0; i < 3; ++i)
+        {
+            for (int j = 0; j < 3; ++j)
+            {
+                //Check if its a path
+                DarkGrid[i][j] = new GridNode(new AABB2D(new Vector2(midPoints.x, midPoints.y), 70.0f, 70.0f),
+                        GridNode.GRID_TYPE.GT_FREE);
+
+                midPoints.x += 70.0f;
+            }
+            midPoints.x = 204.0f;
+            midPoints.y += 70.0f;
+        }
+        midPoints.Set(204,1038);
+        for(int i = 0; i < 3; ++i)
+        {
+            for (int j = 0; j < 3; ++j)
+            {
+                //Check if its a path
+                FireGrid[i][j] = new GridNode(new AABB2D(new Vector2(midPoints.x, midPoints.y), 70.0f, 70.0f),
+                        GridNode.GRID_TYPE.GT_FREE);
+
+                midPoints.x += 70.0f;
+            }
+            midPoints.x = 204.0f;
+            midPoints.y += 70.0f;
+        }
+        midPoints.Set(458,780);
+        for(int i = 0; i < 3; ++i)
+        {
+            for (int j = 0; j < 3; ++j)
+            {
+                //Check if its a path
+                NatureGrid[i][j] = new GridNode(new AABB2D(new Vector2(midPoints.x, midPoints.y), 70.0f, 70.0f),
+                        GridNode.GRID_TYPE.GT_FREE);
+
+                midPoints.x += 70.0f;
+            }
+            midPoints.x = 458.0f;
+            midPoints.y += 70.0f;
+        }
+        midPoints.Set(458,1038);
+        for(int i = 0; i < 3; ++i)
+        {
+            for (int j = 0; j < 3; ++j)
+            {
+                //Check if its a path
+                WaterGrid[i][j] = new GridNode(new AABB2D(new Vector2(midPoints.x, midPoints.y), 70.0f, 70.0f),
+                        GridNode.GRID_TYPE.GT_FREE);
+
+                midPoints.x += 70.0f;
+            }
+            midPoints.x = 458.0f;
+            midPoints.y += 70.0f;
+        }
+
+        //Reading Waypoints
         scanner = new Scanner(getResources().openRawResource(R.raw.waypointlevel1));
         while(scanner.hasNext())
         {
@@ -191,8 +262,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
         scanner.close();
 
+        //Reading Waves
         int waveIndex = 0;
-
         scanner = new Scanner(getResources().openRawResource(R.raw.wavelevel1));
         while(scanner.hasNext())
         {
@@ -245,14 +316,21 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
         scanner.close();
 
-        player = new Player();
-
         //InGameButton List
         ButtonList.addElement(new InGameButton(48, 667,
                 NormalTowerImage, false, InGameButton.BUTTON_TYPE.UI_NORMAL_TOWER));
-
-        ButtonList.addElement(new InGameButton(120, 667,
+        ButtonList.addElement(new InGameButton(250, 667,
                 FastTowerImage, false, InGameButton.BUTTON_TYPE.UI_FAST_TOWER));
+        ButtonList.addElement(new InGameButton(37, 810,
+                WorkerImage, false, InGameButton.BUTTON_TYPE.UI_WORKER));
+
+        //AIList.addElement(new AI(position,Waypoints, NormalAIImage, AI.AI_TYPE.AI_NORMAL));
+
+        //Initialize projectiles to be reused
+        for(int i = 0; i < 50; ++i)
+        {
+            ProjectileList.addElement(new Projectiles());
+        }
 
         //Text rendering values
         paint.setARGB(255, 0, 0, 0);
@@ -307,7 +385,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         canvas.drawBitmap(bg, bgX, bgY, null);
         //canvas.drawBitmap(scaledbg, bgX + ScreenWidth, bgY, null);
 
-        //Rendering Grids
+        //Rendering Tower Grid
         for(int i = 0; i < 9; ++i)
         {
             for (int j = 0; j < 12; ++j)
@@ -318,14 +396,63 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                         null);
             }
         }
-        
+        //Render Elemental Grids
+        for(int i = 0; i < 3; ++i)
+        {
+            for (int j = 0; j < 3; ++j)
+            {
+                canvas.drawBitmap(GridTest,
+                        DarkGrid[i][j].getBoundingBox().getTopLeft().x,
+                        DarkGrid[i][j].getBoundingBox().getTopLeft().y,
+                        null);
+            }
+        }
+        for(int i = 0; i < 3; ++i)
+        {
+            for (int j = 0; j < 3; ++j)
+            {
+                canvas.drawBitmap(GridTest,
+                        NatureGrid[i][j].getBoundingBox().getTopLeft().x,
+                        NatureGrid[i][j].getBoundingBox().getTopLeft().y,
+                        null);
+            }
+        }
+        for(int i = 0; i < 3; ++i)
+        {
+            for (int j = 0; j < 3; ++j)
+            {
+                canvas.drawBitmap(GridTest,
+                        WaterGrid[i][j].getBoundingBox().getTopLeft().x,
+                        WaterGrid[i][j].getBoundingBox().getTopLeft().y,
+                        null);
+            }
+        }
+        for(int i = 0; i < 3; ++i)
+        {
+            for (int j = 0; j < 3; ++j)
+            {
+                canvas.drawBitmap(GridTest,
+                        FireGrid[i][j].getBoundingBox().getTopLeft().x,
+                        FireGrid[i][j].getBoundingBox().getTopLeft().y,
+                        null);
+            }
+        }
+
+        //Render These while game is active
         if(GameActive)
         {
-
             //Rendering Towers
             for(int i = 0; i < TowerList.size(); ++i)
             {
                 TowerList.elementAt(i).Draw(canvas);
+            }
+
+            //Rendering
+            for(int i = 0; i < ProjectileList.size(); ++i)
+            {
+                if(ProjectileList.get(i).isActive()) {
+                    ProjectileList.elementAt(i).Draw(canvas);
+                }
             }
 
             //Rendering Buttons
@@ -377,13 +504,15 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
 
         //Game is lost
-        if(GameActive == false){
+        if(!GameActive){
            // canvas.drawBitmap(Restart_button.getImage(),Restart_button.getPosX(),Restart_button.getPosY(),null);
             //canvas.drawBitmap(Mainmenu_button.getImage(), Mainmenu_button.getPosX(), Mainmenu_button.getPosY(),null);
         }
 
         //FPS
         canvas.drawText("FPS:" + FPS, 50, 50, paint);
+        canvas.drawText("touchPos X:" + FirstTouch.x, 50, 75, paint);
+        canvas.drawText("touchPos Y:" + FirstTouch.y, 50, 100, paint);
     }
 
     //Update method to update the game play
@@ -398,6 +527,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                     //Only when game is active we update the following
                     if (GameActive) {
 
+                        //Spawning enemies
                         if (currentWave < WaveList.size()) {
                             spawnTimer += dt;
 
@@ -413,6 +543,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                             }
                         }
 
+                        //Updating enemies
                         if (currentWave < WaveList.size())
                         {
                             for (int i = 0; i < WaveList.get(currentWave).size(); ++i)
@@ -424,6 +555,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                             }
                         }
 
+                        //If wave has started
                         if(waveStarted)
                         {
                             boolean wavecleared = false;
@@ -447,9 +579,94 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                 ++currentWave;
                             }
                         }
+
+                        /*
+                        *TOWER RELATED UPDATES
+                        */
+
+                        //Only if there is a tower on the grid we start updating towers
+                        if(TowerList.size() > 0)
+                        {
+                            //Iterate through all the towers that are on the grid
+                            for(int i = 0; i < TowerList.size(); ++i)
+                            {
+                                //Only if tower is able to fire
+                                if(TowerList.get(i).Fire(dt))
+                                {
+                                    if (currentWave < WaveList.size())
+                                    {
+                                        //Update Enemies
+                                        for (int j = 0; j < WaveList.get(currentWave).size(); ++j)
+                                        {
+                                        //Only if the enemy is active
+                                            if (WaveList.get(currentWave).get(j).isActive()) {
+                                                float distance = WaveList.get(currentWave).get(j).getPosition().operatorMinus(TowerList.get(i).getPosition()).Length();
+                                                //Only if its within range, we update the tower
+                                                if (distance < TowerList.get(i).getRange()) {
+                                                    //Check which type of tower it is
+                                                    //To assign different type of variables based on its type to the projectile
+                                                    switch (TowerList.get(i).getType()) {
+                                                        case TOWER_NORMAL:
+                                                            FetchProjectiles(TowerList.get(i).getPosition(),
+                                                                    BubbleProjectileImage, WaveList.get(currentWave).get(j).getPosition(), TowerList.get(i).getDamage(), 300);
+                                                            break;
+                                                        case TOWER_HIGHFIRERATE:
+                                                            FetchProjectiles(TowerList.get(i).getPosition(),
+                                                                    BubbleProjectileImage, WaveList.get(currentWave).get(j).getPosition(), TowerList.get(i).getDamage(), 300);
+                                                            break;
+                                                        case TOWER_SLOW:
+                                                            break;
+                                                    }
+                                                    break;
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        //Update Projectiles
+                        for(int i = 0; i < ProjectileList.size(); ++i)
+                        {
+                            if(ProjectileList.get(i).isActive()) {
+                                ProjectileList.get(i).Update(dt);
+                            }
+                        }
+
+                        //Check Collision
+                        for(int i = 0; i < ProjectileList.size(); ++i)
+                        {
+                            //Only if the projectile is active, check it against all other active enemies
+                            if(ProjectileList.get(i).isActive()) {
+                                if (currentWave < WaveList.size())
+                                {
+                                    for (int j = 0; j < WaveList.get(currentWave).size(); ++j)
+                                    {
+                                        //Only if the enemy is active
+                                        if (WaveList.get(currentWave).get(j).isActive())
+                                        {
+                                            //If they intersect with each other
+                                            if (ProjectileList.get(i).getBounding_box().CheckIntersect(WaveList.get(currentWave).get(j).getBoundingbox())) {
+                                                //Remove Projectile
+                                                ProjectileList.get(i).setActive(false);
+                                                //Update Health
+                                                WaveList.get(currentWave).get(j).setHealth(WaveList.get(currentWave).get(j).getHealth() - ProjectileList.get(i).getDamage());
+
+                                                //Remove Enemy
+                                                if (WaveList.get(currentWave).get(j).getHealth() < 0) {
+                                                    WaveList.get(currentWave).get(j).setActive(false);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                     //Feedback for game over
-                    if (GameActive == false) {
+                    else if (!GameActive) {
                         //Vibration feedback
                         //vibrateTime += dt;
                         //if (vibrateTime > MaxVibrateTime) {
@@ -522,6 +739,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                             selectedTower = new Tower(new Vector2(0, 0), FastTowerImage, Tower.TOWER_TYPE.TOWER_HIGHFIRERATE);
                                         }
                                         break;
+                                    case UI_WORKER:
+                                        break;
                                 }
                             }
                         }
@@ -588,67 +807,29 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
     }
 
-    //Proccess user's input
-    public int ProcessSwipe(Vector2 SwipeDirection) {
-        float x = SwipeDirection.x;
-        float y = SwipeDirection.y;
-
-        // x more than 0
-        if (0 < x) {
-            // y more than 0
-            if (0 < y) {
-                // Since x & y positive check which bigger
-                // x more than y hence direction right
-                if (x > y) {
-                    return 2;
-                }
-                // y more than x hence direction down
-                else {
-                    return 4;
-                }
-            }
-            // y less than 0
-            else
+    public void FetchProjectiles(Vector2 startPosition, Bitmap image,Vector2 TargetPos,float damage, float speed)
+    {
+        boolean Full = true;
+        //Iterate through current list
+        for(int i = 0; i < ProjectileList.size(); ++i)
+        {
+            //Get the first non active projectile to reuse
+            if(ProjectileList.elementAt(i).isActive() == false)
             {
-                // Check x or y(converted to positive) which is bigger
-                // x bigger than y when positive hence direction right
-                if(x > (-1 * y))
-                {
-                    return 2;
-                }
-                // y when positive is bigger than x hence direction up
-                else
-                {
-                    return 3;
-                }
+                //Set all data of the projectile
+                ProjectileList.elementAt(i).SetAllData(new Vector2(startPosition.x,startPosition.y), image, speed, damage, TargetPos, true);
+                Full = false;
+                //Stop the loop
+                break;
             }
         }
-        // x less than 0
-        else {
-            // y more than 0
-            if (0 < y) {
-                // Since x & y positive check which bigger
-                // x when positive more than y hence direction left
-                if ((-1 * x) > y) {
-                    return 1;
-                }
-                // y more than x when positive hence direction down
-                else {
-                    return 4;
-                }
+        if(Full) {
+            //Add more into the list
+            for (int i = 0; i < 20; ++i) {
+                ProjectileList.addElement(new Projectiles());
             }
-            // y less than 0
-            else {
-                // Check x or y(converted to positive) which is bigger
-                // x when positive bigger than y when positive hence direction left
-                if ((-1 * x) > (-1 * y)) {
-                    return 1;
-                }
-                // y when positive is bigger than x hence direction up
-                else {
-                    return 3;
-                }
-            }
+            //Use the last/ newly added projectile
+            ProjectileList.lastElement().SetAllData(new Vector2(startPosition.x, startPosition.y), image, speed, damage, TargetPos, true);
         }
     }
 

@@ -11,6 +11,14 @@ public class AABB2D {
     public Vector2 Maximum = new Vector2(0.0f,0.0f);
     public Vector2 TopLeft = new Vector2(0.0f,0.0f);
 
+    public AABB2D() {
+        CenterPoint = null;
+        this.width = 1;
+        this.height = 1;
+        float dividedSizeX = width * 0.5f;
+        float dividedSizeY = height * 0.5f;
+    }
+
     public AABB2D(Vector2 centerPoint, float width, float height) {
         CenterPoint = centerPoint;
         this.width = width;

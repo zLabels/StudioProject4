@@ -4,9 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 
-/**
- * Created by Jessica on 23/2/2016.
- */
 public class Projectiles {
 
     Vector2 Position = new Vector2(0.0f,0.0f);
@@ -17,65 +14,66 @@ public class Projectiles {
     float rotation;
     float movespeed;
     boolean active;
+    float LifeTime;
+    float Damage;
 
-    AABB2D bounding_box;
+    AABB2D bounding_box = new AABB2D();
 
     public Projectiles()
     {
-        this.Position = new Vector2(0.f,0.0f);
+        this.Position = new Vector2(0.0f,0.0f);
         this.Direction.Set(0, 1);
 
         this.image = null;
         this.movespeed = 0.0f;
-        this.active = true;
-
-        this.bounding_box = new AABB2D(new Vector2(Position.x, Position.y), image.getWidth(), image.getHeight());
-
+        this.active = false;
+        this.LifeTime = 5.0f;
+        this.Damage = 10;
     }
-    public Projectiles(Vector2 Pos, Bitmap mesh, float speed)
+
+    public void SetAllData(Vector2 Pos, Bitmap mesh, float speed,float damage,Vector2 targetPosition, boolean Active)
     {
         this.Position = Pos;
-        this.Direction.Set(0, 1);
+        this.Direction = (targetPosition.operatorMinus(this.Position).Normailzed());
 
         this.image = mesh;
         this.movespeed = speed;
-        this.active = true;
+        this.active = Active;
+        this.LifeTime = 5.0f;
+        this.Damage = damage;
 
         this.bounding_box.SetAllData(new Vector2(Position.x, Position.y), image.getWidth(), image.getHeight());
     }
 
-    public void Update(Vector2 target, float dt)
+    public void Update(float dt)
     {
-        if(active)
-        {
-            Direction = (target.operatorMinus(Position).Normailzed());
-            double theta = Math.atan2(Direction.y, Direction.x);
-            rotation = (float) Math.toDegrees(theta);
+        //Getting the direction towards the target AI
+        double theta = Math.atan2(Direction.y, Direction.x);
 
-            Vector2 velocity = Direction.operatorTimes(movespeed);
-            Position.operatorPlusEqual(velocity);
+        //Update rotation for use in Render
+        rotation = (float) Math.toDegrees(theta);
 
-            bounding_box.setCenterPoint(Position);
-            if(Position == target)
-            {
-                active = false;
-            }
+        //Update Velocity based on the direction set at the start
+        Vector2 velocity = Direction.operatorTimes(movespeed);
 
-        }
-        else
-        {
-            bounding_box.setCenterPoint(Position);
-        }
+        velocity = velocity.operatorTimes(0.015f);
+
+        Position.operatorPlusEqual(velocity);
+
+        //Update Bounding Box
+        bounding_box.setCenterPoint(Position);
+
+        this.LifeTime -= dt;
+
+        if (LifeTime < 0) {active = false;}
     }
 
     public void Draw(Canvas canvas)
     {
-        if(active) {
-            Matrix matrix = new Matrix();
-            matrix.postTranslate(bounding_box.getTopLeft().x, bounding_box.getTopLeft().y);
-            matrix.postRotate(rotation, image.getWidth() / 2, image.getHeight() / 2);
-            canvas.drawBitmap(image, matrix, null);
-        }
+        Matrix matrix = new Matrix();
+        matrix.postTranslate(bounding_box.getTopLeft().x, bounding_box.getTopLeft().y);
+        //matrix.postRotate(rotation, image.getWidth() / 2, image.getHeight() / 2);
+        canvas.drawBitmap(image, matrix, null);
     }
 
     public float getMovespeed() {
@@ -93,7 +91,6 @@ public class Projectiles {
     public void setRotation(float rotation) {
         this.rotation = rotation;
     }
-
 
     public Bitmap getImage() {
         return image;
@@ -135,4 +132,19 @@ public class Projectiles {
         this.active = active;
     }
 
+    public AABB2D getBounding_box() {
+        return bounding_box;
+    }
+
+    public void setBounding_box(AABB2D bounding_box) {
+        this.bounding_box = bounding_box;
+    }
+
+    public float getDamage() {
+        return Damage;
+    }
+
+    public void setDamage(float damage) {
+        this.Damage = damage;
+    }
 }

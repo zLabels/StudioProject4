@@ -20,10 +20,10 @@ public class Vector2 {
         y = rhs.y;
     }
 
-    void Set(float a, float b)
+    void Set(float x, float y)
     {
-        x = a;
-        y = b;
+        this.x = x;
+        this.y = y;
     }
 
     void Set(Vector2 rhs)
