@@ -25,6 +25,15 @@ public class GridNode
         sourceRect = null;
         type = GRID_TYPE.GT_FREE;
     }
+    public GridNode(AABB2D boundingBox, GRID_TYPE type) {
+        BoundingBox = boundingBox;
+
+        ID = 0;
+
+        sourceRect = null;
+
+        this.type = type;
+    }
 
     public GridNode(AABB2D boundingBox, Bitmap image, int col, int tileID, GRID_TYPE type) {
         BoundingBox = boundingBox;
