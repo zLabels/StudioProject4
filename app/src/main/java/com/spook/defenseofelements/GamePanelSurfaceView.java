@@ -133,6 +133,10 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private Bitmap NormalTowerImageDrag = BitmapFactory.decodeResource(getResources(), R.drawable.tower_normal_drag);
     private Bitmap FastTowerImage = BitmapFactory.decodeResource(getResources(), R.drawable.tower_fast);
     private Bitmap FastTowerImageDrag = BitmapFactory.decodeResource(getResources(), R.drawable.tower_fast_drag);
+    private Bitmap SlowTowerImage = BitmapFactory.decodeResource(getResources(), R.drawable.tower_slow);
+    private Bitmap SlowTowerImageDrag = BitmapFactory.decodeResource(getResources(), R.drawable.tower_slow_drag);
+    private Bitmap OpTowerImage = BitmapFactory.decodeResource(getResources(), R.drawable.tower_op);
+    private Bitmap OpTowerImageDrag = BitmapFactory.decodeResource(getResources(), R.drawable.tower_op_drag);
 
     //Ais
     private Bitmap NormalAIImage = BitmapFactory.decodeResource(getResources(), R.drawable.ghost_round);
@@ -141,6 +145,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
     //Projectiles
     private Bitmap BubbleProjectileImage = BitmapFactory.decodeResource(getResources(), R.drawable.bubble_bullet);
+    private Bitmap Bubble2ProjectileImage = BitmapFactory.decodeResource(getResources(), R.drawable.bubble_bullet_2);
+    private Bitmap Bubble3ProjectileImage = BitmapFactory.decodeResource(getResources(), R.drawable.bubble_bullet_3);
 
     //constructor for this GamePanelSurfaceView class
     public GamePanelSurfaceView(Context context,int Mode){
@@ -325,9 +331,12 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                 NormalTowerImage, false, InGameButton.BUTTON_TYPE.UI_NORMAL_TOWER));
         ButtonList.addElement(new InGameButton(250, 667,
                 FastTowerImage, false, InGameButton.BUTTON_TYPE.UI_FAST_TOWER));
+        ButtonList.addElement(new InGameButton(435, 667,
+                SlowTowerImage, false, InGameButton.BUTTON_TYPE.UI_SLOW_TOWER));
+        ButtonList.addElement(new InGameButton(638, 667,
+                OpTowerImage, false, InGameButton.BUTTON_TYPE.UI_OP_TOWER));
         ButtonList.addElement(new InGameButton(37, 810,
                 WorkerImage, false, InGameButton.BUTTON_TYPE.UI_WORKER));
-
         //AIList.addElement(new AI(position,Waypoints, NormalAIImage, AI.AI_TYPE.AI_NORMAL));
 
         //Initialize projectiles to be reused
@@ -492,7 +501,11 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                         }
                         break;
                         case TOWER_SLOW:{
-
+                            canvas.drawBitmap(SlowTowerImageDrag, TouchPos.x, TouchPos.y, null);
+                        }
+                        break;
+                        case TOWER_OP:{
+                            canvas.drawBitmap(OpTowerImageDrag, TouchPos.x, TouchPos.y, null);
                         }
                         break;
                     }
@@ -535,10 +548,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                         if (currentWave < WaveList.size()) {
                             spawnTimer += dt;
 
-                            if (spawnTimer >= aiSpawnrate)
-                            {
-                                if (currentSpawnIndex < WaveList.get(currentWave).size())
-                                {
+                            if (spawnTimer >= aiSpawnrate) {
+                                if (currentSpawnIndex < WaveList.get(currentWave).size()) {
                                     spawnTimer = 0;
                                     WaveList.get(currentWave).get(currentSpawnIndex).setActive(true);
                                     waveStarted = true;
@@ -548,31 +559,23 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                         }
 
                         //Updating enemies
-                        if (currentWave < WaveList.size())
-                        {
-                            for (int i = 0; i < WaveList.get(currentWave).size(); ++i)
-                            {
-                                if (WaveList.get(currentWave).get(i).isActive())
-                                {
+                        if (currentWave < WaveList.size()) {
+                            for (int i = 0; i < WaveList.get(currentWave).size(); ++i) {
+                                if (WaveList.get(currentWave).get(i).isActive()) {
                                     WaveList.get(currentWave).get(i).Update(dt);
                                 }
                             }
                         }
 
                         //If wave has started
-                        if(waveStarted)
-                        {
+                        if (waveStarted) {
                             boolean wavecleared = false;
 
-                            for (int i = 0; i < WaveList.get(currentWave).size(); ++i)
-                            {
-                                if (WaveList.get(currentWave).get(i).isActive())
-                                {
+                            for (int i = 0; i < WaveList.get(currentWave).size(); ++i) {
+                                if (WaveList.get(currentWave).get(i).isActive()) {
                                     wavecleared = false;
                                     break;
-                                }
-                                else
-                                {
+                                } else {
                                     wavecleared = true;
                                 }
                             }
@@ -589,20 +592,15 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                         */
 
                         //Only if there is a tower on the grid we start updating towers
-                        if(TowerList.size() > 0)
-                        {
+                        if (TowerList.size() > 0) {
                             //Iterate through all the towers that are on the grid
-                            for(int i = 0; i < TowerList.size(); ++i)
-                            {
+                            for (int i = 0; i < TowerList.size(); ++i) {
                                 //Only if tower is able to fire
-                                if(TowerList.get(i).Fire(dt))
-                                {
-                                    if (currentWave < WaveList.size())
-                                    {
+                                if (TowerList.get(i).Fire(dt)) {
+                                    if (currentWave < WaveList.size()) {
                                         //Update Enemies
-                                        for (int j = 0; j < WaveList.get(currentWave).size(); ++j)
-                                        {
-                                        //Only if the enemy is active
+                                        for (int j = 0; j < WaveList.get(currentWave).size(); ++j) {
+                                            //Only if the enemy is active
                                             if (WaveList.get(currentWave).get(j).isActive()) {
                                                 float distance = WaveList.get(currentWave).get(j).getPosition().operatorMinus(TowerList.get(i).getPosition()).Length();
                                                 //Only if its within range, we update the tower
@@ -612,13 +610,19 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                                     switch (TowerList.get(i).getType()) {
                                                         case TOWER_NORMAL:
                                                             FetchProjectiles(TowerList.get(i).getPosition(),
-                                                                    BubbleProjectileImage, WaveList.get(currentWave).get(j).getPosition(), TowerList.get(i).getDamage(), 300);
+                                                                    Bubble3ProjectileImage, WaveList.get(currentWave).get(j).getPosition(), TowerList.get(i).getDamage(), 300, Projectiles.PROJECTILE_TYPE.PROJECTILE_NORMAL);
                                                             break;
                                                         case TOWER_HIGHFIRERATE:
                                                             FetchProjectiles(TowerList.get(i).getPosition(),
-                                                                    BubbleProjectileImage, WaveList.get(currentWave).get(j).getPosition(), TowerList.get(i).getDamage(), 300);
+                                                                    BubbleProjectileImage, WaveList.get(currentWave).get(j).getPosition(), TowerList.get(i).getDamage(), 300, Projectiles.PROJECTILE_TYPE.PROJECTILE_NORMAL);
                                                             break;
                                                         case TOWER_SLOW:
+                                                            FetchProjectiles(TowerList.get(i).getPosition(),
+                                                                    Bubble2ProjectileImage, WaveList.get(currentWave).get(j).getPosition(), TowerList.get(i).getDamage(), 300, Projectiles.PROJECTILE_TYPE.PROJECTILE_SLOW);
+                                                            break;
+                                                        case TOWER_OP:
+                                                            FetchProjectiles(TowerList.get(i).getPosition(),
+                                                                    Bubble2ProjectileImage, WaveList.get(currentWave).get(j).getPosition(), TowerList.get(i).getDamage(), 300, Projectiles.PROJECTILE_TYPE.PROJECTILE_SLOW);
                                                             break;
                                                     }
                                                     break;
@@ -632,25 +636,20 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                         }
 
                         //Update Projectiles
-                        for(int i = 0; i < ProjectileList.size(); ++i)
-                        {
-                            if(ProjectileList.get(i).isActive()) {
+                        for (int i = 0; i < ProjectileList.size(); ++i) {
+                            if (ProjectileList.get(i).isActive()) {
                                 ProjectileList.get(i).Update(dt);
                             }
                         }
 
                         //Check Collision
-                        for(int i = 0; i < ProjectileList.size(); ++i)
-                        {
+                        for (int i = 0; i < ProjectileList.size(); ++i) {
                             //Only if the projectile is active, check it against all other active enemies
-                            if(ProjectileList.get(i).isActive()) {
-                                if (currentWave < WaveList.size())
-                                {
-                                    for (int j = 0; j < WaveList.get(currentWave).size(); ++j)
-                                    {
+                            if (ProjectileList.get(i).isActive()) {
+                                if (currentWave < WaveList.size()) {
+                                    for (int j = 0; j < WaveList.get(currentWave).size(); ++j) {
                                         //Only if the enemy is active
-                                        if (WaveList.get(currentWave).get(j).isActive())
-                                        {
+                                        if (WaveList.get(currentWave).get(j).isActive()) {
                                             //If they intersect with each other
                                             if (ProjectileList.get(i).getBounding_box().CheckIntersect(WaveList.get(currentWave).get(j).getBoundingbox())) {
                                                 //Remove Projectile
@@ -658,6 +657,24 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                                 //Update Health
                                                 WaveList.get(currentWave).get(j).setHealth(WaveList.get(currentWave).get(j).getHealth() - ProjectileList.get(i).getDamage());
 
+                                                //Remove Enemy
+                                                if (WaveList.get(currentWave).get(j).getHealth() < 0) {
+                                                    WaveList.get(currentWave).get(j).setActive(false);
+                                                }
+                                                //Remove Projectile
+                                                ProjectileList.get(i).setActive(false);
+                                                //Update Health
+                                                WaveList.get(currentWave).get(j).setHealth(WaveList.get(currentWave).get(j).getHealth() - ProjectileList.get(i).getDamage());
+
+                                                if (ProjectileList.get(i).getType() == Projectiles.PROJECTILE_TYPE.PROJECTILE_SLOW)
+                                                {
+
+                                                    if (!WaveList.get(currentWave).get(j).slowed)
+                                                    {
+                                                        WaveList.get(currentWave).get(j).setMovespeed(WaveList.get(currentWave).get(j).getMovespeed() - ProjectileList.get(i).getDecreaseSpeed());
+                                                        WaveList.get(currentWave).get(j).setSlowed(true);
+                                                    }
+                                                }
                                                 //Remove Enemy
                                                 if (WaveList.get(currentWave).get(j).getHealth() < 0) {
                                                     WaveList.get(currentWave).get(j).setActive(false);
@@ -718,6 +735,11 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                             if (selectedTower.getType() != Tower.TOWER_TYPE.TOWER_NORMAL) {
                                                 //If different, change selected tower to this
                                                 selectedTower = new Tower(new Vector2(0, 0), NormalTowerImage, Tower.TOWER_TYPE.TOWER_NORMAL);
+
+                                                if(player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
+                                                {
+                                                    selectedTower = null;
+                                                }
                                             } else {
                                                 //If currently selected tower is the same, deselect it
                                                 selectedTower = null;
@@ -727,6 +749,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                             selectedTower = new Tower(new Vector2(0, 0), NormalTowerImage, Tower.TOWER_TYPE.TOWER_NORMAL);
                                         }
                                         break;
+
                                     case UI_FAST_TOWER:
                                         //Check if there is a selected tower
                                         if (selectedTower != null) {
@@ -734,6 +757,11 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                             if (selectedTower.getType() != Tower.TOWER_TYPE.TOWER_HIGHFIRERATE) {
                                                 //If different, change selected tower to this
                                                 selectedTower = new Tower(new Vector2(0, 0), FastTowerImage, Tower.TOWER_TYPE.TOWER_HIGHFIRERATE);
+
+                                                if(player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
+                                                {
+                                                    selectedTower = null;
+                                                }
                                             } else {
                                                 //If currently selected tower is the same, deselect it
                                                 selectedTower = null;
@@ -743,8 +771,50 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                             selectedTower = new Tower(new Vector2(0, 0), FastTowerImage, Tower.TOWER_TYPE.TOWER_HIGHFIRERATE);
                                         }
                                         break;
-                                    case UI_WORKER:
+
+                                    case UI_SLOW_TOWER:
+                                        if (selectedTower != null) {
+                                            //Check if the selected tower is different from the one currently being selected
+                                            if (selectedTower.getType() != Tower.TOWER_TYPE.TOWER_SLOW) {
+                                                //If different, change selected tower to this
+                                                selectedTower = new Tower(new Vector2(0, 0), SlowTowerImage, Tower.TOWER_TYPE.TOWER_SLOW);
+
+                                                if(player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
+                                                {
+                                                    selectedTower = null;
+                                                }
+                                            } else {
+                                                //If currently selected tower is the same, deselect it
+                                                selectedTower = null;
+                                            }
+                                        } else {
+                                            //there is no selected tower
+                                            selectedTower = new Tower(new Vector2(0, 0), SlowTowerImage, Tower.TOWER_TYPE.TOWER_SLOW);
+                                        }
                                         break;
+
+                                    case UI_OP_TOWER:
+                                        if (selectedTower != null) {
+                                            //Check if the selected tower is different from the one currently being selected
+                                            if (selectedTower.getType() != Tower.TOWER_TYPE.TOWER_OP) {
+                                                //If different, change selected tower to this
+                                                selectedTower = new Tower(new Vector2(0, 0), OpTowerImage, Tower.TOWER_TYPE.TOWER_OP);
+
+                                                if(player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
+                                                {
+                                                    selectedTower = null;
+                                                }
+                                            } else {
+                                                //If currently selected tower is the same, deselect it
+                                                selectedTower = null;
+                                            }
+                                        } else {
+                                            //there is no selected tower
+                                            selectedTower = new Tower(new Vector2(0, 0), OpTowerImage, Tower.TOWER_TYPE.TOWER_OP);
+                                        }
+                                        break;
+
+                                    case UI_WORKER:
                                 }
                             }
                         }
@@ -765,7 +835,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                 //Grid needs to be free first
                                 if (TowerGrid[i][j].getType() == GridNode.GRID_TYPE.GT_FREE) {
                                     //if Tap on this grid
-                                    if (TowerGrid[i][j].getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())) && player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost())) {
+                                    if (TowerGrid[i][j].getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY()))) {
                                         TowerList.addElement(new Tower(TowerGrid[i][j].getBoundingBox().getCenterPoint(),
                                                 selectedTower.getImage(), selectedTower.getType()));
 
@@ -813,7 +883,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
     }
 
-    public void FetchProjectiles(Vector2 startPosition, Bitmap image,Vector2 TargetPos,float damage, float speed)
+    public void FetchProjectiles(Vector2 startPosition, Bitmap image,Vector2 TargetPos,float damage, float speed, Projectiles.PROJECTILE_TYPE type)
     {
         boolean Full = true;
         //Iterate through current list
@@ -823,7 +893,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             if(ProjectileList.elementAt(i).isActive() == false)
             {
                 //Set all data of the projectile
-                ProjectileList.elementAt(i).SetAllData(new Vector2(startPosition.x,startPosition.y), image, speed, damage, TargetPos, true);
+                ProjectileList.elementAt(i).SetAllData(new Vector2(startPosition.x,startPosition.y), image, speed, damage, TargetPos, true, type);
                 Full = false;
                 //Stop the loop
                 break;
@@ -835,7 +905,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                 ProjectileList.addElement(new Projectiles());
             }
             //Use the last/ newly added projectile
-            ProjectileList.lastElement().SetAllData(new Vector2(startPosition.x, startPosition.y), image, speed, damage, TargetPos, true);
+            ProjectileList.lastElement().SetAllData(new Vector2(startPosition.x, startPosition.y), image, speed, damage, TargetPos, true, type);
         }
     }
 

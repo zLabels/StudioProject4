@@ -6,16 +6,24 @@ import android.graphics.Matrix;
 
 public class Projectiles {
 
+    public enum PROJECTILE_TYPE
+    {
+        PROJECTILE_NORMAL,
+        PROJECTILE_SLOW,
+    }
+
     Vector2 Position = new Vector2(0.0f,0.0f);
     Vector2 TopLeft = new Vector2(0.0f,0.0f);
     Vector2 Direction = new Vector2(0.0f,0.0f);
     private Bitmap image;
 
+    float DecreaseSpeed;
     float rotation;
     float movespeed;
     boolean active;
     float LifeTime;
     float Damage;
+    PROJECTILE_TYPE type;
 
     AABB2D bounding_box = new AABB2D();
 
@@ -24,18 +32,21 @@ public class Projectiles {
         this.Position = new Vector2(0.0f,0.0f);
         this.Direction.Set(0, 1);
 
+        this.type = PROJECTILE_TYPE.PROJECTILE_NORMAL;
         this.image = null;
         this.movespeed = 0.0f;
         this.active = false;
         this.LifeTime = 5.0f;
         this.Damage = 10;
+
     }
 
-    public void SetAllData(Vector2 Pos, Bitmap mesh, float speed,float damage,Vector2 targetPosition, boolean Active)
+    public void SetAllData(Vector2 Pos, Bitmap mesh, float speed,float damage,Vector2 targetPosition, boolean Active, PROJECTILE_TYPE projectile_type)
     {
         this.Position = Pos;
         this.Direction = (targetPosition.operatorMinus(this.Position).Normailzed());
 
+        this.type = projectile_type;
         this.image = mesh;
         this.movespeed = speed;
         this.active = Active;
@@ -43,8 +54,25 @@ public class Projectiles {
         this.Damage = damage;
 
         this.bounding_box.SetAllData(new Vector2(Position.x, Position.y), image.getWidth(), image.getHeight());
-    }
 
+        AssignProjectileType(type);
+    }
+    public void AssignProjectileType(PROJECTILE_TYPE type)
+    {
+        switch(type)
+        {
+            case PROJECTILE_NORMAL:
+            {
+                this.DecreaseSpeed = 0;
+            }
+            break;
+            case PROJECTILE_SLOW:
+            {
+                this.DecreaseSpeed = 50;
+            }
+            break;
+        }
+    }
     public void Update(float dt)
     {
         //Getting the direction towards the target AI
@@ -140,11 +168,21 @@ public class Projectiles {
         this.bounding_box = bounding_box;
     }
 
-    public float getDamage() {
-        return Damage;
-    }
+    public float getDamage() {return Damage;}
 
     public void setDamage(float damage) {
         this.Damage = damage;
+    }
+
+    public float getDecreaseSpeed() {return DecreaseSpeed;}
+
+    public void setDecreaseSpeed(float decreaseSpeed) {this.DecreaseSpeed = decreaseSpeed;}
+
+    public PROJECTILE_TYPE getType() {
+        return type;
+    }
+
+    public void setType(PROJECTILE_TYPE type) {
+        this.type = type;
     }
 }

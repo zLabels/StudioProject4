@@ -53,6 +53,7 @@ public class Playpage extends Activity implements OnClickListener{
 
        if(v == btn_start)
         {
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.setClass(this,GamePage.class);
         }
          if(v == btn_levelback)
