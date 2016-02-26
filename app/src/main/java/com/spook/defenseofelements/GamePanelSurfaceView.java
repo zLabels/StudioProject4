@@ -534,6 +534,11 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         canvas.drawText("FPS:" + FPS, 50, 50, paint);
         canvas.drawText("touchPos X:" + FirstTouch.x, 50, 75, paint);
         canvas.drawText("touchPos Y:" + FirstTouch.y, 50, 100, paint);
+
+        canvas.drawText(Integer.toString(player.getFireElement()), 93, 915, paint);
+        canvas.drawText(Integer.toString(player.getWaterElement()), 93, 985, paint);
+        canvas.drawText(Integer.toString(player.getWindElement()), 93, 1055, paint);
+        canvas.drawText(Integer.toString(player.getEarthElement()), 93, 1125, paint);
     }
 
     //Update method to update the game play
