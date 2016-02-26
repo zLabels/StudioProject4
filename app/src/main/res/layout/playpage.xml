@@ -19,7 +19,13 @@
         android:background="@drawable/levelback_button"
         android:layout_marginTop="12dp"
         android:layout_marginLeft="12dp"/>
-   
+    <Button
+        android:id = "@+id/btn_tutorial"
+        android:layout_width="180dp"
+        android:layout_height="80dp"
+        android:background="@drawable/tutorial_button"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="612dp"/>
 
 
 </RelativeLayout>

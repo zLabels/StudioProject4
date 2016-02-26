@@ -16,7 +16,7 @@ public class Playpage extends Activity implements OnClickListener{
     private Button btn_start;
     private Button btn_levelback;
     //private Button btn_endless;
-    //private Button btn_tutorial;
+    private Button btn_tutorial;
     //Media Player
     SoundManager soundManager;
 
@@ -37,10 +37,10 @@ public class Playpage extends Activity implements OnClickListener{
         btn_levelback.setOnClickListener(this);
 
         /*btn_endless = (Button)findViewById(R.id.btn_endless);
-        btn_endless.setOnClickListener(this);
+        btn_endless.setOnClickListener(this);*/
 
         btn_tutorial = (Button)findViewById(R.id.btn_tutorial);
-        btn_tutorial.setOnClickListener(this);*/
+        btn_tutorial.setOnClickListener(this);
 
         soundManager = new SoundManager();
     }
@@ -64,11 +64,11 @@ public class Playpage extends Activity implements OnClickListener{
          /*if(v == btn_endless)
         {
             intent.setClass(this,GamePage.class);
-        }
+        }*/
         if(v == btn_tutorial)
         {
             intent.setClass(this,Tutorialpage.class);
-        }*/
+        }
 
         startActivity(intent);
     }
