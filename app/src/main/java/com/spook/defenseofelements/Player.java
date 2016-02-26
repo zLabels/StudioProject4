@@ -17,6 +17,7 @@ public class Player {
     int windElement;
     int earthElement;
     int workerCount;
+    int livesCount;
 
     public Player()
     {
@@ -25,6 +26,7 @@ public class Player {
         windElement = 0;
         earthElement = 0;
         workerCount = 3;
+        livesCount = 3;
     }
 
     public void AddtoElement(Element.ELEMENT_TYPE type, int value)
@@ -55,6 +57,16 @@ public class Player {
             case EARTH_TYPE: earthElement -= value;
                 break;
         }
+    }
+
+    public void DecreaseLives()
+    {
+        livesCount -= 1;
+    }
+
+    public void IncreaseLives()
+    {
+        livesCount += 1;
     }
 
     public void DecreaseWorker()
@@ -148,5 +160,12 @@ public class Player {
         this.workerCount = workerCount;
     }
 
+    public int getLivesCount() {
+        return livesCount;
+    }
+
+    public void setLivesCount(int livesCount) {
+        this.livesCount = livesCount;
+    }
 
 }
