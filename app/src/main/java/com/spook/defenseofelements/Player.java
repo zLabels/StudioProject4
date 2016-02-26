@@ -16,13 +16,15 @@ public class Player {
     int waterElement;
     int windElement;
     int earthElement;
+    int workerCount;
 
     public Player()
     {
-        fireElement = 1;
+        fireElement = 0;
         waterElement = 0;
         windElement = 0;
         earthElement = 0;
+        workerCount = 3;
     }
 
     public void AddtoElement(Element.ELEMENT_TYPE type, int value)
@@ -53,6 +55,16 @@ public class Player {
             case EARTH_TYPE: earthElement -= value;
                 break;
         }
+    }
+
+    public void DecreaseWorker()
+    {
+        workerCount -= 1;
+    }
+
+    public void IncreaseWorker()
+    {
+        workerCount += 1;
     }
 
     public void AddtoElements(int fire, int water, int wind, int earth)
@@ -127,5 +139,14 @@ public class Player {
     public void setEarthElement(int earthElement) {
         this.earthElement = earthElement;
     }
+
+    public int getWorkerCount() {
+        return workerCount;
+    }
+
+    public void setWorkerCount(int workerCount) {
+        this.workerCount = workerCount;
+    }
+
 
 }

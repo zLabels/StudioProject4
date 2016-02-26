@@ -74,6 +74,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     float aiSpawnrate = 1.f;
     float spawnTimer = 0.f;
     boolean waveStarted = false;
+    boolean selectedWorker = false; //For use on UI Button Worker
+    InGameButton selectedPlacedWorker;   //For use on worker that is already on grid
 
     Player player;
 
@@ -115,10 +117,12 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     //List containing All the Projectiles
     Vector<Projectiles> ProjectileList = new Vector<Projectiles>();
 
+    //List containing All the workers that are on the grid
+    Vector<InGameButton> WorkerList = new Vector<InGameButton>();
+
     //In Game Screens
     private InGameScreens Pause_screen = new InGameScreens(400,200,
             BitmapFactory.decodeResource(getResources(),R.drawable.pause_screen));
-
 
     //Test
     private Bitmap GridTest = BitmapFactory.decodeResource(getResources(),R.drawable.gridtest);
@@ -127,6 +131,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private Bitmap TileMap =  BitmapFactory.decodeResource(getResources(), R.drawable.grass_floor_tileset);
     private Bitmap TD_Grid_Frame = BitmapFactory.decodeResource(getResources(), R.drawable.td_grid_frame);
     private Bitmap WorkerImage = BitmapFactory.decodeResource(getResources(), R.drawable.worker);
+    private Bitmap WorkerImageDrag = BitmapFactory.decodeResource(getResources(), R.drawable.worker_drag);
 
     //Towers
     private Bitmap NormalTowerImage = BitmapFactory.decodeResource(getResources(), R.drawable.tower_normal);
@@ -179,6 +184,41 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
         scanner.close();
 
+        InitializeGrid();
+
+        InitializeWaypoint();
+
+        InitializeWave();
+
+        InitializeButtons();
+        //AIList.addElement(new AI(position,Waypoints, NormalAIImage, AI.AI_TYPE.AI_NORMAL));
+
+        //Initialize projectiles to be reused
+        for(int i = 0; i < 50; ++i)
+        {
+            ProjectileList.addElement(new Projectiles());
+        }
+
+        //Text rendering values
+        paint.setARGB(255, 0, 0, 0);
+        paint.setStrokeWidth(100);
+        paint.setTextSize(30);
+
+        // Create the game loop thread
+        myThread = new GameThread(getHolder(), this);
+
+        //Set Current Selected Tower to null
+        selectedTower = null;
+
+        // Make the GamePanel focusable so it can handle events
+        setFocusable(true);
+
+        //Shared prefs
+        appPrefs = new AppPrefs(context);
+    }
+
+    void InitializeGrid()
+    {
         //Initializing Tower Grids
         Vector2 midPoints = new Vector2(48.0f,42.0f);
         for(int i = 0; i < 9; ++i)
@@ -202,7 +242,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
 
         //Initialize Element Grids
-        midPoints.Set(204,780);
+        midPoints.Set(204, 780);
         for(int i = 0; i < 3; ++i)
         {
             for (int j = 0; j < 3; ++j)
@@ -216,7 +256,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             midPoints.x = 204.0f;
             midPoints.y += 70.0f;
         }
-        midPoints.Set(204,1038);
+        midPoints.Set(204, 1038);
         for(int i = 0; i < 3; ++i)
         {
             for (int j = 0; j < 3; ++j)
@@ -230,7 +270,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             midPoints.x = 204.0f;
             midPoints.y += 70.0f;
         }
-        midPoints.Set(458,780);
+        midPoints.Set(458, 780);
         for(int i = 0; i < 3; ++i)
         {
             for (int j = 0; j < 3; ++j)
@@ -244,7 +284,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             midPoints.x = 458.0f;
             midPoints.y += 70.0f;
         }
-        midPoints.Set(458,1038);
+        midPoints.Set(458, 1038);
         for(int i = 0; i < 3; ++i)
         {
             for (int j = 0; j < 3; ++j)
@@ -258,9 +298,27 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             midPoints.x = 458.0f;
             midPoints.y += 70.0f;
         }
+    }
 
+    void InitializeButtons()
+    {
+        //InGameButton List
+        ButtonList.addElement(new InGameButton(48, 667,
+                NormalTowerImage, false, InGameButton.BUTTON_TYPE.UI_NORMAL_TOWER));
+        ButtonList.addElement(new InGameButton(250, 667,
+                FastTowerImage, false, InGameButton.BUTTON_TYPE.UI_FAST_TOWER));
+        ButtonList.addElement(new InGameButton(435, 667,
+                SlowTowerImage, false, InGameButton.BUTTON_TYPE.UI_SLOW_TOWER));
+        ButtonList.addElement(new InGameButton(638, 667,
+                OpTowerImage, false, InGameButton.BUTTON_TYPE.UI_OP_TOWER));
+        ButtonList.addElement(new InGameButton(37, 810,
+                WorkerImage, false, InGameButton.BUTTON_TYPE.UI_WORKER));
+    }
+
+    void InitializeWaypoint()
+    {
         //Reading Waypoints
-        scanner = new Scanner(getResources().openRawResource(R.raw.waypointlevel1));
+        Scanner scanner = new Scanner(getResources().openRawResource(R.raw.waypointlevel1));
         while(scanner.hasNext())
         {
             String temp = scanner.next();
@@ -271,10 +329,13 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             Waypoints.addElement(point);
         }
         scanner.close();
+    }
 
+    void InitializeWave()
+    {
         //Reading Waves
         int waveIndex = 0;
-        scanner = new Scanner(getResources().openRawResource(R.raw.wavelevel1));
+        Scanner scanner = new Scanner(getResources().openRawResource(R.raw.wavelevel1));
         while(scanner.hasNext())
         {
             String temp = scanner.next();
@@ -295,11 +356,11 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             {
                 int loopNum = Integer.parseInt(parts[1]);
 
-                 for(int i = 0; i < loopNum; ++i)
-                 {
-                     Vector2 position = new Vector2(0,100);
-                     WaveList.get(waveIndex - 1).addElement(new AI(position,Waypoints, NormalAIImage, AI.AI_TYPE.AI_NORMAL));
-                 }
+                for(int i = 0; i < loopNum; ++i)
+                {
+                    Vector2 position = new Vector2(0,100);
+                    WaveList.get(waveIndex - 1).addElement(new AI(position,Waypoints, NormalAIImage, AI.AI_TYPE.AI_NORMAL));
+                }
             }
 
             else if(parts[0].equals("Fast"))
@@ -325,42 +386,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             }
         }
         scanner.close();
-
-        //InGameButton List
-        ButtonList.addElement(new InGameButton(48, 667,
-                NormalTowerImage, false, InGameButton.BUTTON_TYPE.UI_NORMAL_TOWER));
-        ButtonList.addElement(new InGameButton(250, 667,
-                FastTowerImage, false, InGameButton.BUTTON_TYPE.UI_FAST_TOWER));
-        ButtonList.addElement(new InGameButton(435, 667,
-                SlowTowerImage, false, InGameButton.BUTTON_TYPE.UI_SLOW_TOWER));
-        ButtonList.addElement(new InGameButton(638, 667,
-                OpTowerImage, false, InGameButton.BUTTON_TYPE.UI_OP_TOWER));
-        ButtonList.addElement(new InGameButton(37, 810,
-                WorkerImage, false, InGameButton.BUTTON_TYPE.UI_WORKER));
-        //AIList.addElement(new AI(position,Waypoints, NormalAIImage, AI.AI_TYPE.AI_NORMAL));
-
-        //Initialize projectiles to be reused
-        for(int i = 0; i < 50; ++i)
-        {
-            ProjectileList.addElement(new Projectiles());
-        }
-
-        //Text rendering values
-        paint.setARGB(255, 0, 0, 0);
-        paint.setStrokeWidth(100);
-        paint.setTextSize(30);
-
-        // Create the game loop thread
-        myThread = new GameThread(getHolder(), this);
-
-        //Set Current Selected Tower to null
-        selectedTower = null;
-
-        // Make the GamePanel focusable so it can handle events
-        setFocusable(true);
-
-        //Shared prefs
-        appPrefs = new AppPrefs(context);
     }
 
     //must implement inherited abstract methods
@@ -409,47 +434,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                         null);
             }
         }
-        //Render Elemental Grids
-        for(int i = 0; i < 3; ++i)
-        {
-            for (int j = 0; j < 3; ++j)
-            {
-                canvas.drawBitmap(GridTest,
-                        DarkGrid[i][j].getBoundingBox().getTopLeft().x,
-                        DarkGrid[i][j].getBoundingBox().getTopLeft().y,
-                        null);
-            }
-        }
-        for(int i = 0; i < 3; ++i)
-        {
-            for (int j = 0; j < 3; ++j)
-            {
-                canvas.drawBitmap(GridTest,
-                        NatureGrid[i][j].getBoundingBox().getTopLeft().x,
-                        NatureGrid[i][j].getBoundingBox().getTopLeft().y,
-                        null);
-            }
-        }
-        for(int i = 0; i < 3; ++i)
-        {
-            for (int j = 0; j < 3; ++j)
-            {
-                canvas.drawBitmap(GridTest,
-                        WaterGrid[i][j].getBoundingBox().getTopLeft().x,
-                        WaterGrid[i][j].getBoundingBox().getTopLeft().y,
-                        null);
-            }
-        }
-        for(int i = 0; i < 3; ++i)
-        {
-            for (int j = 0; j < 3; ++j)
-            {
-                canvas.drawBitmap(GridTest,
-                        FireGrid[i][j].getBoundingBox().getTopLeft().x,
-                        FireGrid[i][j].getBoundingBox().getTopLeft().y,
-                        null);
-            }
-        }
 
         //Render These while game is active
         if(GameActive)
@@ -477,6 +461,16 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                         null);
             }
 
+            //Rendering Worker List on grids
+            for(int i = 0; i < WorkerList.size(); ++i)
+            {
+                canvas.drawBitmap(WorkerList.elementAt(i).getImage(),
+                        WorkerList.elementAt(i).getBoundingBox().getTopLeft().x,
+                        WorkerList.elementAt(i).getBoundingBox().getTopLeft().y,
+                        null);
+            }
+
+            //Render Enemies
             if(currentWave < WaveList.size()) {
                 for (int i = 0; i < WaveList.get(currentWave).size(); ++i) {
                     if (WaveList.get(currentWave).get(i).isActive()) {
@@ -487,9 +481,9 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             //Grid Frame
             canvas.drawBitmap(TD_Grid_Frame, 0, -20, null);
 
-            //Drag Tower
             if(ActionDown)
             {
+                //Drag Tower
                 if(selectedTower != null) {
                     switch (selectedTower.getType()) {
                         case TOWER_NORMAL: {
@@ -510,7 +504,17 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                         break;
                     }
                 }
+
+                if(selectedWorker)
+                {
+                    canvas.drawBitmap(WorkerImageDrag, TouchPos.x, TouchPos.y, null);
+                }
+                if(selectedPlacedWorker != null)
+                {
+                    canvas.drawBitmap(WorkerImageDrag, TouchPos.x, TouchPos.y, null);
+                }
             }
+
 
         }
 
@@ -725,7 +729,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                         FirstTouch.x = event.getX();
                         FirstTouch.y = event.getY();
                         //Loop to iterate through all buttons
-                        for (int i = 0; i < ButtonList.size(); ++i) {
+                        for (int i = 0; i < ButtonList.size(); ++i)
+                        {
                             if (ButtonList.elementAt(i).getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY()))) {
                                 switch (ButtonList.elementAt(i).buttonID) {
                                     case UI_NORMAL_TOWER:
@@ -835,9 +840,27 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                         break;
 
                                     case UI_WORKER:
+                                        //Only if there is more than 1 worker, we process this tap
+                                        if(player.getWorkerCount() > 0)
+                                        {
+                                            selectedWorker = true;
+                                        }
+                                        break;
                                 }
                             }
                         }
+
+                        //Loop to process all the workers on the grid
+                        for(int i = 0; i < WorkerList.size(); ++i)
+                        {
+                            //If Selected on a worker
+                            if (WorkerList.elementAt(i).getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())))
+                            {
+                                //Store this button
+                                selectedPlacedWorker = WorkerList.elementAt(i);
+                            }
+                        }
+
                         ActionDown = true;
                         ActionUp = false;
                     }
@@ -856,6 +879,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                 if (TowerGrid[i][j].getType() == GridNode.GRID_TYPE.GT_FREE) {
                                     //if Tap on this grid
                                     if (TowerGrid[i][j].getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY()))) {
+                                        //Add Tower
                                         TowerList.addElement(new Tower(TowerGrid[i][j].getBoundingBox().getCenterPoint(),
                                                 selectedTower.getImage(), selectedTower.getType()));
 
@@ -875,6 +899,253 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                 break;
                             }
                         }
+                    }
+
+                    //Process this only if there is only if worker is selected
+                    //Worker must be selected from UI Button to process this part
+                    if(selectedWorker)
+                    {
+                        boolean GridSelected = false;
+
+                        //Processing Dark grid first
+                        for(int i = 0; i < 3; ++i)
+                        {
+                            for (int j = 0; j < 3; ++j)
+                            {
+                                //Check That Grid is free first
+                                if (DarkGrid[i][j].getType() == GridNode.GRID_TYPE.GT_FREE) {
+                                    //Check if action up is on that grid
+                                    if (DarkGrid[i][j].getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())))
+                                    {
+                                        //Create worker on Grid
+                                        WorkerList.addElement(new InGameButton(DarkGrid[i][j].getBoundingBox().getCenterPoint().x,
+                                                DarkGrid[i][j].getBoundingBox().getCenterPoint().y,
+                                                WorkerImage, true, InGameButton.BUTTON_TYPE.UI_WORKER));
+
+                                        //Reduce number of workers
+                                        player.DecreaseWorker();
+                                        //Set grid to occupied
+                                        DarkGrid[i][j].setType(GridNode.GRID_TYPE.GT_OCCUPIED);
+                                        GridSelected = true;
+                                        break;
+                                    }
+                                }
+                                if(GridSelected) {
+                                    //Stop Loop
+                                    break;
+                                }
+                            }
+                        }
+                        //Only if a grid is not selected, we continue processing other Grids
+                        //Nature Grid
+                        if(!GridSelected) {
+                            for (int i = 0; i < 3; ++i) {
+                                for (int j = 0; j < 3; ++j) {
+                                    //Check That Grid is free first
+                                    if (NatureGrid[i][j].getType() == GridNode.GRID_TYPE.GT_FREE) {
+                                        //Check if action up is on that grid
+                                        if (NatureGrid[i][j].getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())))
+                                        {
+                                            //Create worker on Grid
+                                            WorkerList.addElement(new InGameButton(NatureGrid[i][j].getBoundingBox().getCenterPoint().x,
+                                                    NatureGrid[i][j].getBoundingBox().getCenterPoint().y,
+                                                    WorkerImage, true, InGameButton.BUTTON_TYPE.UI_WORKER));
+
+                                            //Reduce number of workers
+                                            player.DecreaseWorker();
+                                            //Set grid to occupied
+                                            NatureGrid[i][j].setType(GridNode.GRID_TYPE.GT_OCCUPIED);
+                                            GridSelected = true;
+                                            break;
+                                        }
+                                    }
+                                    if(GridSelected) {
+                                        //Stop Loop
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        //Only if a grid is not selected, we continue processing other Grids
+                        //Fire Grid
+                        if(!GridSelected) {
+                            for (int i = 0; i < 3; ++i) {
+                                for (int j = 0; j < 3; ++j) {
+                                    //Check That Grid is free first
+                                    if (FireGrid[i][j].getType() == GridNode.GRID_TYPE.GT_FREE) {
+                                        //Check if action up is on that grid
+                                        if (FireGrid[i][j].getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())))
+                                        {
+                                            //Create worker on Grid
+                                            WorkerList.addElement(new InGameButton(FireGrid[i][j].getBoundingBox().getCenterPoint().x,
+                                                    FireGrid[i][j].getBoundingBox().getCenterPoint().y,
+                                                    WorkerImage, true, InGameButton.BUTTON_TYPE.UI_WORKER));
+
+                                            //Reduce number of workers
+                                            player.DecreaseWorker();
+                                            //Set grid to occupied
+                                            FireGrid[i][j].setType(GridNode.GRID_TYPE.GT_OCCUPIED);
+                                            GridSelected = true;
+                                            break;
+                                        }
+                                    }
+                                    if(GridSelected) {
+                                        //Stop Loop
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        //Only if a grid is not selected, we continue processing other Grids
+                        //Water Grid
+                        if(!GridSelected) {
+                            for (int i = 0; i < 3; ++i) {
+                                for (int j = 0; j < 3; ++j) {
+                                    //Check That Grid is free first
+                                    if (WaterGrid[i][j].getType() == GridNode.GRID_TYPE.GT_FREE) {
+                                        //Check if action up is on that grid
+                                        if (WaterGrid[i][j].getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())))
+                                        {
+                                            //Create worker on Grid
+                                            WorkerList.addElement(new InGameButton(WaterGrid[i][j].getBoundingBox().getCenterPoint().x,
+                                                    WaterGrid[i][j].getBoundingBox().getCenterPoint().y,
+                                                    WorkerImage, true, InGameButton.BUTTON_TYPE.UI_WORKER));
+
+                                            //Reduce number of workers
+                                            player.DecreaseWorker();
+                                            //Set grid to occupied
+                                            WaterGrid[i][j].setType(GridNode.GRID_TYPE.GT_OCCUPIED);
+                                            GridSelected = true;
+                                            break;
+                                        }
+                                    }
+                                    if(GridSelected) {
+                                        //Stop Loop
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        selectedWorker = false;
+                    }
+
+                    //Process this part if selected on a worker that is already placed
+                    if(selectedPlacedWorker != null)
+                    {
+                        boolean GridSelected = false;
+
+                        //Processing Dark grid first
+                        for(int i = 0; i < 3; ++i)
+                        {
+                            for (int j = 0; j < 3; ++j)
+                            {
+                                //Check That Grid is free first
+                                if (DarkGrid[i][j].getType() == GridNode.GRID_TYPE.GT_FREE) {
+                                    //Check if action up is on that grid
+                                    if (DarkGrid[i][j].getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())))
+                                    {
+                                        FreeGrid(new Vector2(selectedPlacedWorker.getPosX(),selectedPlacedWorker.getPosY()));
+                                        //Readjust position to the new one
+                                        selectedPlacedWorker.setPosition(DarkGrid[i][j].getBoundingBox().getCenterPoint().x,
+                                                DarkGrid[i][j].getBoundingBox().getCenterPoint().y);
+
+                                        //Set grid to occupied
+                                        DarkGrid[i][j].setType(GridNode.GRID_TYPE.GT_OCCUPIED);
+                                        GridSelected = true;
+                                        break;
+                                    }
+                                }
+                                if(GridSelected) {
+                                    //Stop Loop
+                                    break;
+                                }
+                            }
+                        }
+                        //Only if a grid is not selected, we continue processing other Grids
+                        //Nature Grid
+                        if(!GridSelected) {
+                            for (int i = 0; i < 3; ++i) {
+                                for (int j = 0; j < 3; ++j) {
+                                    //Check That Grid is free first
+                                    if (NatureGrid[i][j].getType() == GridNode.GRID_TYPE.GT_FREE) {
+                                        //Check if action up is on that grid
+                                        if (NatureGrid[i][j].getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())))
+                                        {
+                                            FreeGrid(new Vector2(selectedPlacedWorker.getPosX(),selectedPlacedWorker.getPosY()));
+                                            //Readjust position to the new one
+                                            selectedPlacedWorker.setPosition(NatureGrid[i][j].getBoundingBox().getCenterPoint().x,
+                                                    NatureGrid[i][j].getBoundingBox().getCenterPoint().y);
+
+                                            //Set grid to occupied
+                                            NatureGrid[i][j].setType(GridNode.GRID_TYPE.GT_OCCUPIED);
+                                            GridSelected = true;
+                                            break;
+                                        }
+                                    }
+                                    if(GridSelected) {
+                                        //Stop Loop
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        //Only if a grid is not selected, we continue processing other Grids
+                        //Fire Grid
+                        if(!GridSelected) {
+                            for (int i = 0; i < 3; ++i) {
+                                for (int j = 0; j < 3; ++j) {
+                                    //Check That Grid is free first
+                                    if (FireGrid[i][j].getType() == GridNode.GRID_TYPE.GT_FREE) {
+                                        //Check if action up is on that grid
+                                        if (FireGrid[i][j].getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())))
+                                        {
+                                            FreeGrid(new Vector2(selectedPlacedWorker.getPosX(),selectedPlacedWorker.getPosY()));
+                                            //Readjust position to the new one
+                                            selectedPlacedWorker.setPosition(FireGrid[i][j].getBoundingBox().getCenterPoint().x,
+                                                    FireGrid[i][j].getBoundingBox().getCenterPoint().y);
+
+                                            //Set grid to occupied
+                                            FireGrid[i][j].setType(GridNode.GRID_TYPE.GT_OCCUPIED);
+                                            GridSelected = true;
+                                            break;
+                                        }
+                                    }
+                                    if(GridSelected) {
+                                        //Stop Loop
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        //Only if a grid is not selected, we continue processing other Grids
+                        //Water Grid
+                        if(!GridSelected) {
+                            for (int i = 0; i < 3; ++i) {
+                                for (int j = 0; j < 3; ++j) {
+                                    //Check That Grid is free first
+                                    if (WaterGrid[i][j].getType() == GridNode.GRID_TYPE.GT_FREE) {
+                                        //Check if action up is on that grid
+                                        if (WaterGrid[i][j].getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())))
+                                        {
+                                            FreeGrid(new Vector2(selectedPlacedWorker.getPosX(),selectedPlacedWorker.getPosY()));
+                                            //Readjust position to the new one
+                                            selectedPlacedWorker.setPosition(WaterGrid[i][j].getBoundingBox().getCenterPoint().x,
+                                                    WaterGrid[i][j].getBoundingBox().getCenterPoint().y);
+
+                                            //Set grid to occupied
+                                            WaterGrid[i][j].setType(GridNode.GRID_TYPE.GT_OCCUPIED);
+                                            GridSelected = true;
+                                            break;
+                                        }
+                                    }
+                                    if(GridSelected) {
+                                        //Stop Loop
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        selectedPlacedWorker = null;
                     }
                     ActionDown = false;
                     ActionUp = true;
@@ -929,11 +1200,116 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
     }
 
+    public void FreeGrid(Vector2 Position)
+    {
+        boolean GridSelected = false;
+
+        //Processing Dark grid first
+        for(int i = 0; i < 3; ++i)
+        {
+            for (int j = 0; j < 3; ++j)
+            {
+                //Check That Grid is free first
+                if (DarkGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED)
+                {
+                    //If its this grid
+                    if(DarkGrid[i][j].getBoundingBox().getCenterPoint().x == Position.x &&
+                            DarkGrid[i][j].getBoundingBox().getCenterPoint().y == Position.y)
+                    {
+                        //Free grid
+                        DarkGrid[i][j].setType(GridNode.GRID_TYPE.GT_FREE);
+                        GridSelected = true;
+                        break;
+                    }
+                }
+                if(GridSelected) {
+                    //Stop Loop
+                    break;
+                }
+            }
+        }
+        //Only if a grid is not selected, we continue processing other Grids
+        //Nature Grid
+        if(!GridSelected) {
+            for (int i = 0; i < 3; ++i) {
+                for (int j = 0; j < 3; ++j) {
+                    //Check That Grid is free first
+                    if (NatureGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED)
+                    {
+                        //If its this grid
+                        if(NatureGrid[i][j].getBoundingBox().getCenterPoint().x == Position.x &&
+                                NatureGrid[i][j].getBoundingBox().getCenterPoint().y == Position.y)
+                        {
+                            //Free grid
+                            NatureGrid[i][j].setType(GridNode.GRID_TYPE.GT_FREE);
+                            GridSelected = true;
+                            break;
+                        }
+                    }
+                    if(GridSelected) {
+                        //Stop Loop
+                        break;
+                    }
+                }
+            }
+        }
+        //Only if a grid is not selected, we continue processing other Grids
+        //Fire Grid
+        if(!GridSelected) {
+            for (int i = 0; i < 3; ++i) {
+                for (int j = 0; j < 3; ++j) {
+                    //Check That Grid is free first
+                    if (FireGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED)
+                    {
+                        //If its this grid
+                        if(FireGrid[i][j].getBoundingBox().getCenterPoint().x == Position.x &&
+                                FireGrid[i][j].getBoundingBox().getCenterPoint().y == Position.y)
+                        {
+                            //Free grid
+                            FireGrid[i][j].setType(GridNode.GRID_TYPE.GT_FREE);
+                            GridSelected = true;
+                            break;
+                        }
+                    }
+                    if(GridSelected) {
+                        //Stop Loop
+                        break;
+                    }
+                }
+            }
+        }
+        //Only if a grid is not selected, we continue processing other Grids
+        //Water Grid
+        if(!GridSelected) {
+            for (int i = 0; i < 3; ++i) {
+                for (int j = 0; j < 3; ++j) {
+                    //Check That Grid is free first
+                    if (WaterGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED)
+                    {
+                        //If its this grid
+                        if(WaterGrid[i][j].getBoundingBox().getCenterPoint().x == Position.x &&
+                                WaterGrid[i][j].getBoundingBox().getCenterPoint().y == Position.y)
+                        {
+                            //Free grid
+                            WaterGrid[i][j].setType(GridNode.GRID_TYPE.GT_FREE);
+                            GridSelected = true;
+                            break;
+                        }
+                    }
+                    if(GridSelected) {
+                        //Stop Loop
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     //Vibration
     public void startVibrate(){
         long pattern[] = {0,500,500};
         v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(pattern,0);
+        v.vibrate(pattern, 0);
     }
     public void stopVibrate(){
         v.cancel();
