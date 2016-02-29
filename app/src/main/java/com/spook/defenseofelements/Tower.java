@@ -132,7 +132,7 @@ public class Tower {
         }
     }
 
-    public void Update(Vector2 target, float dt)
+    public void Update(Vector2 target)
     {
         // Update Tower direction
         Direction = (target.operatorMinus(Position).Normailzed());

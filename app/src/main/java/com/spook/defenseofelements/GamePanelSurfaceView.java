@@ -38,20 +38,11 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
     //Feedback
     SoundManager soundManager;
-    public Vibrator v;
-    float vibrateTime = 0.f;
-    float MaxVibrateTime = 0.5f;
 
     //Random
     Random r = new Random();
 
     private short GameState;    // Variable for Game State check
-
-    // Variables for swiping
-    Vector2 InitialPos = new Vector2(0,0);
-    Vector2 LastPos = new Vector2(0,0);
-    Vector2 DirectionVector = new Vector2(0,0);
-    boolean Tapped = false;
 
     //Dragging Variables
     boolean ActionDown = false;
@@ -60,16 +51,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     Vector2 TouchPos = new Vector2(0.0f,0.0f);
 
     //Game elements
-    float SpawnRate = 0.5f; //Rate for each obstacle to spawn
-    float SpawnTimer = 0.f; //track time to spawn
-    short ScrollSpeed = 500;    //Speed of background scrolling
-    short BarSpeed = 35;    //Speed of bar scrolling
-    float timer = 0.f;  //Timer to increase speed
-    int score = 0;  //Play score
-    boolean UpdateHighscore = true; //Highscore update
-    boolean Win = false;
-
-    //Sp4 Game elements
     int currentWave = 0;
     int currentSpawnIndex = 0;
     float aiSpawnrate = 5.f;
@@ -79,6 +60,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     InGameButton selectedPlacedWorker;   //For use on worker that is already on grid
     float elementSpawnrate = 2.f;
     float elementTimer = 0.f;
+    boolean Win = false;
 
     Player player;
 
@@ -99,14 +81,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
     private boolean GameActive = true;  //Status of game
     private boolean GamePaused = false; //Paused status of game
-
-    //In game buttons
-    /*private InGameButton Restart_button = new InGameButton(500,650,
-            BitmapFactory.decodeResource(getResources(),R.drawable.restart_ingamebutton),false,"Restart");
-    private InGameButton Mainmenu_button = new InGameButton(1150,650,
-            BitmapFactory.decodeResource(getResources(),R.drawable.mainmenu_ingamebutton),false,"MainMenu");
-    private InGameButton Pause_button = new InGameButton(1700,30,
-            BitmapFactory.decodeResource(getResources(),R.drawable.pauseicon),false,"Pause");*/
 
     //List containing All In Game Buttons
     Vector<InGameButton> ButtonList = new Vector<InGameButton>();
@@ -129,9 +103,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     //In Game Screens
     private InGameScreens Pause_screen = new InGameScreens(400,200,
             BitmapFactory.decodeResource(getResources(),R.drawable.pause_screen));
-
-    //Test
-    private Bitmap GridTest = BitmapFactory.decodeResource(getResources(),R.drawable.gridtest);
 
     //Images
     private Bitmap TileMap =  BitmapFactory.decodeResource(getResources(), R.drawable.grass_floor_tileset);
@@ -667,6 +638,10 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                 waveStarted = false;
                                 currentSpawnIndex = 0;
                                 ++currentWave;
+                                if(currentWave % 2 == 0)
+                                {
+                                    player.IncreaseWorker();
+                                }
                             }
                         }
 
@@ -688,6 +663,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                                 float distance = WaveList.get(currentWave).get(j).getPosition().operatorMinus(TowerList.get(i).getPosition()).Length();
                                                 //Only if its within range, we update the tower
                                                 if (distance < TowerList.get(i).getRange()) {
+                                                    TowerList.get(i).Update(WaveList.get(currentWave).get(j).getPosition());
                                                     //Check which type of tower it is
                                                     //To assign different type of variables based on its type to the projectile
                                                     switch (TowerList.get(i).getType()) {
@@ -998,6 +974,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                             }
                         }
 
+
+
                         ActionDown = true;
                         ActionUp = false;
                     }
@@ -1307,6 +1285,31 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         //To process other taps while game is not active
         else
         {
+            switch (event.getAction())
+            {
+                case MotionEvent.ACTION_DOWN:
+                {
+                    //If tap on retry button
+                    if(retryButton.getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())))
+                    {
+                        Reset();
+                    }
+                    //If tap on retry button
+                    else if(replayButton.getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())))
+                    {
+                        Reset();
+                    }
+                    //If tap on main menu button
+                    else if(mainmainButton.getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())))
+                    {
+                        Intent intent = new Intent();
+                        intent.setClass(getContext(), Mainmenu.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        getContext().startActivity(intent);
+                    }
+                }
+                break;
+            }
             return true;
         }
     }
@@ -1442,29 +1445,98 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
     }
 
-    //Vibration
-    public void startVibrate(){
-        long pattern[] = {0,500,500};
-        v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(pattern, 0);
+    public void ResetGrids()
+    {
+        //Reset Tower Grid
+        for(int i = 0; i < 9; ++i)
+        {
+            for(int j = 0; j < 12; ++j)
+            {
+                //Reset all occupied grids back to free
+                if(TowerGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED) {
+                    TowerGrid[i][j].setType(GridNode.GRID_TYPE.GT_FREE);
+                }
+            }
+        }
+
+        //Reset All Elemental Grids
+        for(int i = 0; i < 3; ++i)
+        {
+            for(int j = 0; j < 3; ++j)
+            {
+                //Reset all occupied grids back to free
+                if(DarkGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED) {
+                    DarkGrid[i][j].setType(GridNode.GRID_TYPE.GT_FREE);
+                }
+                if(WaterGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED) {
+                    WaterGrid[i][j].setType(GridNode.GRID_TYPE.GT_FREE);
+                }
+                if(FireGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED) {
+                    FireGrid[i][j].setType(GridNode.GRID_TYPE.GT_FREE);
+                }
+                if(NatureGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED) {
+                    NatureGrid[i][j].setType(GridNode.GRID_TYPE.GT_FREE);
+                }
+            }
+        }
     }
-    public void stopVibrate(){
-        v.cancel();
+
+    public void ResetVariables()
+    {
+        currentWave = 0;
+        currentSpawnIndex = 0;
+        aiSpawnrate = 5.0f;
+        spawnTimer = 0.0f;
+        waveStarted = false;
+        selectedWorker = false;
+        elementSpawnrate = 2.0f;
+        elementTimer = 0.0f;
+        Win = false;
+        selectedPlacedWorker = null;
+    }
+
+    public void ResetVectors()
+    {
+        //Clear All Towers
+        TowerList.clear();
+
+        //Clear and reinitialize waves
+        WaveList.clear();
+        InitializeWave();
+
+        //Clear All worker in grid
+        WorkerList.clear();
+
+        //Reset All Projectile
+        for(int i = 0; i < ProjectileList.size(); ++i)
+        {
+            //Get the first non active projectile to reuse
+            if(ProjectileList.elementAt(i).isActive())
+            {
+                //Set all data of the projectile
+                ProjectileList.elementAt(i).setActive(false);
+                //Stop the loop
+                break;
+            }
+        }
+
     }
 
     //Restart game variables
     public void Reset()
     {
-        SpawnRate = 0.5f;
-        SpawnTimer = 0.f;
-        ScrollSpeed = 500;
-        timer = 0.f;
-        score = 0;
-        //Restart_button.setActive(false);
-        //Mainmenu_button.setActive(false);
-        Tapped = false;
-        vibrateTime = 0.f;
-        UpdateHighscore = true;
+        //Reset Grid back to original
+        ResetGrids();
+
+        //Reset Variables back to original
+        ResetVariables();
+
+        //Reset Vectors back to original
+        ResetVectors();
+
+        //Reset Player to default
+        player.ResetAll();
+
         //Reset everything first before we set game active back to true
         GameActive = true;
     }
