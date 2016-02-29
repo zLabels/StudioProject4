@@ -50,6 +50,7 @@
                 <category android:name="android.intent.category.default" />
             </intent-filter>
         </activity>
+
         <activity android:name=".Playpage"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -59,6 +60,22 @@
         </activity>
 
         <activity android:name=".Tutorialpage"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.default" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".Tutorialpagetwo"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.default" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".Tutorialthreepage"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@drawable/tutorial_page"
+    android:background="@drawable/tutorial_page2"
     android:orientation="vertical">
-
     <Button
         android:id = "@+id/btn_tutorialback"
         android:layout_width="150dp"
@@ -17,6 +16,11 @@
         android:background="@drawable/right_button"
         android:layout_marginLeft="725dp"
         android:layout_marginTop="15dp" />
-
-
+    <Button
+        android:id = "@+id/btn_back"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/left_button"
+        android:layout_marginLeft="650dp"
+        android:layout_marginTop="15dp" />
 </RelativeLayout>

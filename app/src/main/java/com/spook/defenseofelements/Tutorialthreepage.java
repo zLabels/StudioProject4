@@ -1,19 +1,20 @@
 package com.spook.defenseofelements;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.media.MediaPlayer;
 
-public class Tutorialpage extends Activity implements OnClickListener{
-
+/**
+ * Created by Jessica on 29/2/2016.
+ */
+public class Tutorialthreepage extends Activity implements View.OnClickListener {
     //Buttons
     private Button btn_tutorialback;
-    private Button btn_nextpage;
+    private Button btn_backpage;
     //Media Player
     SoundManager soundManager;
 
@@ -25,13 +26,13 @@ public class Tutorialpage extends Activity implements OnClickListener{
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN); //hide top bar
 
-        setContentView(R.layout.tutorialpage);
+        setContentView(R.layout.tutorialthreepage);
 
         btn_tutorialback = (Button)findViewById(R.id.btn_tutorialback);
         btn_tutorialback.setOnClickListener(this);
 
-        btn_nextpage = (Button)findViewById(R.id.btn_next);
-        btn_nextpage.setOnClickListener(this);
+        btn_backpage = (Button)findViewById(R.id.btn_back);
+        btn_backpage.setOnClickListener(this);
 
         soundManager = new SoundManager();
     }
@@ -47,7 +48,7 @@ public class Tutorialpage extends Activity implements OnClickListener{
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.setClass(this,Mainmenu.class);
         }
-        else if(v == btn_nextpage)
+        else if(v == btn_backpage)
         {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.setClass(this,Tutorialpagetwo.class);

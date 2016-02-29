@@ -17,7 +17,7 @@ public class Mainmenu extends Activity implements OnClickListener{
     private Button btn_play;
     private Button btn_options;
     private Button btn_credits;
-    private Button btn_highscore;
+    private Button btn_tutorial;
 
     //Sound manager
     SoundManager soundManager;
@@ -61,8 +61,8 @@ public class Mainmenu extends Activity implements OnClickListener{
         btn_credits = (Button)findViewById(R.id.btn_credits);
         btn_credits.setOnClickListener(this);
 
-        btn_highscore = (Button)findViewById(R.id.btn_highscore);
-        btn_highscore.setOnClickListener(this);
+        btn_tutorial = (Button)findViewById(R.id.btn_tutorial);
+        btn_tutorial.setOnClickListener(this);
     }
 
     //On tapping one of the mainmenu buttons
@@ -84,9 +84,9 @@ public class Mainmenu extends Activity implements OnClickListener{
         {
             intent.setClass(this,Creditpage.class);
         }
-        else if( v == btn_highscore)
+        else if( v == btn_tutorial)
         {
-            intent.setClass(this,Highscorepage.class);
+            intent.setClass(this,Tutorialpage.class);
         }
 
         //Start the new activity
