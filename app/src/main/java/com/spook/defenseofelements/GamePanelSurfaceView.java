@@ -67,6 +67,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     float timer = 0.f;  //Timer to increase speed
     int score = 0;  //Play score
     boolean UpdateHighscore = true; //Highscore update
+    boolean Win = false;
 
     //Sp4 Game elements
     int currentWave = 0;
@@ -528,6 +529,17 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         //Game is lost
         if(!GameActive){
+
+            // render win stuff
+            if(Win)
+            {
+                 canvas.drawBitmap(NormalAIImage, 400, 600, null);
+            }
+            // render lose stuff
+            else if(!Win)
+            {
+                canvas.drawBitmap(FastAIImage, 400, 600, null);
+            }
            // canvas.drawBitmap(Restart_button.getImage(),Restart_button.getPosX(),Restart_button.getPosY(),null);
             //canvas.drawBitmap(Mainmenu_button.getImage(), Mainmenu_button.getPosX(), Mainmenu_button.getPosY(),null);
         }
@@ -560,6 +572,20 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                     //Only when game is active we update the following
                     if (GameActive) {
 
+                        // lose condition
+                        if(player.getLivesCount() <= 0)
+                        {
+                            GameActive = false;
+                            Win = false;
+                        }
+
+                        // win condition
+                        else if((currentWave >= WaveList.size()) && (player.getLivesCount() > 0))
+                        {
+                            GameActive = false;
+                            Win = true;
+                        }
+
                         //Spawning enemies
                         if (currentWave < WaveList.size()) {
                             spawnTimer += dt;
@@ -579,6 +605,11 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                             for (int i = 0; i < WaveList.get(currentWave).size(); ++i) {
                                 if (WaveList.get(currentWave).get(i).isActive()) {
                                     WaveList.get(currentWave).get(i).Update(dt);
+
+                                    if(WaveList.get(currentWave).get(i).isEndofwaypoint())
+                                    {
+                                        player.DecreaseLives();
+                                    }
                                 }
                             }
                         }
