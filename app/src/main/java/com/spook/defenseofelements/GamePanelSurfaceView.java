@@ -558,10 +558,10 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         canvas.drawText(Integer.toString(player.getLivesCount()),727, 790, paint);
         canvas.drawText(Integer.toString(player.getWorkerCount()),93, 810, paint);
 
-        canvas.drawText(Integer.toString(player.getFireElement()), 93, 915, paint);
-        canvas.drawText(Integer.toString(player.getWaterElement()), 93, 985, paint);
-        canvas.drawText(Integer.toString(player.getWindElement()), 93, 1055, paint);
-        canvas.drawText(Integer.toString(player.getEarthElement()), 93, 1125, paint);
+        canvas.drawText(Integer.toString(player.getFireElement()), 90, 915, paint);
+        canvas.drawText(Integer.toString(player.getWaterElement()), 90, 985, paint);
+        canvas.drawText(Integer.toString(player.getWindElement()), 90, 1055, paint);
+        canvas.drawText(Integer.toString(player.getEarthElement()), 90, 1125, paint);
 
         RenderTowerRates(canvas);
     }
