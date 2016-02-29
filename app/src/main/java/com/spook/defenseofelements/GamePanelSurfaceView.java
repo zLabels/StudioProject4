@@ -146,6 +146,12 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private Bitmap OpTowerImage = BitmapFactory.decodeResource(getResources(), R.drawable.tower_op);
     private Bitmap OpTowerImageDrag = BitmapFactory.decodeResource(getResources(), R.drawable.tower_op_drag);
 
+    //Used for rendering tower resources
+    Tower UITowerNormal = new Tower(new Vector2(0,0), NormalTowerImage, Tower.TOWER_TYPE.TOWER_NORMAL);
+    Tower UITowerHighfirerate = new Tower(new Vector2(0,0), FastTowerImage, Tower.TOWER_TYPE.TOWER_HIGHFIRERATE);
+    Tower UITowerSlow = new Tower(new Vector2(0,0), SlowTowerImage, Tower.TOWER_TYPE.TOWER_SLOW);
+    Tower UITowerOP = new Tower(new Vector2(0,0), OpTowerImage, Tower.TOWER_TYPE.TOWER_OP);
+
     //Ais
     private Bitmap NormalAIImage = BitmapFactory.decodeResource(getResources(), R.drawable.ghost_round);
     private Bitmap FastAIImage = BitmapFactory.decodeResource(getResources(), R.drawable.ghost_spirit);
@@ -557,7 +563,30 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         canvas.drawText(Integer.toString(player.getWindElement()), 93, 1055, paint);
         canvas.drawText(Integer.toString(player.getEarthElement()), 93, 1125, paint);
 
+        RenderTowerRates(canvas);
+    }
 
+    public void RenderTowerRates(Canvas canvas)
+    {
+        canvas.drawText(Integer.toString(UITowerNormal.getFirecost()), 115, 660, paint);
+        canvas.drawText(Integer.toString(UITowerNormal.getWatercost()), 175, 660, paint);
+        canvas.drawText(Integer.toString(UITowerNormal.getEarthcost()), 115, 700, paint);
+        canvas.drawText(Integer.toString(UITowerNormal.getWindcost()), 175, 700, paint);
+
+        canvas.drawText(Integer.toString(UITowerHighfirerate.getFirecost()), 310, 660, paint);
+        canvas.drawText(Integer.toString(UITowerHighfirerate.getWatercost()), 365, 660, paint);
+        canvas.drawText(Integer.toString(UITowerHighfirerate.getEarthcost()), 310, 700, paint);
+        canvas.drawText(Integer.toString(UITowerHighfirerate.getWindcost()), 365, 700, paint);
+
+        canvas.drawText(Integer.toString(UITowerSlow.getFirecost()), 500, 660, paint);
+        canvas.drawText(Integer.toString(UITowerSlow.getWatercost()), 565, 660, paint);
+        canvas.drawText(Integer.toString(UITowerSlow.getEarthcost()), 500, 700, paint);
+        canvas.drawText(Integer.toString(UITowerSlow.getWindcost()), 565, 700, paint);
+
+        canvas.drawText(Integer.toString(UITowerOP.getFirecost()), 700, 660, paint);
+        canvas.drawText(Integer.toString(UITowerOP.getWatercost()), 760, 660, paint);
+        canvas.drawText(Integer.toString(UITowerOP.getEarthcost()), 700, 700, paint);
+        canvas.drawText(Integer.toString(UITowerOP.getWindcost()), 760, 700, paint);
     }
 
     //Update method to update the game play
