@@ -71,11 +71,13 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     //Sp4 Game elements
     int currentWave = 0;
     int currentSpawnIndex = 0;
-    float aiSpawnrate = 1.f;
+    float aiSpawnrate = 5.f;
     float spawnTimer = 0.f;
     boolean waveStarted = false;
     boolean selectedWorker = false; //For use on UI Button Worker
     InGameButton selectedPlacedWorker;   //For use on worker that is already on grid
+    float elementSpawnrate = 2.f;
+    float elementTimer = 0.f;
 
     Player player;
 
@@ -647,6 +649,64 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                     }
                                 }
                             }
+                        }
+
+                        elementTimer += dt;
+
+                        if(elementTimer >= elementSpawnrate)
+                        {
+                            elementTimer = 0;
+
+                            int firegain = 0;
+                            int watergain = 0;
+                            int windgain = 0;
+                            int earthgain = 0;
+
+                            for(int i = 0; i < FireGrid.length; ++i)
+                            {
+                                for(int j = 0; j < FireGrid[i].length; ++j)
+                                {
+                                    if(FireGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED)
+                                    {
+                                        ++firegain;
+                                    }
+                                }
+                            }
+
+                            for(int i = 0; i < WaterGrid.length; ++i)
+                            {
+                                for(int j = 0; j < WaterGrid[i].length; ++j)
+                                {
+                                    if(WaterGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED)
+                                    {
+                                        ++watergain;
+                                    }
+                                }
+                            }
+
+                            for(int i = 0; i < NatureGrid.length; ++i)
+                            {
+                                for(int j = 0; j < NatureGrid[i].length; ++j)
+                                {
+                                    if(NatureGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED)
+                                    {
+                                        ++windgain;
+                                    }
+                                }
+                            }
+
+                            for(int i = 0; i < DarkGrid.length; ++i)
+                            {
+                                for(int j = 0; j < DarkGrid[i].length; ++j)
+                                {
+                                    if(DarkGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED)
+                                    {
+                                        ++earthgain;
+                                    }
+                                }
+                            }
+
+                            player.AddtoElements(firegain, watergain, windgain, earthgain);
                         }
 
                         //Update Projectiles

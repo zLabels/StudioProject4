@@ -138,7 +138,6 @@ public class Tower {
         Direction = (target.operatorMinus(Position).Normailzed());
         double theta = Math.atan2(Direction.y, Direction.x);
         rotation = (float) Math.toDegrees(theta);
-
     }
 
     public void Draw(Canvas canvas)
