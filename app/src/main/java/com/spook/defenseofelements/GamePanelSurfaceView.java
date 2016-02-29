@@ -533,12 +533,12 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             // render win stuff
             if(Win)
             {
-                 canvas.drawBitmap(NormalAIImage, 400, 600, null);
+                 canvas.drawBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.gameclear_page), 400, 600, null);
             }
             // render lose stuff
             else if(!Win)
             {
-                canvas.drawBitmap(FastAIImage, 400, 600, null);
+                canvas.drawBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.gameover_page), 400, 600, null);
             }
            // canvas.drawBitmap(Restart_button.getImage(),Restart_button.getPosX(),Restart_button.getPosY(),null);
             //canvas.drawBitmap(Mainmenu_button.getImage(), Mainmenu_button.getPosX(), Mainmenu_button.getPosY(),null);
