@@ -1,12 +1,2 @@
 Wave,1
 Normal,5
-Fast,3
-Tank,6
-Wave,2
-Fast,1
-Normal,2
-Tank,4
-Wave,3
-Tank,7
-Fast,8
-Normal,9

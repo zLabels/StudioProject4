@@ -110,6 +110,9 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
     //List containing All In Game Buttons
     Vector<InGameButton> ButtonList = new Vector<InGameButton>();
+    InGameButton retryButton = new InGameButton(140, 600, BitmapFactory.decodeResource(getResources(), R.drawable.retry_button), false, InGameButton.BUTTON_TYPE.UI_RETRY);
+    InGameButton replayButton = new InGameButton(140, 600, BitmapFactory.decodeResource(getResources(), R.drawable.replay_button), false, InGameButton.BUTTON_TYPE.UI_REPLAY);
+    InGameButton mainmainButton = new InGameButton(140, 750, BitmapFactory.decodeResource(getResources(), R.drawable.mainmenu_button), false, InGameButton.BUTTON_TYPE.UI_MAINMENU);
 
     //List containing All Towers
     Vector<Tower> TowerList = new Vector<Tower>();
@@ -533,23 +536,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             canvas.drawBitmap(Pause_screen.getImage(), Pause_screen.getPosX(), Pause_screen.getPosY(), null);
         }
 
-        //Game is lost
-        if(!GameActive){
-
-            // render win stuff
-            if(Win)
-            {
-                 canvas.drawBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.gameclear_page), 400, 600, null);
-            }
-            // render lose stuff
-            else if(!Win)
-            {
-                canvas.drawBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.gameover_page), 400, 600, null);
-            }
-           // canvas.drawBitmap(Restart_button.getImage(),Restart_button.getPosX(),Restart_button.getPosY(),null);
-            //canvas.drawBitmap(Mainmenu_button.getImage(), Mainmenu_button.getPosX(), Mainmenu_button.getPosY(),null);
-        }
-
         //FPS
         canvas.drawText("FPS:" + FPS, 50, 50, paint);
         canvas.drawText("touchPos X:" + FirstTouch.x, 50, 75, paint);
@@ -564,6 +550,27 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         canvas.drawText(Integer.toString(player.getEarthElement()), 90, 1125, paint);
 
         RenderTowerRates(canvas);
+
+        //Game is lost
+        if(!GameActive){
+
+            // render win stuff
+            if(Win)
+            {
+                canvas.drawBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.gameclear_page), 100, 225, null);
+                canvas.drawBitmap(replayButton.getImage(), replayButton.getPosX(), replayButton.getPosY(), null);
+                canvas.drawBitmap(mainmainButton.getImage(), mainmainButton.getPosX(), mainmainButton.getPosY(), null);
+            }
+            // render lose stuff
+            else if(!Win)
+            {
+                canvas.drawBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.gameover_page), 100, 225, null);
+                canvas.drawBitmap(retryButton.getImage(), retryButton.getPosX(), retryButton.getPosY(), null);
+                canvas.drawBitmap(mainmainButton.getImage(), mainmainButton.getPosX(), mainmainButton.getPosY(), null);
+            }
+           // canvas.drawBitmap(Restart_button.getImage(),Restart_button.getPosX(),Restart_button.getPosY(),null);
+            //canvas.drawBitmap(Mainmenu_button.getImage(), Mainmenu_button.getPosX(), Mainmenu_button.getPosY(),null);
+        }
     }
 
     public void RenderTowerRates(Canvas canvas)
