@@ -124,10 +124,10 @@ public class Tower {
                 damage = 50.0f;
                 firerate = 0.2f;
                 this.range = 300.0f;
-                this.firecost = 1;
-                this.watercost = 1;
-                this.windcost = 1;
-                this.earthcost = 1;
+                this.firecost = 77;
+                this.watercost = 77;
+                this.windcost = 77;
+                this.earthcost = 77;
             }
             break;
         }

@@ -581,8 +581,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         canvas.drawText(Integer.toString(player.getFireElement()), 83, 915, paint);
         canvas.drawText(Integer.toString(player.getWaterElement()), 83, 985, paint);
-        canvas.drawText(Integer.toString(player.getWindElement()), 83, 1055, paint);
-        canvas.drawText(Integer.toString(player.getEarthElement()), 83, 1125, paint);
+        canvas.drawText(Integer.toString(player.getEarthElement()), 83, 1055, paint);
+        canvas.drawText(Integer.toString(player.getWindElement()), 83, 1125, paint);
 
         //Element generating Timer
         canvas.drawText(Integer.toString((int) elementTimer), 390, 985,paint2);
@@ -754,7 +754,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                 {
                                     if(NatureGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED)
                                     {
-                                        ++windgain;
+                                        ++earthgain;
                                     }
                                 }
                             }
@@ -765,7 +765,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                 {
                                     if(DarkGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED)
                                     {
-                                        ++earthgain;
+                                        ++windgain;
                                     }
                                 }
                             }
