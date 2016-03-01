@@ -34,24 +34,16 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
     // Variables for FPS
     public float FPS = 0.f;
-    Paint paint = new Paint(); //Used for text rendering
+    Paint paint = new Paint(); //Used for text rendering (black)
+    Paint paint2 = new Paint(); //White
 
     //Feedback
     SoundManager soundManager;
-    public Vibrator v;
-    float vibrateTime = 0.f;
-    float MaxVibrateTime = 0.5f;
 
     //Random
     Random r = new Random();
 
     private short GameState;    // Variable for Game State check
-
-    // Variables for swiping
-    Vector2 InitialPos = new Vector2(0,0);
-    Vector2 LastPos = new Vector2(0,0);
-    Vector2 DirectionVector = new Vector2(0,0);
-    boolean Tapped = false;
 
     //Dragging Variables
     boolean ActionDown = false;
@@ -60,16 +52,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     Vector2 TouchPos = new Vector2(0.0f,0.0f);
 
     //Game elements
-    float SpawnRate = 0.5f; //Rate for each obstacle to spawn
-    float SpawnTimer = 0.f; //track time to spawn
-    short ScrollSpeed = 500;    //Speed of background scrolling
-    short BarSpeed = 35;    //Speed of bar scrolling
-    float timer = 0.f;  //Timer to increase speed
-    int score = 0;  //Play score
-    boolean UpdateHighscore = true; //Highscore update
-    boolean Win = false;
-
-    //Sp4 Game elements
     int currentWave = 0;
     int currentSpawnIndex = 0;
     float aiSpawnrate = 5.f;
@@ -77,9 +59,15 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     boolean waveStarted = false;
     boolean selectedWorker = false; //For use on UI Button Worker
     InGameButton selectedPlacedWorker;   //For use on worker that is already on grid
-    float elementSpawnrate = 2.f;
+    float elementSpawnrate = 5.f;
     float elementTimer = 0.f;
+    boolean Win = false;
 
+    int UpgradeLevel = 0;   //Player's Upgrade level for towers
+    int UpgradeFireCost = 10;
+    int UpgradeDarkCost = 10;
+    int UpgradeWaterCost = 10;
+    int UpgradeNatureCost = 10;
     Player player;
 
     Tower selectedTower;    //Currently selected Tower
@@ -99,14 +87,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
     private boolean GameActive = true;  //Status of game
     private boolean GamePaused = false; //Paused status of game
-
-    //In game buttons
-    /*private InGameButton Restart_button = new InGameButton(500,650,
-            BitmapFactory.decodeResource(getResources(),R.drawable.restart_ingamebutton),false,"Restart");
-    private InGameButton Mainmenu_button = new InGameButton(1150,650,
-            BitmapFactory.decodeResource(getResources(),R.drawable.mainmenu_ingamebutton),false,"MainMenu");
-    private InGameButton Pause_button = new InGameButton(1700,30,
-            BitmapFactory.decodeResource(getResources(),R.drawable.pauseicon),false,"Pause");*/
 
     //List containing All In Game Buttons
     Vector<InGameButton> ButtonList = new Vector<InGameButton>();
@@ -130,14 +110,12 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private InGameScreens Pause_screen = new InGameScreens(400,200,
             BitmapFactory.decodeResource(getResources(),R.drawable.pause_screen));
 
-    //Test
-    private Bitmap GridTest = BitmapFactory.decodeResource(getResources(),R.drawable.gridtest);
-
     //Images
     private Bitmap TileMap =  BitmapFactory.decodeResource(getResources(), R.drawable.grass_floor_tileset);
     private Bitmap TD_Grid_Frame = BitmapFactory.decodeResource(getResources(), R.drawable.td_grid_frame);
     private Bitmap WorkerImage = BitmapFactory.decodeResource(getResources(), R.drawable.worker);
     private Bitmap WorkerImageDrag = BitmapFactory.decodeResource(getResources(), R.drawable.worker_drag);
+    private Bitmap UpgradeButton = BitmapFactory.decodeResource(getResources(), R.drawable.upgrade_button);
 
     //Towers
     private Bitmap NormalTowerImage = BitmapFactory.decodeResource(getResources(), R.drawable.tower_normal);
@@ -150,10 +128,10 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private Bitmap OpTowerImageDrag = BitmapFactory.decodeResource(getResources(), R.drawable.tower_op_drag);
 
     //Used for rendering tower resources
-    Tower UITowerNormal = new Tower(new Vector2(0,0), NormalTowerImage, Tower.TOWER_TYPE.TOWER_NORMAL);
-    Tower UITowerHighfirerate = new Tower(new Vector2(0,0), FastTowerImage, Tower.TOWER_TYPE.TOWER_HIGHFIRERATE);
-    Tower UITowerSlow = new Tower(new Vector2(0,0), SlowTowerImage, Tower.TOWER_TYPE.TOWER_SLOW);
-    Tower UITowerOP = new Tower(new Vector2(0,0), OpTowerImage, Tower.TOWER_TYPE.TOWER_OP);
+    Tower UITowerNormal = new Tower(new Vector2(0,0), NormalTowerImage, Tower.TOWER_TYPE.TOWER_NORMAL,0);
+    Tower UITowerHighfirerate = new Tower(new Vector2(0,0), FastTowerImage, Tower.TOWER_TYPE.TOWER_HIGHFIRERATE,0);
+    Tower UITowerSlow = new Tower(new Vector2(0,0), SlowTowerImage, Tower.TOWER_TYPE.TOWER_SLOW,0);
+    Tower UITowerOP = new Tower(new Vector2(0,0), OpTowerImage, Tower.TOWER_TYPE.TOWER_OP,0);
 
     //Ais
     private Bitmap NormalAIImage = BitmapFactory.decodeResource(getResources(), R.drawable.ghost_round);
@@ -215,6 +193,10 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         paint.setARGB(255, 0, 0, 0);
         paint.setStrokeWidth(100);
         paint.setTextSize(30);
+
+        paint2.setARGB(255, 255, 255, 255);
+        paint2.setStrokeWidth(100);
+        paint2.setTextSize(30);
 
         // Create the game loop thread
         myThread = new GameThread(getHolder(), this);
@@ -325,6 +307,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                 OpTowerImage, false, InGameButton.BUTTON_TYPE.UI_OP_TOWER));
         ButtonList.addElement(new InGameButton(37, 810,
                 WorkerImage, false, InGameButton.BUTTON_TYPE.UI_WORKER));
+        ButtonList.addElement(new InGameButton(63, 1180,
+                UpgradeButton, false, InGameButton.BUTTON_TYPE.UI_UPGRADE));
     }
 
     void InitializeWaypoint()
@@ -490,6 +474,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                     }
                 }
             }
+
             //Grid Frame
             canvas.drawBitmap(TD_Grid_Frame, 0, -20, null);
 
@@ -536,18 +521,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             canvas.drawBitmap(Pause_screen.getImage(), Pause_screen.getPosX(), Pause_screen.getPosY(), null);
         }
 
-        //FPS
-        canvas.drawText("FPS:" + FPS, 50, 50, paint);
-        canvas.drawText("touchPos X:" + FirstTouch.x, 50, 75, paint);
-        canvas.drawText("touchPos Y:" + FirstTouch.y, 50, 100, paint);
-
-        canvas.drawText(Integer.toString(player.getLivesCount()),727, 790, paint);
-        canvas.drawText(Integer.toString(player.getWorkerCount()),93, 810, paint);
-
-        canvas.drawText(Integer.toString(player.getFireElement()), 90, 915, paint);
-        canvas.drawText(Integer.toString(player.getWaterElement()), 90, 985, paint);
-        canvas.drawText(Integer.toString(player.getWindElement()), 90, 1055, paint);
-        canvas.drawText(Integer.toString(player.getEarthElement()), 90, 1125, paint);
+        RenderOtherText(canvas);
 
         RenderTowerRates(canvas);
 
@@ -568,8 +542,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                 canvas.drawBitmap(retryButton.getImage(), retryButton.getPosX(), retryButton.getPosY(), null);
                 canvas.drawBitmap(mainmainButton.getImage(), mainmainButton.getPosX(), mainmainButton.getPosY(), null);
             }
-           // canvas.drawBitmap(Restart_button.getImage(),Restart_button.getPosX(),Restart_button.getPosY(),null);
-            //canvas.drawBitmap(Mainmenu_button.getImage(), Mainmenu_button.getPosX(), Mainmenu_button.getPosY(),null);
         }
     }
 
@@ -594,6 +566,26 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         canvas.drawText(Integer.toString(UITowerOP.getWatercost()), 760, 660, paint);
         canvas.drawText(Integer.toString(UITowerOP.getEarthcost()), 700, 700, paint);
         canvas.drawText(Integer.toString(UITowerOP.getWindcost()), 760, 700, paint);
+    }
+
+    public void RenderOtherText(Canvas canvas)
+    {
+        //Debugging Information
+        canvas.drawText("FPS:" + FPS, 50, 50, paint);
+        canvas.drawText("touchPos X:" + FirstTouch.x, 50, 75, paint);
+        canvas.drawText("touchPos Y:" + FirstTouch.y, 50, 100, paint);
+
+        //Player Related Variables
+        canvas.drawText(Integer.toString(player.getLivesCount()),727, 790, paint);
+        canvas.drawText(Integer.toString(player.getWorkerCount()),93, 810, paint);
+
+        canvas.drawText(Integer.toString(player.getFireElement()), 83, 915, paint);
+        canvas.drawText(Integer.toString(player.getWaterElement()), 83, 985, paint);
+        canvas.drawText(Integer.toString(player.getEarthElement()), 83, 1055, paint);
+        canvas.drawText(Integer.toString(player.getWindElement()), 83, 1125, paint);
+
+        //Element generating Timer
+        canvas.drawText(Integer.toString((int) elementTimer), 390, 985,paint2);
     }
 
     //Update method to update the game play
@@ -667,6 +659,10 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                 waveStarted = false;
                                 currentSpawnIndex = 0;
                                 ++currentWave;
+                                if(currentWave % 2 == 0)
+                                {
+                                    player.IncreaseWorker();
+                                }
                             }
                         }
 
@@ -688,6 +684,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                                 float distance = WaveList.get(currentWave).get(j).getPosition().operatorMinus(TowerList.get(i).getPosition()).Length();
                                                 //Only if its within range, we update the tower
                                                 if (distance < TowerList.get(i).getRange()) {
+                                                    TowerList.get(i).Update(WaveList.get(currentWave).get(j).getPosition());
                                                     //Check which type of tower it is
                                                     //To assign different type of variables based on its type to the projectile
                                                     switch (TowerList.get(i).getType()) {
@@ -757,7 +754,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                 {
                                     if(NatureGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED)
                                     {
-                                        ++windgain;
+                                        ++earthgain;
                                     }
                                 }
                             }
@@ -768,7 +765,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                 {
                                     if(DarkGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED)
                                     {
-                                        ++earthgain;
+                                        ++windgain;
                                     }
                                 }
                             }
@@ -876,7 +873,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                             //Check if the selected tower is different from the one currently being selected
                                             if (selectedTower.getType() != Tower.TOWER_TYPE.TOWER_NORMAL) {
                                                 //If different, change selected tower to this
-                                                selectedTower = new Tower(new Vector2(0, 0), NormalTowerImage, Tower.TOWER_TYPE.TOWER_NORMAL);
+                                                selectedTower = new Tower(new Vector2(0, 0), NormalTowerImage, Tower.TOWER_TYPE.TOWER_NORMAL,UpgradeLevel);
 
                                                 if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
                                                 {
@@ -888,7 +885,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                             }
                                         } else {
                                             //there is no selected tower
-                                            selectedTower = new Tower(new Vector2(0, 0), NormalTowerImage, Tower.TOWER_TYPE.TOWER_NORMAL);
+                                            selectedTower = new Tower(new Vector2(0, 0), NormalTowerImage, Tower.TOWER_TYPE.TOWER_NORMAL,UpgradeLevel);
 
                                             if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
                                             {
@@ -903,7 +900,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                             //Check if the selected tower is different from the one currently being selected
                                             if (selectedTower.getType() != Tower.TOWER_TYPE.TOWER_HIGHFIRERATE) {
                                                 //If different, change selected tower to this
-                                                selectedTower = new Tower(new Vector2(0, 0), FastTowerImage, Tower.TOWER_TYPE.TOWER_HIGHFIRERATE);
+                                                selectedTower = new Tower(new Vector2(0, 0), FastTowerImage, Tower.TOWER_TYPE.TOWER_HIGHFIRERATE,UpgradeLevel);
 
                                                 if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
                                                 {
@@ -915,7 +912,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                             }
                                         } else {
                                             //there is no selected tower
-                                            selectedTower = new Tower(new Vector2(0, 0), FastTowerImage, Tower.TOWER_TYPE.TOWER_HIGHFIRERATE);
+                                            selectedTower = new Tower(new Vector2(0, 0), FastTowerImage, Tower.TOWER_TYPE.TOWER_HIGHFIRERATE,UpgradeLevel);
 
                                             if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
                                             {
@@ -929,7 +926,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                             //Check if the selected tower is different from the one currently being selected
                                             if (selectedTower.getType() != Tower.TOWER_TYPE.TOWER_SLOW) {
                                                 //If different, change selected tower to this
-                                                selectedTower = new Tower(new Vector2(0, 0), SlowTowerImage, Tower.TOWER_TYPE.TOWER_SLOW);
+                                                selectedTower = new Tower(new Vector2(0, 0), SlowTowerImage, Tower.TOWER_TYPE.TOWER_SLOW,UpgradeLevel);
 
                                                 if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
                                                 {
@@ -941,7 +938,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                             }
                                         } else {
                                             //there is no selected tower
-                                            selectedTower = new Tower(new Vector2(0, 0), SlowTowerImage, Tower.TOWER_TYPE.TOWER_SLOW);
+                                            selectedTower = new Tower(new Vector2(0, 0), SlowTowerImage, Tower.TOWER_TYPE.TOWER_SLOW,UpgradeLevel);
 
                                             if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
                                             {
@@ -955,7 +952,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                             //Check if the selected tower is different from the one currently being selected
                                             if (selectedTower.getType() != Tower.TOWER_TYPE.TOWER_OP) {
                                                 //If different, change selected tower to this
-                                                selectedTower = new Tower(new Vector2(0, 0), OpTowerImage, Tower.TOWER_TYPE.TOWER_OP);
+                                                selectedTower = new Tower(new Vector2(0, 0), OpTowerImage, Tower.TOWER_TYPE.TOWER_OP,0);
 
                                                 if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
                                                 {
@@ -967,7 +964,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                             }
                                         } else {
                                             //there is no selected tower
-                                            selectedTower = new Tower(new Vector2(0, 0), OpTowerImage, Tower.TOWER_TYPE.TOWER_OP);
+                                            selectedTower = new Tower(new Vector2(0, 0), OpTowerImage, Tower.TOWER_TYPE.TOWER_OP,0);
 
                                             if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
                                             {
@@ -981,6 +978,30 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                         if(player.getWorkerCount() > 0)
                                         {
                                             selectedWorker = true;
+                                        }
+                                        break;
+                                    case UI_UPGRADE:
+                                        //Only if player has enough resources
+                                        if(player.getEarthElement() >= UpgradeNatureCost &&
+                                                player.getFireElement() >= UpgradeFireCost &&
+                                                player.getWaterElement() >= UpgradeWaterCost &&
+                                                player.getWindElement() >= UpgradeDarkCost)
+                                        {
+                                            //Increase Upgrade Level
+                                            UpgradeLevel++;
+                                            //Reduce player resources first
+                                            player.MinusfromElements(UpgradeFireCost,UpgradeWaterCost,UpgradeDarkCost,UpgradeNatureCost);
+
+                                            //Increase Cost for next upgrade
+                                            UpgradeFireCost += 10;
+                                            UpgradeNatureCost += 10;
+                                            UpgradeWaterCost += 10;
+                                            UpgradeDarkCost += 10;
+
+                                            //Update UI resources to match
+                                            UITowerHighfirerate.UpgradeTower(1);
+                                            UITowerNormal.UpgradeTower(1);
+                                            UITowerSlow.UpgradeTower(1);
                                         }
                                         break;
                                 }
@@ -997,7 +1018,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                 selectedPlacedWorker = WorkerList.elementAt(i);
                             }
                         }
-
                         ActionDown = true;
                         ActionUp = false;
                     }
@@ -1016,9 +1036,19 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                 if (TowerGrid[i][j].getType() == GridNode.GRID_TYPE.GT_FREE) {
                                     //if Tap on this grid
                                     if (TowerGrid[i][j].getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY()))) {
-                                        //Add Tower
-                                        TowerList.addElement(new Tower(TowerGrid[i][j].getBoundingBox().getCenterPoint(),
-                                                selectedTower.getImage(), selectedTower.getType()));
+
+                                        //Only if its not the Ultimate Tower
+                                        if(selectedTower.getType() != Tower.TOWER_TYPE.TOWER_OP) {
+                                            //Add Tower
+                                            TowerList.addElement(new Tower(TowerGrid[i][j].getBoundingBox().getCenterPoint(),
+                                                    selectedTower.getImage(), selectedTower.getType(), UpgradeLevel));
+                                        }
+                                        else
+                                        {
+                                            //Dont upgrade Ultimate tower
+                                            TowerList.addElement(new Tower(TowerGrid[i][j].getBoundingBox().getCenterPoint(),
+                                                    selectedTower.getImage(), selectedTower.getType(), 0));
+                                        }
 
                                         //Set Grid to Occupied
                                         TowerGrid[i][j].setType(GridNode.GRID_TYPE.GT_OCCUPIED);
@@ -1307,6 +1337,31 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         //To process other taps while game is not active
         else
         {
+            switch (event.getAction())
+            {
+                case MotionEvent.ACTION_DOWN:
+                {
+                    //If tap on retry button
+                    if(retryButton.getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())))
+                    {
+                        Reset();
+                    }
+                    //If tap on retry button
+                    else if(replayButton.getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())))
+                    {
+                        Reset();
+                    }
+                    //If tap on main menu button
+                    else if(mainmainButton.getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())))
+                    {
+                        Intent intent = new Intent();
+                        intent.setClass(getContext(), Mainmenu.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        getContext().startActivity(intent);
+                    }
+                }
+                break;
+            }
             return true;
         }
     }
@@ -1442,29 +1497,105 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
     }
 
-    //Vibration
-    public void startVibrate(){
-        long pattern[] = {0,500,500};
-        v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(pattern, 0);
+    public void ResetGrids()
+    {
+        //Reset Tower Grid
+        for(int i = 0; i < 9; ++i)
+        {
+            for(int j = 0; j < 12; ++j)
+            {
+                //Reset all occupied grids back to free
+                if(TowerGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED) {
+                    TowerGrid[i][j].setType(GridNode.GRID_TYPE.GT_FREE);
+                }
+            }
+        }
+
+        //Reset All Elemental Grids
+        for(int i = 0; i < 3; ++i)
+        {
+            for(int j = 0; j < 3; ++j)
+            {
+                //Reset all occupied grids back to free
+                if(DarkGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED) {
+                    DarkGrid[i][j].setType(GridNode.GRID_TYPE.GT_FREE);
+                }
+                if(WaterGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED) {
+                    WaterGrid[i][j].setType(GridNode.GRID_TYPE.GT_FREE);
+                }
+                if(FireGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED) {
+                    FireGrid[i][j].setType(GridNode.GRID_TYPE.GT_FREE);
+                }
+                if(NatureGrid[i][j].getType() == GridNode.GRID_TYPE.GT_OCCUPIED) {
+                    NatureGrid[i][j].setType(GridNode.GRID_TYPE.GT_FREE);
+                }
+            }
+        }
     }
-    public void stopVibrate(){
-        v.cancel();
+
+    public void ResetVariables()
+    {
+        currentWave = 0;
+        currentSpawnIndex = 0;
+        aiSpawnrate = 5.0f;
+        spawnTimer = 0.0f;
+        waveStarted = false;
+        selectedWorker = false;
+        elementSpawnrate = 5.0f;
+        elementTimer = 0.0f;
+        Win = false;
+        selectedPlacedWorker = null;
+
+        //Reset all upgrades
+        UpgradeLevel = 0;
+        UpgradeFireCost = 10;
+        UpgradeDarkCost = 10;
+        UpgradeWaterCost = 10;
+        UpgradeNatureCost = 10;
+    }
+
+    public void ResetVectors()
+    {
+        //Clear All Towers
+        TowerList.clear();
+
+        //Clear and reinitialize waves
+        WaveList.clear();
+        InitializeWave();
+
+        //Clear All worker in grid
+        WorkerList.clear();
+
+        //Reset All Projectile
+        for(int i = 0; i < ProjectileList.size(); ++i)
+        {
+            //Get the first non active projectile to reuse
+            if(ProjectileList.elementAt(i).isActive())
+            {
+                //Set all data of the projectile
+                ProjectileList.elementAt(i).setActive(false);
+                //Stop the loop
+                break;
+            }
+        }
+
     }
 
     //Restart game variables
     public void Reset()
     {
-        SpawnRate = 0.5f;
-        SpawnTimer = 0.f;
-        ScrollSpeed = 500;
-        timer = 0.f;
-        score = 0;
-        //Restart_button.setActive(false);
-        //Mainmenu_button.setActive(false);
-        Tapped = false;
-        vibrateTime = 0.f;
-        UpdateHighscore = true;
+        //Reset Grid back to original
+        ResetGrids();
+
+        //Reset Variables back to original
+        ResetVariables();
+
+        //Reset Vectors back to original
+        ResetVectors();
+
+        //Reset Player to default
+        player.ResetAll();
+
         //Reset everything first before we set game active back to true
         GameActive = true;
     }

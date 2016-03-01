@@ -17,6 +17,7 @@ public class InGameButton {
         UI_RETRY,
         UI_REPLAY,
         UI_MAINMENU,
+        UI_UPGRADE,
         UI_DEFAULT,
     }
     float posX = 0, posY = 0;   //Coordinates of button

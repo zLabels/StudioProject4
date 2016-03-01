@@ -37,10 +37,10 @@
         android:layout_marginLeft="220dp"/>
 
     <Button
-        android:id = "@+id/btn_highscore"
-        android:layout_width="500dp"
+        android:id = "@+id/btn_tutorial"
+        android:layout_width="350dp"
         android:layout_height="182dp"
-        android:background="@drawable/highscore_button"
+        android:background="@drawable/tutorial_button"
         android:layout_marginTop="480dp"
-        android:layout_marginLeft="160dp"/>
+        android:layout_marginLeft="230dp"/>
 </RelativeLayout>

@@ -168,4 +168,13 @@ public class Player {
         this.livesCount = livesCount;
     }
 
+    public void ResetAll()
+    {
+        fireElement = 0;
+        waterElement = 0;
+        windElement = 0;
+        earthElement = 0;
+        workerCount = 3;
+        livesCount = 3;
+    }
 }
