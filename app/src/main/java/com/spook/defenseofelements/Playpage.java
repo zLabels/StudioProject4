@@ -1,6 +1,7 @@
 package com.spook.defenseofelements;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -20,6 +21,8 @@ public class Playpage extends Activity implements OnClickListener{
     //Media Player
     SoundManager soundManager;
 
+    AppPrefs appPrefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,10 +33,10 @@ public class Playpage extends Activity implements OnClickListener{
 
         setContentView(R.layout.playpage);
 
-        btn_start = (Button)findViewById(R.id.btn_start);
+        btn_start = (Button) findViewById(R.id.btn_start);
         btn_start.setOnClickListener(this);
 
-        btn_levelback = (Button)findViewById(R.id.btn_levelback);
+        btn_levelback = (Button) findViewById(R.id.btn_levelback);
         btn_levelback.setOnClickListener(this);
 
         /*btn_endless = (Button)findViewById(R.id.btn_endless);
@@ -42,7 +45,23 @@ public class Playpage extends Activity implements OnClickListener{
         btn_tutorial = (Button)findViewById(R.id.btn_tutorial);
         btn_tutorial.setOnClickListener(this);*/
 
+        Context context = getApplicationContext();
+
+        appPrefs = new AppPrefs(context);
+
+        appPrefs.CheckIfExist();
+
         soundManager = new SoundManager();
+
+        if (!soundManager.IsInited())
+        {
+            soundManager.InitSoundPool(context, appPrefs);
+            soundManager.PlayBGM();
+        }
+        else
+        {
+            soundManager.UnPauseBGM();
+        }
     }
 
     @Override
@@ -74,10 +93,12 @@ public class Playpage extends Activity implements OnClickListener{
     }
 
     protected void onPause(){
+        soundManager.PauseBGM();
         super.onPause();
     }
 
     protected void onStop(){
+        soundManager.UnPauseBGM();
         super.onStop();
     }
 

@@ -67,6 +67,9 @@ public class Optionspage extends Activity implements OnClickListener{
         sb_sfxSound.setProgress(Volumes.get(1));
 
         soundManager = new SoundManager();
+
+        soundManager.PauseBGM();
+
     }
 
     private SeekBar.OnSeekBarChangeListener customSeekBarlistener = new SeekBar.OnSeekBarChangeListener() {
@@ -76,11 +79,15 @@ public class Optionspage extends Activity implements OnClickListener{
             if(seekBar == sb_backgroundMusic)
             {
                 appPrefs.setVolume(0, progress);
+
+                soundManager.UnPauseBGM();
                 //
             }
             else if(seekBar == sb_sfxSound)
             {
                 appPrefs.setVolume(1, progress);
+                soundManager.PauseBGM();
+                soundManager.PlaySFX();
                 //
             }
         }
@@ -100,6 +107,7 @@ public class Optionspage extends Activity implements OnClickListener{
     public void onClick(View v) {
         Intent intent = new Intent();
 
+        soundManager.PauseBGM();
         soundManager.PlaySFX();
 
         if(v == btn_optionsback)

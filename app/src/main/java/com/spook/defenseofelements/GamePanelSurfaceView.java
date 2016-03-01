@@ -214,6 +214,20 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         //Shared prefs
         appPrefs = new AppPrefs(context);
+
+        appPrefs.CheckIfExist();
+
+        //Play the GameBGM
+        if(!soundManager.IsInited())
+        {
+            soundManager.InitSoundPool(context, appPrefs);
+            soundManager.PlayGameBgm();
+        }
+        else
+        {
+            soundManager.PauseBGM();
+            soundManager.PlayGameBgm();
+        }
     }
 
     void InitializeGrid()
@@ -917,6 +931,9 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                         if (WaveList.get(currentWave).get(j).isActive()) {
                                             //If they intersect with each other
                                             if (ProjectileList.get(i).getBounding_box().CheckIntersect(WaveList.get(currentWave).get(j).getBoundingbox())) {
+                                                //Play the Effect
+                                                soundManager.PlayEffect();
+
                                                 //Remove Projectile
                                                 ProjectileList.get(i).setActive(false);
                                                 //Update Health
@@ -1471,11 +1488,13 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                     //If tap on retry button
                     if(retryButton.getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())))
                     {
+                        soundManager.PauseGameBgm();
                         Reset();
                     }
-                    //If tap on retry button
+                    //If tap on replay button
                     else if(replayButton.getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())))
                     {
+                        soundManager.PauseGameBgm();
                         Reset();
                     }
                     //If tap on main menu button
@@ -1485,6 +1504,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                         intent.setClass(getContext(), Mainmenu.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         getContext().startActivity(intent);
+
+                        soundManager.PauseGameBgm();
                     }
                 }
                 break;
@@ -1722,6 +1743,9 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         //Reset Player to default
         player.ResetAll();
+
+        //Reset the Game BGM sound
+        soundManager.PlayGameBgm();
 
         //Reset everything first before we set game active back to true
         GameActive = true;

@@ -1,6 +1,7 @@
 package com.spook.defenseofelements;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -17,7 +18,8 @@ public class Tutorialthreepage extends Activity implements View.OnClickListener 
     private Button btn_backpage;
     //Media Player
     SoundManager soundManager;
-
+    //Share prefs
+    AppPrefs appPrefs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +37,24 @@ public class Tutorialthreepage extends Activity implements View.OnClickListener 
         btn_backpage.setOnClickListener(this);
 
         soundManager = new SoundManager();
+
+        Context context = getApplicationContext();
+
+        appPrefs = new AppPrefs(context);
+
+        appPrefs.CheckIfExist();
+
+        soundManager = new SoundManager();
+
+        if(!soundManager.IsInited())
+        {
+            soundManager.InitSoundPool(context, appPrefs);
+            soundManager.PlayBGM();
+        }
+        else
+        {
+            soundManager.UnPauseBGM();
+        }
     }
 
     @Override
@@ -57,10 +77,12 @@ public class Tutorialthreepage extends Activity implements View.OnClickListener 
     }
 
     protected void onPause(){
+        soundManager.PauseBGM();
         super.onPause();
     }
 
     protected void onStop(){
+        soundManager.UnPauseBGM();
         super.onStop();
     }
 

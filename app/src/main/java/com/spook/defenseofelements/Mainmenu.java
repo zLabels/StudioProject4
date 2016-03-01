@@ -48,7 +48,7 @@ public class Mainmenu extends Activity implements OnClickListener{
         if(!soundManager.IsInited())
         {
             soundManager.InitSoundPool(context, appPrefs);
-            //soundManager.PlayBGM();
+            soundManager.PlayBGM();
         }
 
         //Initializing buttons
@@ -93,13 +93,15 @@ public class Mainmenu extends Activity implements OnClickListener{
         startActivity(intent);
     }
 
-    protected void onPause(){
-        //soundManager.PauseBGM();
+    protected void onPause()
+    {
+        soundManager.PauseBGM();
         super.onPause();
     }
 
-    protected void onResume(){
-        //soundManager.UnPauseBGM();
+    protected void onResume()
+    {
+        soundManager.UnPauseBGM();
         super.onResume();
     }
 

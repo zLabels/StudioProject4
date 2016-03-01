@@ -1,6 +1,7 @@
 package com.spook.defenseofelements;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +22,7 @@ public class Tutorialpagetwo extends Activity implements View.OnClickListener {
     //Media Player
     SoundManager soundManager;
 
+    AppPrefs appPrefs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +42,23 @@ public class Tutorialpagetwo extends Activity implements View.OnClickListener {
         btn_backpage = (Button)findViewById(R.id.btn_back);
         btn_backpage.setOnClickListener(this);
 
+        Context context = getApplicationContext();
+
+        appPrefs = new AppPrefs(context);
+
+        appPrefs.CheckIfExist();
+
         soundManager = new SoundManager();
+
+        if(!soundManager.IsInited())
+        {
+            soundManager.InitSoundPool(context, appPrefs);
+            soundManager.PlayBGM();
+        }
+        else
+        {
+            soundManager.UnPauseBGM();
+        }
     }
 
     @Override
@@ -68,10 +86,12 @@ public class Tutorialpagetwo extends Activity implements View.OnClickListener {
     }
 
     protected void onPause(){
+        soundManager.PauseBGM();
         super.onPause();
     }
 
     protected void onStop(){
+        soundManager.UnPauseBGM();
         super.onStop();
     }
 
