@@ -116,6 +116,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private Bitmap WorkerImage = BitmapFactory.decodeResource(getResources(), R.drawable.worker);
     private Bitmap WorkerImageDrag = BitmapFactory.decodeResource(getResources(), R.drawable.worker_drag);
     private Bitmap UpgradeButton = BitmapFactory.decodeResource(getResources(), R.drawable.upgrade_button);
+    private Bitmap UpgradeButtonInactive = BitmapFactory.decodeResource(getResources(), R.drawable.upgrade_button_inactive);
 
     //Towers
     private Bitmap NormalTowerImage = BitmapFactory.decodeResource(getResources(), R.drawable.tower_normal);
@@ -414,7 +415,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
     }
 
-    public void RenderGameplay(Canvas canvas) {
+    public void RenderGameplay(Canvas canvas)
+    {
         // 2) Re-draw 2nd image after the 1st image ends
         if (canvas == null) {
             return;
@@ -583,10 +585,10 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         canvas.drawText(Integer.toString(player.getLivesCount()),727, 790, paint);
         canvas.drawText(Integer.toString(player.getWorkerCount()),93, 810, paint);
 
-        canvas.drawText(Integer.toString(player.getFireElement()), 83, 915, paint);
-        canvas.drawText(Integer.toString(player.getWaterElement()), 83, 985, paint);
-        canvas.drawText(Integer.toString(player.getEarthElement()), 83, 1055, paint);
-        canvas.drawText(Integer.toString(player.getWindElement()), 83, 1125, paint);
+        canvas.drawText(Integer.toString(player.getFireElement()), 80, 915, paint);
+        canvas.drawText(Integer.toString(player.getWaterElement()), 80, 985, paint);
+        canvas.drawText(Integer.toString(player.getEarthElement()), 80, 1055, paint);
+        canvas.drawText(Integer.toString(player.getWindElement()), 80, 1125, paint);
 
         //Display current wave
         canvas.drawText(Integer.toString(currentWave + 1), 710, 1175, paint);
@@ -594,6 +596,121 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         //Element generating Timer
         canvas.drawText(Integer.toString((int) elementTimer), 390, 985,paint2);
+    }
+
+    public void UpdateUIImages()
+    {
+        for(int i = 0; i < ButtonList.size(); ++i)
+        {
+            switch(ButtonList.get(i).buttonID)
+            {
+                case UI_NORMAL_TOWER:
+                    //If player is able to build
+                    if(player.CheckCanBuild(UITowerNormal.getFirecost(),
+                            UITowerNormal.getWatercost(),
+                            UITowerNormal.getWindcost(),
+                            UITowerNormal.getEarthcost()))
+                    {
+                        if(ButtonList.get(i).getImage() != NormalTowerImage)
+                        {
+                            ButtonList.get(i).setImage(NormalTowerImage);
+                        }
+                    }
+                    else
+                    {
+                        //Unable to build
+                        if(ButtonList.get(i).getImage() != NormalTowerImageGrey)
+                        {
+                            ButtonList.get(i).setImage(NormalTowerImageGrey);
+                        }
+                    }
+                    break;
+                case UI_FAST_TOWER:
+                    //If player is able to build
+                    if(player.CheckCanBuild(UITowerHighfirerate.getFirecost(),
+                            UITowerHighfirerate.getWatercost(),
+                            UITowerHighfirerate.getWindcost(),
+                            UITowerHighfirerate.getEarthcost()))
+                    {
+                        if(ButtonList.get(i).getImage() != FastTowerImage)
+                        {
+                            ButtonList.get(i).setImage(FastTowerImage);
+                        }
+                    }
+                    else
+                    {
+                        //Unable to build
+                        if(ButtonList.get(i).getImage() != FastTowerImageGrey)
+                        {
+                            ButtonList.get(i).setImage(FastTowerImageGrey);
+                        }
+                    }
+                    break;
+                case UI_SLOW_TOWER:
+                    //If player is able to build
+                    if(player.CheckCanBuild(UITowerSlow.getFirecost(),
+                            UITowerSlow.getWatercost(),
+                            UITowerSlow.getWindcost(),
+                            UITowerSlow.getEarthcost()))
+                    {
+                        if(ButtonList.get(i).getImage() != SlowTowerImage)
+                        {
+                            ButtonList.get(i).setImage(SlowTowerImage);
+                        }
+                    }
+                    else
+                    {
+                        //Unable to build
+                        if(ButtonList.get(i).getImage() != SlowTowerImageGrey)
+                        {
+                            ButtonList.get(i).setImage(SlowTowerImageGrey);
+                        }
+                    }
+                    break;
+                case UI_OP_TOWER:
+                    //If player is able to build
+                    if(player.CheckCanBuild(UITowerOP.getFirecost(),
+                            UITowerOP.getWatercost(),
+                            UITowerOP.getWindcost(),
+                            UITowerOP.getEarthcost()))
+                    {
+                        if(ButtonList.get(i).getImage() != OpTowerImage)
+                        {
+                            ButtonList.get(i).setImage(OpTowerImage);
+                        }
+                    }
+                    else
+                    {
+                        //Unable to build
+                        if(ButtonList.get(i).getImage() != OpTowerImageGrey)
+                        {
+                            ButtonList.get(i).setImage(OpTowerImageGrey);
+                        }
+                    }
+                    break;
+                case UI_UPGRADE:
+                    //If player is able to build
+                    if(player.CheckCanBuild(UpgradeFireCost,
+                            UpgradeWaterCost,
+                            UpgradeDarkCost,
+                            UpgradeNatureCost))
+                    {
+                        if(ButtonList.get(i).getImage() != UpgradeButton)
+                        {
+                            ButtonList.get(i).setImage(UpgradeButton);
+                        }
+                    }
+                    else
+                    {
+                        //Unable to build
+                        if(ButtonList.get(i).getImage() != UpgradeButtonInactive)
+                        {
+                            ButtonList.get(i).setImage(UpgradeButtonInactive);
+                        }
+                    }
+                    break;
+            }
+        }
     }
 
     //Update method to update the game play
@@ -606,8 +723,9 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                 if (!GamePaused)
                 {
                     //Only when game is active we update the following
-                    if (GameActive) {
-
+                    if (GameActive)
+                    {
+                        UpdateUIImages();
                         // lose condition
                         if(player.getLivesCount() <= 0)
                         {
@@ -723,6 +841,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                             }
                         }
 
+                        //Element Generating
                         elementTimer += dt;
 
                         if(elementTimer >= elementSpawnrate)
