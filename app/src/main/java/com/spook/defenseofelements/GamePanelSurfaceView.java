@@ -120,12 +120,16 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     //Towers
     private Bitmap NormalTowerImage = BitmapFactory.decodeResource(getResources(), R.drawable.tower_normal);
     private Bitmap NormalTowerImageDrag = BitmapFactory.decodeResource(getResources(), R.drawable.tower_normal_drag);
+    private Bitmap NormalTowerImageGrey = BitmapFactory.decodeResource(getResources(), R.drawable.tower_normal_grey);
     private Bitmap FastTowerImage = BitmapFactory.decodeResource(getResources(), R.drawable.tower_fast);
     private Bitmap FastTowerImageDrag = BitmapFactory.decodeResource(getResources(), R.drawable.tower_fast_drag);
+    private Bitmap FastTowerImageGrey = BitmapFactory.decodeResource(getResources(), R.drawable.tower_fast_grey);
     private Bitmap SlowTowerImage = BitmapFactory.decodeResource(getResources(), R.drawable.tower_slow);
     private Bitmap SlowTowerImageDrag = BitmapFactory.decodeResource(getResources(), R.drawable.tower_slow_drag);
+    private Bitmap SlowTowerImageGrey = BitmapFactory.decodeResource(getResources(), R.drawable.tower_slow_grey);
     private Bitmap OpTowerImage = BitmapFactory.decodeResource(getResources(), R.drawable.tower_op);
     private Bitmap OpTowerImageDrag = BitmapFactory.decodeResource(getResources(), R.drawable.tower_op_drag);
+    private Bitmap OpTowerImageGrey = BitmapFactory.decodeResource(getResources(), R.drawable.tower_op_grey);
 
     //Used for rendering tower resources
     Tower UITowerNormal = new Tower(new Vector2(0,0), NormalTowerImage, Tower.TOWER_TYPE.TOWER_NORMAL,0);
