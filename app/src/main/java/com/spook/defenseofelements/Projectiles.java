@@ -36,7 +36,7 @@ public class Projectiles {
         this.image = null;
         this.movespeed = 0.0f;
         this.active = false;
-        this.LifeTime = 5.0f;
+        this.LifeTime = 8.0f;
         this.Damage = 10;
 
     }
@@ -50,7 +50,7 @@ public class Projectiles {
         this.image = mesh;
         this.movespeed = speed;
         this.active = Active;
-        this.LifeTime = 5.0f;
+        this.LifeTime = 8.0f;
         this.Damage = damage;
 
         this.bounding_box.SetAllData(new Vector2(Position.x, Position.y), image.getWidth(), image.getHeight());

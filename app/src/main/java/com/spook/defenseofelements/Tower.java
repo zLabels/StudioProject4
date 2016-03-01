@@ -64,7 +64,7 @@ public class Tower {
         AssignTowerType(type);
     }
 
-    public Tower(Vector2 Pos, Bitmap mesh, TOWER_TYPE tower_type) {
+    public Tower(Vector2 Pos, Bitmap mesh, TOWER_TYPE tower_type,int UpgradeLevel) {
         this.Position = Pos;
         this.Direction.Set(0, 1);
         this.image = mesh;
@@ -80,6 +80,7 @@ public class Tower {
         TopLeft.Set(Pos.x - halfWidth, Pos.y - halfHeight);
 
         AssignTowerType(type);
+        UpgradeTower(UpgradeLevel);
     }
 
     public void AssignTowerType(TOWER_TYPE type)
@@ -87,13 +88,13 @@ public class Tower {
         switch(type) {
             case TOWER_NORMAL:
             {
-                damage = 10.0f;
+                damage = 12.0f;
                 firerate = 2;
                 this.range = 150.0f;
-                this.firecost  = 1;
-                this.watercost = 0;
+                this.firecost  = 0;
+                this.watercost = 1;
                 this.windcost = 0;
-                this.earthcost = 0;
+                this.earthcost = 1;
             }
                 break;
             case TOWER_HIGHFIRERATE:
@@ -101,15 +102,15 @@ public class Tower {
                 damage = 5.0f;
                 firerate = 1.0f;
                 this.range = 100.0f;
-                this.firecost = 1;
+                this.firecost = 2;
                 this.watercost = 0;
-                this.windcost = 1;
+                this.windcost = 2;
                 this.earthcost = 0;
             }
                 break;
             case TOWER_SLOW:
             {
-                damage = 5.0f;
+                damage = 2.0f;
                 firerate = 1.0f;
                 this.range = 200.0f;
                 this.firecost = 0;
@@ -120,9 +121,9 @@ public class Tower {
                 break;
             case TOWER_OP:
             {
-                damage = 10.0f;
-                firerate = 0.5f;
-                this.range = 200.0f;
+                damage = 50.0f;
+                firerate = 0.2f;
+                this.range = 300.0f;
                 this.firecost = 1;
                 this.watercost = 1;
                 this.windcost = 1;
@@ -257,5 +258,19 @@ public class Tower {
 
     public void setRange(float range) {
         this.range = range;
+    }
+
+    public void UpgradeTower(int UpgradeCount)
+    {
+        for(int i = 0; i < UpgradeCount; ++i)
+        {
+            this.range += 20;
+            this.firerate -= 0.1f;
+            this.damage += 3.0f;
+            this.firecost += 2;
+            this.watercost += 2;
+            this.earthcost += 2;
+            this.windcost += 2;
+        }
     }
 }
