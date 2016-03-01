@@ -83,7 +83,6 @@ public class Tutorialpage extends Activity implements OnClickListener{
 
     protected void onStop()
     {
-        soundManager.UnPauseBGM();
         super.onStop();
     }
 

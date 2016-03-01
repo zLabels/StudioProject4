@@ -17,6 +17,7 @@ public class SoundManager {
 
     static int SFX;
     static int EffectFX;
+    static int WorkerFX;
     static float BGMVolume, SFXVolume;
     static boolean Inited = false;
 
@@ -28,6 +29,7 @@ public class SoundManager {
 
         SFX = soundpool.load(context, R.raw.menu_feedback, 1);
         EffectFX = soundpool.load(context, R.raw.bubble_pop_sound, 1);
+        WorkerFX = soundpool.load(context, R.raw.increase_worker, 1);
 
         BGMVolume = ((float)appPrefs.getVolume().get(0))/100;
         SFXVolume = ((float)appPrefs.getVolume().get(1))/100;
@@ -38,6 +40,7 @@ public class SoundManager {
 
         soundpool.setVolume(SFX, SFXVolume, SFXVolume);
         soundpool.setVolume(EffectFX, SFXVolume, SFXVolume);
+        soundpool.setVolume(WorkerFX, SFXVolume, SFXVolume);
 
         Inited = true;
     }
@@ -68,6 +71,8 @@ public class SoundManager {
         soundpool.play(EffectFX, SFXVolume, SFXVolume, 1, 0, 1);
     }
 
+    void PlayWorker() {soundpool.play(WorkerFX, SFXVolume, SFXVolume, 1, 0, 1);}
+
     void SetBGMVolume(int newVolume){
 
         BGMVolume = ((float)newVolume) / 100;
@@ -83,6 +88,7 @@ public class SoundManager {
 
         soundpool.setVolume(SFX, SFXVolume, SFXVolume);
         soundpool.setVolume(EffectFX, SFXVolume, SFXVolume);
+        soundpool.setVolume(WorkerFX, SFXVolume, SFXVolume);
     }
 
     void PauseBGM(){

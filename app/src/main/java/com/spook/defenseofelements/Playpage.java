@@ -60,6 +60,8 @@ public class Playpage extends Activity implements OnClickListener{
         }
         else
         {
+            soundManager.PauseCredits();
+            //soundManager.PauseGameBgm();
             soundManager.UnPauseBGM();
         }
     }
@@ -98,7 +100,6 @@ public class Playpage extends Activity implements OnClickListener{
     }
 
     protected void onStop(){
-        soundManager.UnPauseBGM();
         super.onStop();
     }
 

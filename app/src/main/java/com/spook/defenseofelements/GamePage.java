@@ -7,6 +7,7 @@ import android.view.WindowManager;
 
 public class GamePage extends Activity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -16,5 +17,7 @@ public class GamePage extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN); //hide top bar
 
         setContentView(new GamePanelSurfaceView(this,0));
+
     }
+
 }

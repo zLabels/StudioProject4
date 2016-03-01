@@ -75,8 +75,14 @@ public class Creditpage extends Activity implements OnClickListener{
         super.onPause();
     }
 
-    protected void onStop(){
+    protected void onResume()
+    {
+        soundManager.PauseBGM();
         soundManager.UnPauseCredits();
+        super.onResume();
+    }
+
+    protected void onStop(){
         super.onStop();
     }
 

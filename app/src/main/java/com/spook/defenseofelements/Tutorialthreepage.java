@@ -82,7 +82,6 @@ public class Tutorialthreepage extends Activity implements View.OnClickListener 
     }
 
     protected void onStop(){
-        soundManager.UnPauseBGM();
         super.onStop();
     }
 

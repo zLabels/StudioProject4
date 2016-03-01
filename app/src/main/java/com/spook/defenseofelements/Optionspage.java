@@ -68,7 +68,7 @@ public class Optionspage extends Activity implements OnClickListener{
 
         soundManager = new SoundManager();
 
-        soundManager.PauseBGM();
+        //soundManager.PauseBGM();
 
     }
 
@@ -79,15 +79,14 @@ public class Optionspage extends Activity implements OnClickListener{
             if(seekBar == sb_backgroundMusic)
             {
                 appPrefs.setVolume(0, progress);
-
-                soundManager.UnPauseBGM();
+                //soundManager.UnPauseBGM();
                 //
             }
             else if(seekBar == sb_sfxSound)
             {
                 appPrefs.setVolume(1, progress);
-                soundManager.PauseBGM();
-                soundManager.PlaySFX();
+                //soundManager.PauseBGM();
+                //soundManager.PlaySFX();
                 //
             }
         }
@@ -106,8 +105,7 @@ public class Optionspage extends Activity implements OnClickListener{
     @Override
     public void onClick(View v) {
         Intent intent = new Intent();
-
-        soundManager.PauseBGM();
+        //soundManager.PauseBGM();
         soundManager.PlaySFX();
 
         if(v == btn_optionsback)

@@ -40,6 +40,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     //Feedback
     SoundManager soundManager;
 
+    GamePage gamePage;
+
     //Random
     Random r = new Random();
 
@@ -407,6 +409,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     public void surfaceCreated(SurfaceHolder holder) {
         // Create the thread
         if (!myThread.isAlive()) {
+            //soundManager.PauseGameBgm();
             myThread = new GameThread(getHolder(), this);
             myThread.startRun(true);
             myThread.start();
@@ -423,6 +426,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                 myThread.join();
                 retry = false;
             } catch (InterruptedException e) {
+                //soundManager.PauseGameBgm();
             }
         }
     }
@@ -597,7 +601,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         //Player Related Variables
         canvas.drawText(Integer.toString(player.getLivesCount()),727, 790, paint);
-        canvas.drawText(Integer.toString(player.getWorkerCount()),93, 810, paint);
+        canvas.drawText(Integer.toString(player.getWorkerCount()), 93, 810, paint);
 
         canvas.drawText(Integer.toString(player.getFireElement()), 80, 915, paint);
         canvas.drawText(Integer.toString(player.getWaterElement()), 80, 985, paint);
@@ -799,8 +803,9 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                 waveStarted = false;
                                 currentSpawnIndex = 0;
                                 ++currentWave;
-                                if(currentWave % 2 == 0)
+                                if((currentWave + 1)% 2 == 0)
                                 {
+                                    soundManager.PlayWorker();
                                     player.IncreaseWorker();
                                 }
                             }
@@ -970,6 +975,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                     }
                     //Feedback for game over
                     else if (!GameActive) {
+                        soundManager.PauseGameBgm();
                         //Vibration feedback
                         //vibrateTime += dt;
                         //if (vibrateTime > MaxVibrateTime) {
@@ -1018,6 +1024,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                             if (selectedTower.getType() != Tower.TOWER_TYPE.TOWER_NORMAL) {
                                                 //If different, change selected tower to this
                                                 selectedTower = new Tower(new Vector2(0, 0), NormalTowerImage, Tower.TOWER_TYPE.TOWER_NORMAL,UpgradeLevel);
+                                                //Play the Sound effect
+                                                soundManager.PlaySFX();
 
                                                 if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
                                                 {
@@ -1030,6 +1038,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                         } else {
                                             //there is no selected tower
                                             selectedTower = new Tower(new Vector2(0, 0), NormalTowerImage, Tower.TOWER_TYPE.TOWER_NORMAL,UpgradeLevel);
+                                            //Play the Sound effect
+                                            soundManager.PlaySFX();
 
                                             if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
                                             {
@@ -1045,6 +1055,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                             if (selectedTower.getType() != Tower.TOWER_TYPE.TOWER_HIGHFIRERATE) {
                                                 //If different, change selected tower to this
                                                 selectedTower = new Tower(new Vector2(0, 0), FastTowerImage, Tower.TOWER_TYPE.TOWER_HIGHFIRERATE,UpgradeLevel);
+                                                //Play the Sound effect
+                                                soundManager.PlaySFX();
 
                                                 if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
                                                 {
@@ -1057,6 +1069,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                         } else {
                                             //there is no selected tower
                                             selectedTower = new Tower(new Vector2(0, 0), FastTowerImage, Tower.TOWER_TYPE.TOWER_HIGHFIRERATE,UpgradeLevel);
+                                            //Play the Sound effect
+                                            soundManager.PlaySFX();
 
                                             if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
                                             {
@@ -1071,6 +1085,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                             if (selectedTower.getType() != Tower.TOWER_TYPE.TOWER_SLOW) {
                                                 //If different, change selected tower to this
                                                 selectedTower = new Tower(new Vector2(0, 0), SlowTowerImage, Tower.TOWER_TYPE.TOWER_SLOW,UpgradeLevel);
+                                                //Play the Sound effect
+                                                soundManager.PlaySFX();
 
                                                 if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
                                                 {
@@ -1083,6 +1099,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                         } else {
                                             //there is no selected tower
                                             selectedTower = new Tower(new Vector2(0, 0), SlowTowerImage, Tower.TOWER_TYPE.TOWER_SLOW,UpgradeLevel);
+                                            //Play the Sound effect
+                                            soundManager.PlaySFX();
 
                                             if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
                                             {
@@ -1097,6 +1115,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                             if (selectedTower.getType() != Tower.TOWER_TYPE.TOWER_OP) {
                                                 //If different, change selected tower to this
                                                 selectedTower = new Tower(new Vector2(0, 0), OpTowerImage, Tower.TOWER_TYPE.TOWER_OP,0);
+                                                //Play the Sound effect
+                                                soundManager.PlaySFX();
 
                                                 if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
                                                 {
@@ -1109,6 +1129,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                         } else {
                                             //there is no selected tower
                                             selectedTower = new Tower(new Vector2(0, 0), OpTowerImage, Tower.TOWER_TYPE.TOWER_OP,0);
+                                            //Play the Sound effect
+                                            soundManager.PlaySFX();
 
                                             if(!player.CheckCanBuild(selectedTower.getFirecost(), selectedTower.getWatercost(), selectedTower.getWindcost(), selectedTower.getEarthcost()))
                                             {
@@ -1122,6 +1144,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                         if(player.getWorkerCount() > 0)
                                         {
                                             selectedWorker = true;
+                                            //Play the Sound effect
+                                            soundManager.PlaySFX();
                                         }
                                         break;
                                     case UI_UPGRADE:
@@ -1146,6 +1170,9 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                                             UITowerHighfirerate.UpgradeTower(1);
                                             UITowerNormal.UpgradeTower(1);
                                             UITowerSlow.UpgradeTower(1);
+
+                                            //Play the Sound effect
+                                            soundManager.PlaySFX();
                                         }
                                         break;
                                 }
@@ -1489,17 +1516,21 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                     if(retryButton.getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())))
                     {
                         soundManager.PauseGameBgm();
+                        soundManager.PlaySFX();
                         Reset();
                     }
                     //If tap on replay button
                     else if(replayButton.getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())))
                     {
                         soundManager.PauseGameBgm();
+                        soundManager.PlaySFX();
                         Reset();
                     }
                     //If tap on main menu button
                     else if(mainmainButton.getBoundingBox().CheckIntersect(new Vector2(event.getX(), event.getY())))
                     {
+                        soundManager.PlaySFX();
+
                         Intent intent = new Intent();
                         intent.setClass(getContext(), Mainmenu.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -1700,6 +1731,11 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         UpgradeDarkCost = 10;
         UpgradeWaterCost = 10;
         UpgradeNatureCost = 10;
+
+        UITowerNormal = new Tower(new Vector2(0,0), NormalTowerImage, Tower.TOWER_TYPE.TOWER_NORMAL,0);
+        UITowerHighfirerate = new Tower(new Vector2(0,0), FastTowerImage, Tower.TOWER_TYPE.TOWER_HIGHFIRERATE,0);
+        UITowerSlow = new Tower(new Vector2(0,0), SlowTowerImage, Tower.TOWER_TYPE.TOWER_SLOW,0);
+        UITowerOP = new Tower(new Vector2(0,0), OpTowerImage, Tower.TOWER_TYPE.TOWER_OP,0);
     }
 
     public void ResetVectors()
@@ -1750,4 +1786,5 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         //Reset everything first before we set game active back to true
         GameActive = true;
     }
+
 }
