@@ -34,7 +34,8 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
     // Variables for FPS
     public float FPS = 0.f;
-    Paint paint = new Paint(); //Used for text rendering
+    Paint paint = new Paint(); //Used for text rendering (black)
+    Paint paint2 = new Paint(); //White
 
     //Feedback
     SoundManager soundManager;
@@ -58,7 +59,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     boolean waveStarted = false;
     boolean selectedWorker = false; //For use on UI Button Worker
     InGameButton selectedPlacedWorker;   //For use on worker that is already on grid
-    float elementSpawnrate = 2.f;
+    float elementSpawnrate = 5.f;
     float elementTimer = 0.f;
     boolean Win = false;
 
@@ -192,6 +193,10 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         paint.setARGB(255, 0, 0, 0);
         paint.setStrokeWidth(100);
         paint.setTextSize(30);
+
+        paint2.setARGB(255, 255, 255, 255);
+        paint2.setStrokeWidth(100);
+        paint2.setTextSize(30);
 
         // Create the game loop thread
         myThread = new GameThread(getHolder(), this);
@@ -469,6 +474,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                     }
                 }
             }
+
             //Grid Frame
             canvas.drawBitmap(TD_Grid_Frame, 0, -20, null);
 
@@ -515,18 +521,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
             canvas.drawBitmap(Pause_screen.getImage(), Pause_screen.getPosX(), Pause_screen.getPosY(), null);
         }
 
-        //FPS
-        canvas.drawText("FPS:" + FPS, 50, 50, paint);
-        canvas.drawText("touchPos X:" + FirstTouch.x, 50, 75, paint);
-        canvas.drawText("touchPos Y:" + FirstTouch.y, 50, 100, paint);
-
-        canvas.drawText(Integer.toString(player.getLivesCount()),727, 790, paint);
-        canvas.drawText(Integer.toString(player.getWorkerCount()),93, 810, paint);
-
-        canvas.drawText(Integer.toString(player.getFireElement()), 90, 915, paint);
-        canvas.drawText(Integer.toString(player.getWaterElement()), 90, 985, paint);
-        canvas.drawText(Integer.toString(player.getWindElement()), 90, 1055, paint);
-        canvas.drawText(Integer.toString(player.getEarthElement()), 90, 1125, paint);
+        RenderOtherText(canvas);
 
         RenderTowerRates(canvas);
 
@@ -547,8 +542,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
                 canvas.drawBitmap(retryButton.getImage(), retryButton.getPosX(), retryButton.getPosY(), null);
                 canvas.drawBitmap(mainmainButton.getImage(), mainmainButton.getPosX(), mainmainButton.getPosY(), null);
             }
-           // canvas.drawBitmap(Restart_button.getImage(),Restart_button.getPosX(),Restart_button.getPosY(),null);
-            //canvas.drawBitmap(Mainmenu_button.getImage(), Mainmenu_button.getPosX(), Mainmenu_button.getPosY(),null);
         }
     }
 
@@ -573,6 +566,26 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         canvas.drawText(Integer.toString(UITowerOP.getWatercost()), 760, 660, paint);
         canvas.drawText(Integer.toString(UITowerOP.getEarthcost()), 700, 700, paint);
         canvas.drawText(Integer.toString(UITowerOP.getWindcost()), 760, 700, paint);
+    }
+
+    public void RenderOtherText(Canvas canvas)
+    {
+        //Debugging Information
+        canvas.drawText("FPS:" + FPS, 50, 50, paint);
+        canvas.drawText("touchPos X:" + FirstTouch.x, 50, 75, paint);
+        canvas.drawText("touchPos Y:" + FirstTouch.y, 50, 100, paint);
+
+        //Player Related Variables
+        canvas.drawText(Integer.toString(player.getLivesCount()),727, 790, paint);
+        canvas.drawText(Integer.toString(player.getWorkerCount()),93, 810, paint);
+
+        canvas.drawText(Integer.toString(player.getFireElement()), 83, 915, paint);
+        canvas.drawText(Integer.toString(player.getWaterElement()), 83, 985, paint);
+        canvas.drawText(Integer.toString(player.getWindElement()), 83, 1055, paint);
+        canvas.drawText(Integer.toString(player.getEarthElement()), 83, 1125, paint);
+
+        //Element generating Timer
+        canvas.drawText(Integer.toString((int) elementTimer), 390, 985,paint2);
     }
 
     //Update method to update the game play
@@ -1528,7 +1541,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         spawnTimer = 0.0f;
         waveStarted = false;
         selectedWorker = false;
-        elementSpawnrate = 2.0f;
+        elementSpawnrate = 5.0f;
         elementTimer = 0.0f;
         Win = false;
         selectedPlacedWorker = null;
