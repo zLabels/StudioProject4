@@ -54,6 +54,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     Vector2 TouchPos = new Vector2(0.0f,0.0f);
 
     //Game elements
+    int level = 0;
     int currentWave = 0;
     int currentSpawnIndex = 0;
     float aiSpawnrate = 5.f;
@@ -151,7 +152,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     private Bitmap Bubble3ProjectileImage = BitmapFactory.decodeResource(getResources(), R.drawable.bubble_bullet_3);
 
     //constructor for this GamePanelSurfaceView class
-    public GamePanelSurfaceView(Context context,int Mode){
+    public GamePanelSurfaceView(Context context,int Level){
 
         // Context is the current state of the application/object
         super(context);
@@ -170,16 +171,31 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         player = new Player();
 
+        level = Level;
+
         //Reading Values from CSV files
-        Scanner scanner = new Scanner(getResources().openRawResource(R.raw.level1_td_grid));
-        for (int i = 0; i < 9; ++i) {
-            String temp = scanner.next();
-            String[] parts = temp.split(",");
-            for (int j = 0; j < 12; ++j) {
-                CSVInfo[i][j] = Integer.parseInt(parts[j]);
-            }
+        Scanner scanner = null;
+
+        switch(level)
+        {
+            case 1: scanner = new Scanner(getResources().openRawResource(R.raw.level1_td_grid));
+                break;
+            case 2: scanner = new Scanner(getResources().openRawResource(R.raw.level2_td_grid));
+                break;
         }
-        scanner.close();
+
+        if(scanner != null)
+        {
+            for (int i = 0; i < 9; ++i) {
+                String temp = scanner.next();
+                String[] parts = temp.split(",");
+                for (int j = 0; j < 12; ++j) {
+                    CSVInfo[i][j] = Integer.parseInt(parts[j]);
+                }
+            }
+
+            scanner.close();
+        }
 
         InitializeGrid();
 
@@ -335,74 +351,79 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     void InitializeWaypoint()
     {
         //Reading Waypoints
-        Scanner scanner = new Scanner(getResources().openRawResource(R.raw.waypointlevel1));
-        while(scanner.hasNext())
+        Scanner scanner = null;
+
+        switch (level)
         {
-            String temp = scanner.next();
-            String[] values = temp.split(",");
-
-            Vector2 point = new Vector2(Float.parseFloat(values[0]), Float.parseFloat(values[1]));
-
-            Waypoints.addElement(point);
+            case 1: scanner = new Scanner(getResources().openRawResource(R.raw.waypointlevel1));
+                break;
+            case 2: scanner = new Scanner(getResources().openRawResource(R.raw.waypointlevel2));
+                break;
         }
-        scanner.close();
+
+        if(scanner != null) {
+            while (scanner.hasNext()) {
+                String temp = scanner.next();
+                String[] values = temp.split(",");
+
+                Vector2 point = new Vector2(Float.parseFloat(values[0]), Float.parseFloat(values[1]));
+
+                Waypoints.addElement(point);
+            }
+            scanner.close();
+        }
     }
 
     void InitializeWave()
     {
         //Reading Waves
         int waveIndex = 0;
-        Scanner scanner = new Scanner(getResources().openRawResource(R.raw.wavelevel1));
-        while(scanner.hasNext())
+        Scanner scanner = null;
+
+        switch (level)
         {
-            String temp = scanner.next();
-            String[] parts = temp.split(",");
-
-            if(parts[0].equals("Wave")) {
-                waveIndex = Integer.parseInt(parts[1]);
-
-                if (waveIndex > WaveList.size()) {
-                    WaveList.addElement(new Vector<AI>());
-                }
-            }
-
-           /* String spawnlist = scanner.next();
-            String[] spawnpart = spawnlist.split(",");*/
-
-            else if(parts[0].equals("Normal"))
-            {
-                int loopNum = Integer.parseInt(parts[1]);
-
-                for(int i = 0; i < loopNum; ++i)
-                {
-                    Vector2 position = new Vector2(0,100);
-                    WaveList.get(waveIndex - 1).addElement(new AI(position,Waypoints, NormalAIImage, AI.AI_TYPE.AI_NORMAL));
-                }
-            }
-
-            else if(parts[0].equals("Fast"))
-            {
-                int loopNum = Integer.parseInt(parts[1]);
-
-                for(int i = 0; i < loopNum; ++i)
-                {
-                    Vector2 position = new Vector2(0,100);
-                    WaveList.get(waveIndex - 1).addElement(new AI(position,Waypoints, FastAIImage, AI.AI_TYPE.AI_FAST));
-                }
-            }
-
-            else if(parts[0].equals("Tank"))
-            {
-                int loopNum = Integer.parseInt(parts[1]);
-
-                for(int i = 0; i < loopNum; ++i)
-                {
-                    Vector2 position = new Vector2(0,100);
-                    WaveList.get(waveIndex - 1).addElement(new AI(position,Waypoints, SlowAIImage, AI.AI_TYPE.AI_SLOWBUTTANKY));
-                }
-            }
+            case 1: scanner = new Scanner(getResources().openRawResource(R.raw.wavelevel1));
+                break;
+            case 2: scanner = new Scanner(getResources().openRawResource(R.raw.wavelevel2));
+                break;
         }
-        scanner.close();
+
+        if(scanner != null) {
+            while (scanner.hasNext()) {
+                String temp = scanner.next();
+                String[] parts = temp.split(",");
+
+                if (parts[0].equals("Wave")) {
+                    waveIndex = Integer.parseInt(parts[1]);
+
+                    if (waveIndex > WaveList.size()) {
+                        WaveList.addElement(new Vector<AI>());
+                    }
+                } else if (parts[0].equals("Normal")) {
+                    int loopNum = Integer.parseInt(parts[1]);
+
+                    for (int i = 0; i < loopNum; ++i) {
+                        Vector2 position = new Vector2(0, 100);
+                        WaveList.get(waveIndex - 1).addElement(new AI(position, Waypoints, NormalAIImage, AI.AI_TYPE.AI_NORMAL));
+                    }
+                } else if (parts[0].equals("Fast")) {
+                    int loopNum = Integer.parseInt(parts[1]);
+
+                    for (int i = 0; i < loopNum; ++i) {
+                        Vector2 position = new Vector2(0, 100);
+                        WaveList.get(waveIndex - 1).addElement(new AI(position, Waypoints, FastAIImage, AI.AI_TYPE.AI_FAST));
+                    }
+                } else if (parts[0].equals("Tank")) {
+                    int loopNum = Integer.parseInt(parts[1]);
+
+                    for (int i = 0; i < loopNum; ++i) {
+                        Vector2 position = new Vector2(0, 100);
+                        WaveList.get(waveIndex - 1).addElement(new AI(position, Waypoints, SlowAIImage, AI.AI_TYPE.AI_SLOWBUTTANKY));
+                    }
+                }
+            }
+            scanner.close();
+        }
     }
 
     //must implement inherited abstract methods
