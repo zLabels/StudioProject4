@@ -16,6 +16,9 @@ public class Playpage extends Activity implements OnClickListener{
     //Buttons
     private Button btn_start;
     private Button btn_levelback;
+    private Button btn_level1;
+    private Button btn_level2;
+    int levelSelected = 1;
     //private Button btn_endless;
     //private Button btn_tutorial;
     //Media Player
@@ -38,6 +41,12 @@ public class Playpage extends Activity implements OnClickListener{
 
         btn_levelback = (Button) findViewById(R.id.btn_levelback);
         btn_levelback.setOnClickListener(this);
+
+        btn_level1 = (Button) findViewById(R.id.btn_level1);
+        btn_level1.setOnClickListener(this);
+
+        btn_level2 = (Button) findViewById(R.id.btn_level2);
+        btn_level2.setOnClickListener(this);
 
         /*btn_endless = (Button)findViewById(R.id.btn_endless);
         btn_endless.setOnClickListener(this);
@@ -75,13 +84,39 @@ public class Playpage extends Activity implements OnClickListener{
        if(v == btn_start)
         {
             //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.setClass(this,GamePage.class);
+            //intent.setClass(this,GamePage.class);
+
+            switch (levelSelected)
+            {
+                case 1: intent.setClass(this, GamePage.class);
+                    break;
+                case 2: intent.setClass(this, GamePageLV2.class);
+                    break;
+            }
+
+            startActivity(intent);
         }
          if(v == btn_levelback)
         {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.setClass(this,Mainmenu.class);
+            startActivity(intent);
         }
+
+        if(v == btn_level1)
+        {
+            levelSelected = 1;
+            btn_level1.setBackgroundResource(R.drawable.selected_button);
+            btn_level2.setBackgroundResource(R.drawable.unselected_button);
+        }
+
+        if(v == btn_level2)
+        {
+            levelSelected = 2;
+            btn_level1.setBackgroundResource(R.drawable.unselected_button);
+            btn_level2.setBackgroundResource(R.drawable.selected_button);
+        }
+
          /*if(v == btn_endless)
         {
             intent.setClass(this,GamePage.class);
@@ -90,8 +125,6 @@ public class Playpage extends Activity implements OnClickListener{
         {
             intent.setClass(this,Tutorialpage.class);
         }*/
-
-        startActivity(intent);
     }
 
     protected void onPause(){

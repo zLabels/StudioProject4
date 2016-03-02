@@ -630,7 +630,15 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
         canvas.drawText(Integer.toString(player.getWindElement()), 80, 1125, paint);
 
         //Display current wave
-        canvas.drawText(Integer.toString(currentWave + 1), 710, 1175, paint);
+        if(currentWave < WaveList.size())
+        {
+            canvas.drawText(Integer.toString(currentWave + 1), 710, 1175, paint);
+        }
+        else
+        {
+            canvas.drawText(Integer.toString(currentWave), 710, 1175, paint);
+        }
+
         canvas.drawText(Integer.toString(WaveList.size()), 740, 1200, paint);
 
         //Element generating Timer
