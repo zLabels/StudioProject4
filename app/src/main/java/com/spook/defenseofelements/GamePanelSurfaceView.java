@@ -40,8 +40,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     //Feedback
     SoundManager soundManager;
 
-    GamePage gamePage;
-
     //Random
     Random r = new Random();
 
@@ -57,7 +55,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     int level = 0;
     int currentWave = 0;
     int currentSpawnIndex = 0;
-    float aiSpawnrate = 5.f;
+    float aiSpawnrate = 1.5f;
     float spawnTimer = 0.f;
     boolean waveStarted = false;
     boolean selectedWorker = false; //For use on UI Button Worker
@@ -894,6 +892,10 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
                         if(elementTimer >= elementSpawnrate)
                         {
+                            if(elementSpawnrate < 10.f)
+                            {
+                                elementSpawnrate++;
+                            }
                             elementTimer = 0;
 
                             int firegain = 0;
@@ -1745,7 +1747,7 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
     {
         currentWave = 0;
         currentSpawnIndex = 0;
-        aiSpawnrate = 5.0f;
+        aiSpawnrate = 1.5f;
         spawnTimer = 0.0f;
         waveStarted = false;
         selectedWorker = false;

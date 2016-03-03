@@ -88,35 +88,35 @@ public class Tower {
         switch(type) {
             case TOWER_NORMAL:
             {
-                damage = 12.0f;
+                damage = 10.0f;
                 firerate = 2;
                 this.range = 150.0f;
                 this.firecost  = 0;
-                this.watercost = 1;
+                this.watercost = 2;
                 this.windcost = 0;
-                this.earthcost = 1;
+                this.earthcost = 2;
             }
                 break;
             case TOWER_HIGHFIRERATE:
             {
-                damage = 5.0f;
+                damage = 6.0f;
                 firerate = 1.0f;
                 this.range = 100.0f;
-                this.firecost = 2;
+                this.firecost = 3;
                 this.watercost = 0;
-                this.windcost = 2;
+                this.windcost = 3;
                 this.earthcost = 0;
             }
                 break;
             case TOWER_SLOW:
             {
-                damage = 2.0f;
+                damage = 5.0f;
                 firerate = 1.0f;
                 this.range = 200.0f;
-                this.firecost = 0;
-                this.watercost = 1;
-                this.windcost = 0;
-                this.earthcost = 1;
+                this.firecost = 5;
+                this.watercost = 5;
+                this.windcost = 5;
+                this.earthcost = 5;
             }
                 break;
             case TOWER_OP:
@@ -124,10 +124,10 @@ public class Tower {
                 damage = 50.0f;
                 firerate = 0.2f;
                 this.range = 300.0f;
-                this.firecost = 77;
-                this.watercost = 77;
-                this.windcost = 77;
-                this.earthcost = 77;
+                this.firecost = 90;
+                this.watercost = 90;
+                this.windcost = 90;
+                this.earthcost = 90;
             }
             break;
         }

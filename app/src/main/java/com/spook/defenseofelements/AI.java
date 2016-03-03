@@ -82,7 +82,7 @@ public class AI {
             case AI_NORMAL:
             {
                 health = 100;
-                movespeed = 150;
+                movespeed = 130;
             }
             break;
             case AI_FAST:
@@ -93,7 +93,7 @@ public class AI {
             break;
             case AI_SLOWBUTTANKY:
             {
-                health = 125;
+                health = 400;
                 movespeed = 125;
             }
             break;
