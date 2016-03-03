@@ -887,10 +887,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
                         if(elementTimer >= elementSpawnrate)
                         {
-                            if(elementSpawnrate < 10.f)
-                            {
-                                elementSpawnrate++;
-                            }
                             elementTimer = 0;
 
                             int firegain = 0;
