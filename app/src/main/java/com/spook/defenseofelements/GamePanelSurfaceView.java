@@ -613,11 +613,6 @@ public class GamePanelSurfaceView extends SurfaceView implements SurfaceHolder.C
 
     public void RenderOtherText(Canvas canvas)
     {
-        //Debugging Information
-        canvas.drawText("FPS:" + FPS, 50, 50, paint);
-        canvas.drawText("touchPos X:" + FirstTouch.x, 50, 75, paint);
-        canvas.drawText("touchPos Y:" + FirstTouch.y, 50, 100, paint);
-
         //Player Related Variables
         canvas.drawText(Integer.toString(player.getLivesCount()),727, 790, paint);
         canvas.drawText(Integer.toString(player.getWorkerCount()), 93, 810, paint);
